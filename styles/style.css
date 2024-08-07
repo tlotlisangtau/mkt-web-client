@@ -1,0 +1,67 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+@import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css');
+
+.add-ad-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+  
+
+.add-ad-form h1 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.add-ad-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.add-ad-form input,
+.add-ad-form textarea,
+.add-ad-form select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.title{
+  background-color: #0056b3;
+  padding: 5px;
+  color: white;
+}
+
+.add-ad-form button {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  background-color: #031931;
+  color: #fff;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-ad-form button:hover {
+  background-color: #041c38;
+}
+
+.error {
+  color: red;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.success {
+  color: green;
+  text-align: center;
+  margin-top: 1rem;
+}
