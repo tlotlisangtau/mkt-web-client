@@ -68,7 +68,7 @@ const Nav: React.FC = () => {
               </div>
             </div>
             <Link href="/contact" className="text-gray-800 hover:text-gray-600">Contact</Link>
-            <Link href="/AddProduct" className="bg-blue-500 text-white py-2 px-2 mb-3 rounded hover:bg-blue-600">
+            <Link href="/ChooseCategory" className="bg-blue-500 text-white py-2 px-2 mb-3 rounded hover:bg-blue-600">
               <span className="fa fa-paper-plane-o mr-2" aria-hidden="true"></span>
               Post your Ad
             </Link>

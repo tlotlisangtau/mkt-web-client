@@ -1,20 +1,19 @@
-"use client";
+'use client';
 
 import React, { useEffect, useState } from 'react';
-import '../../styles/globals.css';
+import '../../../styles/globals.css';
 import Nav from '@/components/Nav';
 import Footer from '@/components/footer';
 
-// Define the Product type
 interface Product {
   id: number;
   name: string;
   description: string;
   price: number;
-  image: string;
+  image_url: string;
 }
 
-const product_1: React.FC = () => {
+const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -22,14 +21,13 @@ const product_1: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/categories/1/products/');
+        const response = await fetch('http://127.0.0.1:8000/api/sports');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log('Fetched data:', data); // Log the fetched data
+        console.log('Fetched data:', data);
 
-        // Ensure that data is an array before setting it in state
         if (Array.isArray(data)) {
           setProducts(data);
         } else {
@@ -64,9 +62,10 @@ const product_1: React.FC = () => {
       <section className="w3l-products-page w3l-blog-single w3l-products-4">
         <div className="single blog">
           <div className="wrapper">
-          <h3 className="title-main">Health & Beauty Products</h3>
+            <h3 className="title-main">Sports Category</h3>
             <div className="d-grid grid-colunm-2 grid-colunm">
               {/* right side bar */}
+              
               <div className="right-side-bar">
                 <aside>
                   <h3 className="aside-title mb-3">Filter Ads</h3>
@@ -145,7 +144,6 @@ const product_1: React.FC = () => {
                   <img src="assets/images/screen.jpg" alt="" className="img-fluid img-responsive" />
                 </aside>
               </div>
-              {/* //right side bar */}
               {/* left side blog post content */}
               <div className="tab-content text-left">
                 <aside className="top-border d-flex">
@@ -160,38 +158,38 @@ const product_1: React.FC = () => {
                     </select>
                   </div>
                 </aside>
-          <div className="d-grid grid-col-4">
-            {loading && <p>Loading...</p>}
-              {error && <p>Error: {error}</p>}
-              {!loading && !error && (
-              <div className="d-grid grid-col-2">
-                {products.map(product => (
-                  <div className="product" key={product.id}>
-                    <a href={`/ProductDetail`}>
-                      <img src={product.image} className="img-responsive" />
-                    </a>
-                    <div className="info-bg">
-                      <h5><a href={`/ProductDetail`}>{product.name}</a></h5>
-                      <p>{product.description}</p>
-                      <ul className="d-flex">
-                        <li><span className="fa fa-usd"></span> {product.price}</li>
-                        <li className="margin-effe">
-                          <a href="#fav" title="Add this to Favorite">
-                            <span className="fa fa-heart-o"></span>
+                <div className="d-grid grid-col-4">
+                  {loading && <p>Loading...</p>}
+                  {error && <p>Error: {error}</p>}
+                  {!loading && !error && (
+                    <div className="d-grid grid-col-2">
+                      {products.map(product => (
+                        <div className="product" key={product.id}>
+                          <a href={`/Productdetail?productId=${product.id}`}>
+                            <img src={product.image_url} className="img-responsive" alt="Image Here" />
                           </a>
-                        </li>
-                        <li>
-                          <a href="#share" title="Share">
-                            <span className="fa fa-share"></span>
-                          </a>
-                        </li>
-                      </ul>
+                          <div className="info-bg">
+                            <h5><a href={`/Productdetail?productId=${product.id}`}>{product.name}</a></h5>
+                            <p>{product.description}</p>
+                            <ul className="d-flex">
+                              <li><span className="fa fa-usd"></span> {product.price}</li>
+                              <li className="margin-effe">
+                                <a href="#fav" title="Add this to Favorite">
+                                  <span className="fa fa-heart-o"></span>
+                                </a>
+                              </li>
+                              <li>
+                                <a href="#share" title="Share">
+                                  <span className="fa fa-share"></span>
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+                  )}
+                </div>
               </div>
               {/* //left side blog post content */}
             </div>
@@ -210,12 +208,9 @@ const product_1: React.FC = () => {
           </div>
         </div>
       </section>
-
-
-
       <Footer />
     </>
   );
 }
 
-export default product_1;
+export default ProductList;

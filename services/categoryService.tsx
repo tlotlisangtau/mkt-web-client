@@ -10,3 +10,13 @@ export const getCategories = async () => {
     throw error;
   }
 };
+
+export const getCategoryCounts = async () => {
+  try {
+    const response = await axiosInstance.get('/counts');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching category counts:', error);
+    throw error;
+  }
+};

@@ -1,35 +1,292 @@
-// components/CategoryList.tsx
 'use client';
+import React, { useState, useEffect, FormEvent, DragEvent } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
+import supabase from '../utils/supabaseClient';
+import '../styles/style.css'; 
 
-import React, { useEffect, useState } from 'react';
-import { getCategories } from '../services/categoryService';
+interface Category {
+  id: number;
+  name: string;
+}
 
-const CategoryList: React.FC = () => {
-  const [categories, setCategories] = useState([]);
+interface FormField {
+  name: string;
+  type: string;
+}
+
+const CategoryForm: React.FC = () => {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [formFields, setFormFields] = useState<FormField[]>([]);
+  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [images, setImages] = useState<File[]>([]); // Updated to handle multiple images
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]); // For displaying image previews
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const data = await getCategories();
-        setCategories(data);
-      } catch (error) {
-        console.error('Failed to fetch categories:', error);
-      }
-    };
-
-    fetchCategories();
+    fetch('http://localhost:8000/api/categories/')
+      .then(response => response.json())
+      .then(data => setCategories(data))
+      .catch(error => console.error('Error fetching categories:', error));
   }, []);
 
+  useEffect(() => {
+    setFormData({});
+    switch (selectedCategory) {
+      case 5: // Assume 5 is the ID for Jobs
+        setFormFields([
+          { name: 'Name', type: 'text' },
+          { name: 'Description', type: 'text' },
+          { name: 'Price', type: 'number' },
+          { name: 'Job Location', type: 'text' },
+          { name: 'Mobile Number', type: 'text' },
+          { name: 'Company', type: 'text' },
+          { name: 'Salary', type: 'number' },
+          { name: 'Valid Until', type: 'date' }
+        ]);
+        break;
+      case 7: // Assume 7 is the ID for Sports
+        setFormFields([
+          { name: 'Name', type: 'text' },
+          { name: 'Description', type: 'text' },
+          { name: 'Price', type: 'number' },
+          { name: 'Brand', type: 'text' },
+          { name: 'Size', type: 'text' },
+          { name: 'Material', type: 'text' },
+          { name: 'Mobile Number', type: 'text' },
+          { name: 'Condition', type: 'select' } // Added Condition field
+        ]);
+        break;
+      case 8: // Assume 8 is the ID for Furniture
+        setFormFields([
+          { name: 'Name', type: 'text' },
+          { name: 'Description', type: 'text' },
+          { name: 'Price', type: 'number' },
+          { name: 'Material', type: 'text' },
+          { name: 'Dimensions', type: 'text' },
+          { name: 'Color', type: 'text' },
+          { name: 'Mobile Number', type: 'text' }
+        ]);
+        break;
+      case 9: // Assume 9 is the ID for Real Estate
+        setFormFields([
+          { name: 'Name', type: 'text' },
+          { name: 'Description', type: 'text' },
+          { name: 'Price', type: 'number' },
+          { name: 'Property Type', type: 'text' },
+          { name: 'Location', type: 'text' },
+          { name: 'Size', type: 'text' },
+          { name: 'Mobile Number', type: 'text' }
+        ]);
+        break;
+      case 10: // Assume 10 is the ID for Health & Beauty
+        setFormFields([
+          { name: 'Name', type: 'text' },
+          { name: 'Description', type: 'text' },
+          { name: 'Price', type: 'number' },
+          { name: 'Brand', type: 'text' },
+          { name: 'Type', type: 'text' },
+          { name: 'Ingredients', type: 'text' },
+          { name: 'Mobile Number', type: 'text' }
+        ]);
+        break;
+      default:
+        setFormFields([]);
+        break;
+    }
+  }, [selectedCategory]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { id, value } = e.target;
+    setFormData({
+      ...formData,
+      [id]: value
+    });
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      setImages(files);
+      const previews = files.map(file => URL.createObjectURL(file));
+      setImagePreviews(previews);
+    }
+  };
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer.files) {
+      const files = Array.from(e.dataTransfer.files);
+      setImages(files);
+      const previews = files.map(file => URL.createObjectURL(file));
+      setImagePreviews(previews);
+    }
+  };
+
+  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      const imageUrls: string[] = [];
+
+      for (const image of images) {
+        // Upload the image to Supabase
+        const { data, error: uploadError } = await supabase.storage
+          .from('images')
+          .upload(`public/${image.name}`, image);
+
+        if (uploadError) throw uploadError;
+
+        // Generate the public URL for the uploaded image
+        const imageUrl = `https://mrcrgxijqzzfzrmhfkjb.supabase.co/storage/v1/object/public/images/${data.path}`;
+        imageUrls.push(imageUrl);
+      }
+
+      const dataToSubmit = {
+        ...formData,
+        category: selectedCategory, // Send the selectedCategory ID instead of name
+        image_urls: imageUrls // Include the array of image URLs
+      };
+
+      console.log('Submitting data:', dataToSubmit); // Log the data being submitted
+
+      const endpoint = `http://127.0.0.1:8000/api/${getCategoryEndpoint()}/`;
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dataToSubmit)
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log('Success:', responseData);
+        toast.success('Product added successfully!');
+      } else {
+        const responseText = await response.text();
+        console.error('Error response:', responseText);
+        toast.error('Failed to add product.');
+      }
+    } catch (error: any) {
+      console.error('Submit error:', error);
+      toast.error('Failed to add product.');
+    }
+  };
+
+  const getCategoryEndpoint = () => {
+    switch (selectedCategory) {
+      case 5: return 'jobs';
+      case 7: return 'sports';
+      case 8: return 'furniture';
+      case 9: return 'realestate';
+      case 10: return 'healthbeauty';
+      default: return '';
+    }
+  };
+
   return (
-    <div>
-      <h2>Categories</h2>
-      <ul>
-        {categories.map((category: any) => (
-          <li key={category.id}>{category.name}</li>
-        ))}
-      </ul>
+    <div className="container1">
+      <Toaster />
+      <div className="form-container1">
+        <h2 className="heading1">What are you listing today?</h2>
+        
+        <div className="space-y-6">
+          <div>
+            <label htmlFor="category" className="label1">Category</label>
+            <select
+              id="category"
+              value={selectedCategory || ''}
+              onChange={(e) => setSelectedCategory(parseInt(e.target.value))}
+              className="select1"
+            >
+              <option value="">Select a category</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          {formFields.length > 0 && (
+            <form onSubmit={handleSubmit}>
+              {formFields.map((field, index) => (
+                <div key={index}>
+                  <label htmlFor={field.name.toLowerCase().replace(/ /g, '_')} className="label1">
+                    {field.name}
+                  </label>
+                  {field.type === 'select' ? (
+                    <select
+                      id={field.name.toLowerCase().replace(/ /g, '_')}
+                      className="select1"
+                      onChange={handleChange}
+                    >
+                      <option value="">Select Condition</option>
+                      <option value="NEW">New</option>
+                      <option value="USED">Used</option>
+                    </select>
+                  ) : (
+                    <input
+                      type={field.type}
+                      id={field.name.toLowerCase().replace(/ /g, '_')}
+                      className="input1"
+                      onChange={handleChange}
+                    />
+                  )}
+                </div>
+              ))}
+              <div
+                className="dropzone"
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                style={{ border: '2px dashed #ccc', padding: '20px', textAlign: 'center' }}
+              >
+                <p>Drag and drop images here or click to select files</p>
+                <input
+                  type="file"
+                  id="images"
+                  className="input1"
+                  accept="image/*"
+                  multiple // Allow multiple image selection
+                  onChange={handleImageChange}
+                  style={{ display: 'none' }} // Hide the default file input
+                />
+                <button
+                  type="button"
+                  onClick={() => document.getElementById('images')?.click()}
+                  className="button1"
+                >
+                  Select Images
+                </button>
+              </div>
+              <br />
+              {imagePreviews.length > 0 && (
+                <div className="image-previews">
+                  {imagePreviews.map((preview, index) => (
+                    <img
+                      key={index}
+                      src={preview}
+                      alt={`Preview ${index}`}
+                    />
+                  ))}
+                </div>
+              )}
+              <button
+                type="submit"
+                className="button1"
+              >
+                Submit
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
 
-export default CategoryList;
+export default CategoryForm;

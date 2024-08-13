@@ -1,20 +1,19 @@
-"use client";
+'use client';
 
 import React, { useEffect, useState } from 'react';
-import '../../styles/globals.css';
+import '../../../styles/globals.css';
 import Nav from '@/components/Nav';
 import Footer from '@/components/footer';
 
-// Define the Product type
 interface Product {
   id: number;
   name: string;
   description: string;
   price: number;
-  image: string;
+  image_url: string;
 }
 
-const product_7: React.FC = () => {
+const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -22,14 +21,13 @@ const product_7: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/categories/7/products/');
+        const response = await fetch('http://127.0.0.1:8000/api/furniture');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log('Fetched data:', data); // Log the fetched data
+        console.log('Fetched data:', data);
 
-        // Ensure that data is an array before setting it in state
         if (Array.isArray(data)) {
           setProducts(data);
         } else {
@@ -64,9 +62,10 @@ const product_7: React.FC = () => {
       <section className="w3l-products-page w3l-blog-single w3l-products-4">
         <div className="single blog">
           <div className="wrapper">
-          <h3 className="title-main">Health & Beauty Products</h3>
+            <h3 className="title-main">Furniture Category</h3>
             <div className="d-grid grid-colunm-2 grid-colunm">
               {/* right side bar */}
+              
               <div className="right-side-bar">
                 <aside>
                   <h3 className="aside-title mb-3">Filter Ads</h3>
@@ -101,51 +100,12 @@ const product_7: React.FC = () => {
                     </a>
                   </div>
                 </aside>
-                <aside className="posts p-4 border single-left-inner">
-                  <h3 className="aside-title">Type</h3>
-                  <div className="brand-equal">
-                    <input type="radio" name="radio" className="radio-input" checked />
-                    <label className="brand-name">All</label>
-                  </div>
-                  <div className="brand-equal">
-                    <input type="radio" name="radio" className="radio-input" />
-                    <label className="brand-name">Sell</label>
-                  </div>
-                  <div className="brand-equal">
-                    <input type="radio" name="radio" className="radio-input" />
-                    <label className="brand-name">Auction</label>
-                  </div>
-                  <div className="brand-equal">
-                    <input type="radio" name="radio" className="radio-input" />
-                    <label className="brand-name">Buy</label>
-                  </div>
-                  <div className="brand-equal">
-                    <input type="radio" name="radio" className="radio-input" />
-                    <label className="brand-name">Exchange</label>
-                  </div>
-                  <div className="brand-equal">
-                    <input type="radio" name="radio" className="radio-input" />
-                    <label className="brand-name">Gift</label>
-                  </div>
-                  <div className="brand-equal">
-                    <input type="radio" name="radio" className="radio-input" />
-                    <label className="brand-name">Rent</label>
-                  </div>
-                  <div className="brand-equal">
-                    <input type="radio" name="radio" className="radio-input" />
-                    <label className="brand-name">Job - Offer</label>
-                  </div>
-                  <div className="brand-equal">
-                    <input type="radio" name="radio" className="radio-input" />
-                    <label className="brand-name">Job - Wanted</label>
-                  </div>
-                </aside>
+                
                 <aside>
                   <h3 className="aside-title mb-3">Advertisement</h3>
                   <img src="assets/images/screen.jpg" alt="" className="img-fluid img-responsive" />
                 </aside>
               </div>
-              {/* //right side bar */}
               {/* left side blog post content */}
               <div className="tab-content text-left">
                 <aside className="top-border d-flex">
@@ -160,40 +120,38 @@ const product_7: React.FC = () => {
                     </select>
                   </div>
                 </aside>
-          <div className="d-grid grid-col-4">
-              <h1>Content</h1>
-              <h1>Test</h1>
-            {loading && <p>Loading...</p>}
-              {error && <p>Error: {error}</p>}
-              {!loading && !error && (
-              <div className="d-grid grid-col-2">
-                {products.map(product => (
-                  <div className="product" key={product.id}>
-                    <a href={`/product/${product.id}`}>
-                      <img src={product.image} className="img-responsive" alt={product.name} />
-                    </a>
-                    <div className="info-bg">
-                      <h5><a href={`/product/${product.id}`}>{product.name}</a></h5>
-                      <p>{product.description}</p>
-                      <ul className="d-flex">
-                        <li><span className="fa fa-usd"></span> {product.price}</li>
-                        <li className="margin-effe">
-                          <a href="#fav" title="Add this to Favorite">
-                            <span className="fa fa-heart-o"></span>
+                <div className="d-grid grid-col-4">
+                  {loading && <p>Loading...</p>}
+                  {error && <p>Error: {error}</p>}
+                  {!loading && !error && (
+                    <div className="d-grid grid-col-2">
+                      {products.map(product => (
+                        <div className="product" key={product.id}>
+                          <a href={`/Productdetail?productId=${product.id}`}>
+                            <img src={product.image_url} className="img-responsive" alt="Image Here" />
                           </a>
-                        </li>
-                        <li>
-                          <a href="#share" title="Share">
-                            <span className="fa fa-share"></span>
-                          </a>
-                        </li>
-                      </ul>
+                          <div className="info-bg">
+                            <h5><a href={`/Productdetail?productId=${product.id}`}>{product.name}</a></h5>
+                            <p>{product.description}</p>
+                            <ul className="d-flex">
+                              <li><span className="fa fa-usd"></span> {product.price}</li>
+                              <li className="margin-effe">
+                                <a href="#fav" title="Add this to Favorite">
+                                  <span className="fa fa-heart-o"></span>
+                                </a>
+                              </li>
+                              <li>
+                                <a href="#share" title="Share">
+                                  <span className="fa fa-share"></span>
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+                  )}
+                </div>
               </div>
               {/* //left side blog post content */}
             </div>
@@ -212,12 +170,9 @@ const product_7: React.FC = () => {
           </div>
         </div>
       </section>
-
-
-
       <Footer />
     </>
   );
 }
 
-export default product_7;
+export default ProductList;

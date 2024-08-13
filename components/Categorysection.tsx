@@ -1,22 +1,25 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { getCategories } from '../services/categoryService';
+import { getCategories, getCategoryCounts } from '../services/categoryService';
 
 const Categorysection: React.FC = () => {
   const [categories, setCategories] = useState([]);
+  const [categoryCounts, setCategoryCounts] = useState<{ [key: string]: number }>({});
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getCategories();
-        setCategories(data);
+        const categoriesData = await getCategories();
+        const countsData = await getCategoryCounts();
+        setCategories(categoriesData);
+        setCategoryCounts(countsData);
       } catch (error) {
-        console.error('Failed to fetch categories:', error);
+        console.error('Failed to fetch data:', error);
       }
     };
 
-    fetchCategories();
+    fetchData();
   }, []);
 
   const categoryIcons: { [key: string]: string } = {
@@ -28,6 +31,11 @@ const Categorysection: React.FC = () => {
     'Real Estate': 'fa fa-house',
   };
 
+  const getAdsPostedText = (categoryName: string) => {
+    const count = categoryCounts[categoryName.toLowerCase().replace(/ & /g, '_').replace(/ /g, '_')] || 0;
+    return `${count} Ads Posted`;
+  };
+
   return (
     <section className="w3l-category-main">
       <div className="categories-sec">
@@ -36,12 +44,12 @@ const Categorysection: React.FC = () => {
           <div className="right-models text-center">
             <div className="d-grid grid-sec">
               {categories.map((category: any) => (
-                <a href={`product_${category.id}`} key={category.id}>
+                <a href={`/category/${category.name.toLowerCase().replace(/ & /g, '_').replace(/ /g, '_')}`} key={category.id}>
                   <div className="card">
                     <div className="card-body">
                       <span className={categoryIcons[category.name] || 'fa fa-bed'}></span>
                       <h5 className="card-title mt-4">{category.name}</h5>
-                      <p className="para-design">{category.ads_posted} Ads Posted</p>
+                      <p className="para-design">{getAdsPostedText(category.name)}</p>
                     </div>
                   </div>
                 </a>
