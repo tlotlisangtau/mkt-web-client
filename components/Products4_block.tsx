@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { Carousel } from 'react-responsive-carousel'; // Import Carousel
+import 'react-responsive-carousel/lib/styles/carousel.min.css'; // Import Carousel styles
 import { getCategoriesData } from '../services/productService';
 import { getPromotions } from '../services/promotionService';
 import { getCategoryCounts } from '../services/categoryService';
+import { categoryMappings } from '@/utils/categoryMappings';
 import '../styles/style.css';
 
 // Type definitions
@@ -10,7 +13,8 @@ interface Product {
   name: string;
   description: string;
   price: number;
-  image_url?: string;
+  image_urls: string[]; // Updated to use an array for multiple images
+  category_id: number; // Ensure category_id is included
 }
 
 interface CategoryCounts {
@@ -103,6 +107,9 @@ const Products4Block: React.FC = () => {
               // Get the last 3 products for this category and reverse the order for right-to-left display
               const lastProducts = products.slice(-3).reverse();
 
+              // Find category ID for the current categoryName
+              const categoryID = Object.keys(categoryMappings).find(key => categoryMappings[+key] === categoryName.toLowerCase());
+
               return (
                 <div key={categoryName}>
                   <h3 style={{ marginTop: '8px', marginBottom: '8px'}}>
@@ -117,11 +124,15 @@ const Products4Block: React.FC = () => {
                   <div className="d-grid grid-col-3">
                     {lastProducts.map((product) => (
                       <div className="product" key={product.id}>
-                        <a href={`/Productdetail?productId=${product.id}`}>
-                          <img src={product.image_url || '/Images/c1.jpg'} className="img-responsive" alt={product.name} />
-                        </a>
+                        <Carousel showThumbs={false} infiniteLoop>
+                          {product.image_urls.map((imageUrl, index) => (
+                            <div key={index}>
+                              <img src={imageUrl || '/Images/c1.jpg'} className="img-responsive" alt={product.name} />
+                            </div>
+                          ))}
+                        </Carousel>
                         <div className="info-bg">
-                          <h5><a href={`product-${product.id}.html`}>{product.name}</a></h5>
+                          <h5><a href={`/Productdetail?productId=${product.id}&category=${categoryMappings[product.category_id] || 'unknown'}`}>{product.name}</a></h5>
                           <p>{product.description}</p>
                           <ul className="d-flex">
                             <li><span className="fa fa-usd"></span> {product.price}</li>

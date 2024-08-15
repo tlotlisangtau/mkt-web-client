@@ -171,3 +171,82 @@
   height: 100px; /* Adjust the height as needed */
   object-fit: cover; /* Ensure the image fits well */
 }
+
+/* styles/carousel.css */
+.carousel-image {
+  width: 80%; /* Ensure images take the full width of the carousel */
+  height: 400px; /* Set a fixed height for all images */
+  object-fit: cover; /* Ensure images cover the area without stretching */
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+}
+
+.page-item {
+  margin: 0 5px;
+}
+
+.page-link {
+  text-decoration: none;
+  color: inherit;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.page-link:hover,
+.page-link:focus,
+.page-link:active {
+  background-color: transparent;
+  color: inherit;
+}
+
+
+
+.page-item.disabled .page-link {
+
+  cursor: not-allowed;
+}
+
+
+.filter-dropdown-container {
+  position: relative;
+  width: 200px;
+}
+
+.filter-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.filter-dropdown-menu {
+  position: absolute;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  margin-top: 5px;
+}
+
+.filter-dropdown-item {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.filter-dropdown-item:hover {
+  background-color: #f0f0f0;
+}

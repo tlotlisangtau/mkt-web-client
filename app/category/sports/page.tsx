@@ -1,22 +1,28 @@
-'use client';
-
+"use client"
 import React, { useEffect, useState } from 'react';
 import '../../../styles/globals.css';
+import '../../../styles/style.css';
 import Nav from '@/components/Nav';
 import Footer from '@/components/footer';
+import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { categoryMappings } from '@/utils/categoryMappings';
 
 interface Product {
   id: number;
   name: string;
   description: string;
   price: number;
-  image_url: string;
+  image_urls: string[];
+  category_id: number;
 }
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -26,15 +32,12 @@ const ProductList: React.FC = () => {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log('Fetched data:', data);
-
         if (Array.isArray(data)) {
           setProducts(data);
         } else {
           setError('Data format is incorrect');
         }
       } catch (error: any) {
-        console.error('Fetch error:', error);
         setError(error.message);
       } finally {
         setLoading(false);
@@ -43,6 +46,14 @@ const ProductList: React.FC = () => {
 
     fetchProducts();
   }, []);
+
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentProducts = products.slice(startIndex, startIndex + itemsPerPage);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <>
@@ -64,90 +75,12 @@ const ProductList: React.FC = () => {
           <div className="wrapper">
             <h3 className="title-main">Sports Category</h3>
             <div className="d-grid grid-colunm-2 grid-colunm">
-              {/* right side bar */}
-              
               <div className="right-side-bar">
-                <aside>
-                  <h3 className="aside-title mb-3">Filter Ads</h3>
-                  <form className="form-inline search-form" action="#" method="post">
-                    <input className="form-control" type="search" placeholder="Search here..." aria-label="email" required />
-                    <button className="btn search" type="submit"><span className="fa fa-search"></span></button>
-                    <button className="btn reset" type="reset" title="Reset Search"><span className="fa fa-repeat"></span></button>
-                  </form>
-                </aside>
-                <aside className="posts p-4 border">
-                  <h3 className="aside-title">All Categories</h3>
-                  <ul className="category">
-                    <li><a href="product-1.html"><span className="fa fa-laptop"></span>Electronics <label>(11)</label></a></li>
-                    <li><a href="product-2.html"><span className="fa fa-bed"></span>Furniture <label>(24)</label></a></li>
-                    <li><a href="product-3.html"><span className="fa fa-briefcase"></span>Jobs <label>(18)</label></a></li>
-                    <li><a href="product-4.html"><span className="fa fa-home"></span>Real Estate <label>(08)</label></a></li>
-                    <li><a href="product-5.html"><span className="fa fa-futbol-o"></span>Sports <label>(38)</label></a></li>
-                    <li><a href="product-6.html"><span className="fa fa-heart"></span>Health & Beauty <label>(26)</label></a></li>
-                  </ul>
-                </aside>
-                <aside className="posts p-4 border">
-                  <h3 className="aside-title">Premium Ads</h3>
-                  <div className="posts-grid">
-                    <a href="blog-single.html">
-                      <img src="assets/images/b1.jpg" alt=" " className="img-responsive img-thumbnail" />
-                    </a>
-                    <a href="blog-single.html">
-                      <img src="assets/images/b2.jpg" alt=" " className="img-responsive img-thumbnail" />
-                    </a>
-                    <a href="blog-single.html">
-                      <img src="assets/images/b3.jpg" alt=" " className="img-responsive img-thumbnail" />
-                    </a>
-                  </div>
-                </aside>
-                <aside className="posts p-4 border single-left-inner">
-                  <h3 className="aside-title">Type</h3>
-                  <div className="brand-equal">
-                    <input type="radio" name="radio" className="radio-input" checked />
-                    <label className="brand-name">All</label>
-                  </div>
-                  <div className="brand-equal">
-                    <input type="radio" name="radio" className="radio-input" />
-                    <label className="brand-name">Sell</label>
-                  </div>
-                  <div className="brand-equal">
-                    <input type="radio" name="radio" className="radio-input" />
-                    <label className="brand-name">Auction</label>
-                  </div>
-                  <div className="brand-equal">
-                    <input type="radio" name="radio" className="radio-input" />
-                    <label className="brand-name">Buy</label>
-                  </div>
-                  <div className="brand-equal">
-                    <input type="radio" name="radio" className="radio-input" />
-                    <label className="brand-name">Exchange</label>
-                  </div>
-                  <div className="brand-equal">
-                    <input type="radio" name="radio" className="radio-input" />
-                    <label className="brand-name">Gift</label>
-                  </div>
-                  <div className="brand-equal">
-                    <input type="radio" name="radio" className="radio-input" />
-                    <label className="brand-name">Rent</label>
-                  </div>
-                  <div className="brand-equal">
-                    <input type="radio" name="radio" className="radio-input" />
-                    <label className="brand-name">Job - Offer</label>
-                  </div>
-                  <div className="brand-equal">
-                    <input type="radio" name="radio" className="radio-input" />
-                    <label className="brand-name">Job - Wanted</label>
-                  </div>
-                </aside>
-                <aside>
-                  <h3 className="aside-title mb-3">Advertisement</h3>
-                  <img src="assets/images/screen.jpg" alt="" className="img-fluid img-responsive" />
-                </aside>
+                {/* Sidebar Content */}
               </div>
-              {/* left side blog post content */}
               <div className="tab-content text-left">
                 <aside className="top-border d-flex">
-                  <h3 className="aside-title mb-3">Showing 1–3 of 38 results</h3>
+                  <h3 className="aside-title mb-3">Showing {startIndex + 1}–{Math.min(startIndex + itemsPerPage, products.length)} of {products.length} results</h3>
                   <div className="input-group-btn">
                     <select className="btn btn-default" name="ext" required>
                       <option selected>Sort By Date</option>
@@ -163,13 +96,18 @@ const ProductList: React.FC = () => {
                   {error && <p>Error: {error}</p>}
                   {!loading && !error && (
                     <div className="d-grid grid-col-2">
-                      {products.map(product => (
+                      {currentProducts.map(product => (
                         <div className="product" key={product.id}>
-                          <a href={`/Productdetail?productId=${product.id}`}>
-                            <img src={product.image_url} className="img-responsive" alt="Image Here" />
-                          </a>
+                         
+                            <Carousel showThumbs={false} infiniteLoop>
+                              {product.image_urls.map((imageUrl, index) => (
+                                <div key={index}>
+                                  <img src={imageUrl} className="img-responsive" alt={`Image ${index + 1}`} />
+                                </div>
+                              ))}
+                            </Carousel>
                           <div className="info-bg">
-                            <h5><a href={`/Productdetail?productId=${product.id}`}>{product.name}</a></h5>
+                            <h5><a href={`/Productdetail?productId=${product.id}&category=${categoryMappings[product.category_id]}`}>{product.name}</a></h5>
                             <p>{product.description}</p>
                             <ul className="d-flex">
                               <li><span className="fa fa-usd"></span> {product.price}</li>
@@ -191,18 +129,20 @@ const ProductList: React.FC = () => {
                   )}
                 </div>
               </div>
-              {/* //left side blog post content */}
             </div>
-            {/* pagination */}
             <div className="pagination">
               <ul className="pagination-list">
-                <li><a href="#">&laquo; Prev</a></li>
-                <li className="active"><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li><a href="#">Next &raquo;</a></li>
+                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                  <a className="page-link" onClick={() => handlePageChange(currentPage - 1)}>&laquo; Prev</a>
+                </li>
+                {[...Array(totalPages)].map((_, index) => (
+                  <li key={index} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
+                    <a className="page-link" onClick={() => handlePageChange(index + 1)}>{index + 1}</a>
+                  </li>
+                ))}
+                <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                  <a className="page-link" onClick={() => handlePageChange(currentPage + 1)}>Next &raquo;</a>
+                </li>
               </ul>
             </div>
           </div>
@@ -211,6 +151,6 @@ const ProductList: React.FC = () => {
       <Footer />
     </>
   );
-}
+};
 
 export default ProductList;

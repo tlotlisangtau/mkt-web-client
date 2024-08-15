@@ -1,21 +1,26 @@
-"use client";
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import '../../styles/globals.css';
 import '../../styles/style.css';
 import Nav from '@/components/Nav';
 import Footer from '@/components/footer';
+import BuyerInformation from '@/components/BuyerInformation';
+import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 interface Product {
   id: number;
   name: string;
   description: string;
   price: string;
-  image_url: string | null;
+  image_urls: string[];
   job_location: string;
   company: string;
   salary: string;
   valid_until: string;
+  category: string;
 }
 
 const ProductDetail: React.FC = () => {
@@ -24,6 +29,7 @@ const ProductDetail: React.FC = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const category = searchParams.get('category');
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -42,7 +48,7 @@ const ProductDetail: React.FC = () => {
       }
 
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/jobs/${productId}/`); 
+        const response = await fetch(`http://127.0.0.1:8000/api/${category}/${productId}/`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -83,12 +89,19 @@ const ProductDetail: React.FC = () => {
                 <h3 className="aside-title single-prt">{product ? product.name : 'Loading...'}</h3>
                 <p className="para-single">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
 
-                <p>Image here</p>
-                {product?.image_url ? (
-                  <img src={product.image_url} alt={product.name} />
-                ) : (
-                  <p>Loading image...</p>
+                <p>Images here</p>
+                {loading && <p>Loading...</p>}
+                {error && <p>Error: {error}</p>}
+                {!loading && !error && product?.image_urls && (
+                  <Carousel showThumbs={false} infiniteLoop>
+                    {product.image_urls.map((url, index) => (
+                      <div key={index}>
+                        <img src={url} alt={`Image ${index + 1}`} className="carousel-image" />
+                      </div>
+                    ))}
+                  </Carousel>
                 )}
+
                 <div className="top-sing-sec">
                   <h3 className="aside-title">Ad Details</h3>
                   {product && (
@@ -113,6 +126,7 @@ const ProductDetail: React.FC = () => {
                   </div>
                 </div>
               </div>
+              <BuyerInformation/>
             </div>
           </div>
         </div>
