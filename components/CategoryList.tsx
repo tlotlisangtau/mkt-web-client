@@ -7,12 +7,33 @@ import '../styles/style.css';
 interface Category {
   id: number;
   name: string;
+  complete?: boolean; // Add 'complete' field for checkbox
 }
 
 interface FormField {
   name: string;
   type: string;
 }
+
+const departments = [
+  { label: 'Sale & Marketing', value: 'Sale & Marketing' },
+  { label: 'IT & Engineering', value: 'IT & Engineering' },
+  { label: 'Finance & Accounting', value: 'Finance & Accounting' },
+  { label: 'Human Resources & Legal', value: 'Human Resources & Legal' },
+  { label: 'Agriculture & Farm', value: 'Agriculture & Farm' },
+  { label: 'Healthcare & Nursing', value: 'Healthcare & Nursing' },
+  { label: 'Manufacturing & Retail', value: 'Manufacturing & Retail' },
+  { label: 'Government & NGO', value: 'Government & NGO' },
+  { label: 'Others', value: 'Others' }
+];
+
+const Type = [
+  { label: 'Football', value: 'Football' },
+  { label: 'Rugby', value: 'Rugby' },
+  { label: 'Tennis', value: 'Tennis' },
+  { label: 'Gym', value: 'Gym'},
+  { label: 'General', value: 'General'},
+];
 
 const CategoryForm: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -21,6 +42,8 @@ const CategoryForm: React.FC = () => {
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [images, setImages] = useState<File[]>([]); // Updated to handle multiple images
   const [imagePreviews, setImagePreviews] = useState<string[]>([]); // For displaying image previews
+  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
+  const [selectedType, setSelectedType] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('http://localhost:8000/api/categories/')
@@ -36,11 +59,10 @@ const CategoryForm: React.FC = () => {
         setFormFields([
           { name: 'Name', type: 'text' },
           { name: 'Description', type: 'text' },
-          { name: 'Price', type: 'number' },
+          { name: 'Salary', type: 'number' },
           { name: 'Job Location', type: 'text' },
           { name: 'Mobile Number', type: 'text' },
           { name: 'Company', type: 'text' },
-          { name: 'Salary', type: 'number' },
           { name: 'Valid Until', type: 'date' }
         ]);
         break;
@@ -51,7 +73,7 @@ const CategoryForm: React.FC = () => {
           { name: 'Price', type: 'number' },
           { name: 'Brand', type: 'text' },
           { name: 'Size', type: 'text' },
-          { name: 'Material', type: 'text' },
+          { name: 'Location', type: 'text' },
           { name: 'Mobile Number', type: 'text' },
           { name: 'Condition', type: 'select' } // Added Condition field
         ]);
@@ -103,6 +125,22 @@ const CategoryForm: React.FC = () => {
     });
   };
 
+  const handleDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedDepartment(e.target.value);
+    setFormData({
+      ...formData,
+      department: e.target.value
+    });
+  };
+
+  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedType(e.target.value);
+    setFormData({
+      ...formData,
+      type: e.target.value
+    });
+  };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
@@ -149,7 +187,8 @@ const CategoryForm: React.FC = () => {
       const dataToSubmit = {
         ...formData,
         category: selectedCategory, // Send the selectedCategory ID instead of name
-        image_urls: imageUrls // Include the array of image URLs
+        image_urls: imageUrls,
+        type: formData.type // Include the array of image URLs
       };
 
       console.log('Submitting data:', dataToSubmit); // Log the data being submitted
@@ -212,6 +251,46 @@ const CategoryForm: React.FC = () => {
               ))}
             </select>
           </div>
+
+          {selectedCategory === 5 && (
+            <div>
+              <label htmlFor="department" className="label1">Department</label>
+              <select
+                id="department"
+                value={selectedDepartment || ''}
+                onChange={handleDepartmentChange}
+                className="select1"
+              >
+                <option value="">Select a department</option>
+                {departments.map(department => (
+                  <option key={department.value} value={department.value}>
+                    {department.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {selectedCategory === 7 && (
+            <div>
+              <label htmlFor="Type" className="label1">Type</label>
+              <select
+                id="Type"
+                value={selectedType || ''}
+                onChange={handleTypeChange}
+                className="select1"
+              >
+                <option value="">Select a sport type</option>
+                {Type.map(Type => (
+                  <option key={Type.value} value={Type.value}>
+                    {Type.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+
           {formFields.length > 0 && (
             <form onSubmit={handleSubmit}>
               {formFields.map((field, index) => (
@@ -239,6 +318,22 @@ const CategoryForm: React.FC = () => {
                   )}
                 </div>
               ))}
+              
+              {/* Complete Checkbox */}
+              <div>
+                <label htmlFor="complete" className="label1">Complete</label>
+                <input
+                  type="checkbox"
+                  id="complete"
+                  className="input1"
+                  checked={formData.complete || false}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    complete: e.target.checked
+                  })}
+                />
+              </div>
+              
               <div
                 className="dropzone"
                 onDrop={handleDrop}

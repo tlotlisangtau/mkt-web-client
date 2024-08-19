@@ -19,18 +19,32 @@ interface Product {
   category_id: number;
   created_at: string;
   job_location: string;
+  department: string; // Add department field
 }
+
+const departments = [
+  'None',
+  'Sale & Marketing',
+  'IT & Engineering',
+  'Finance & Accounting',
+  'Human Resources & Legal',
+  'Agriculture & Farm',
+  'Healthcare & Nursing',
+  'Manufacturing & Retail',
+  'Government & NGO',
+  'Others'
+];
+
+
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 4;
+  const [selectedFilter, setSelectedFilter] = useState<string>('None'); // Default filter is 'None'
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
-
-  const filters = ['Name', 'Price', 'Category', 'Date Posted'];
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -55,21 +69,26 @@ const ProductList: React.FC = () => {
     fetchProducts();
   }, []);
 
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const filteredProducts = products.filter(
+    product => selectedFilter === 'None' || product.department === selectedFilter
+  );
+
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentProducts = products.slice(startIndex, startIndex + itemsPerPage);
+  const currentProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
 
-  const handleDropdownToggle = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
   const handleFilterSelect = (filter: string) => {
     setSelectedFilter(filter);
-    setIsDropdownOpen(false);
+    setIsDropdownOpen(false); 
+    setCurrentPage(1); // Reset to the first page when filter changes
+  };
+
+  const handleDropdownToggle = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   return (
@@ -93,72 +112,73 @@ const ProductList: React.FC = () => {
             <h3 className="title-main">Jobs Category</h3>
             <div className="d-grid grid-colunm-2 grid-colunm">
 
-              <div className="right-side-bar">
-                <aside>
-                  <h3 className="aside-title mb-3">Filter Ads</h3>
-                  <form className="form-inline search-form" action="#" method="post">
-                    <input className="form-control" type="search" placeholder="Search here..." aria-label="email" required />
-                    <button className="btn search" type="submit"><span className="fa fa-search"></span></button>
-                    <button className="btn reset" type="reset" title="Reset Search"><span className="fa fa-repeat"></span></button>
-                  </form>
-                  <div className="filter-dropdown-container">
-                    <input
-                      type="text"
-                      placeholder="Filter With"
-                      className="filter-input"
-                      onClick={handleDropdownToggle}
-                      value={selectedFilter ? selectedFilter : ''}
-                      readOnly
-                    />
-                    {isDropdownOpen && (
-                      <ul className="filter-dropdown-menu">
-                        {filters.map((filter, index) => (
-                          <li
-                            key={index}
-                            className="filter-dropdown-item"
-                            onClick={() => handleFilterSelect(filter)}
-                          >
-                            {filter}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                </aside>
-                <aside className="posts p-4 border">
-                  <h3 className="aside-title">All Categories</h3>
-                  <ul className="category">
-                    <li><a href="product-1.html"><span className="fa fa-laptop"></span>Electronics <label>(11)</label></a></li>
-                    <li><a href="product-2.html"><span className="fa fa-bed"></span>Furniture <label>(24)</label></a></li>
-                    <li><a href="product-3.html"><span className="fa fa-briefcase"></span>Jobs <label>(18)</label></a></li>
-                    <li><a href="product-4.html"><span className="fa fa-home"></span>Real Estate <label>(08)</label></a></li>
-                    <li><a href="product-5.html"><span className="fa fa-futbol-o"></span>Sports <label>(38)</label></a></li>
-                    <li><a href="product-6.html"><span className="fa fa-heart"></span>Health & Beauty <label>(26)</label></a></li>
-                  </ul>
-                </aside>
-                <aside className="posts p-4 border">
-                  <h3 className="aside-title">Premium Ads</h3>
-                  <div className="posts-grid">
-                    <a href="blog-single.html">
-                      <img src="assets/images/b1.jpg" alt=" " className="img-responsive img-thumbnail" />
-                    </a>
-                    <a href="blog-single.html">
-                      <img src="assets/images/b2.jpg" alt=" " className="img-responsive img-thumbnail" />
-                    </a>
-                    <a href="blog-single.html">
-                      <img src="assets/images/b3.jpg" alt=" " className="img-responsive img-thumbnail" />
-                    </a>
-                  </div>
-                </aside>
-                <aside>
-                  <h3 className="aside-title mb-3">Advertisement</h3>
-                  <img src="assets/images/screen.jpg" alt="" className="img-fluid img-responsive" />
-                </aside>
-              </div>
+            <div className="right-side-bar">
+              <aside>
+                <h3 className="aside-title mb-3">Filter Ads</h3>
+                <form className="form-inline search-form" action="#" method="post">
+                  <input className="form-control" type="search" placeholder="Search here..." aria-label="email" required />
+                  <button className="btn search" type="submit"><span className="fa fa-search"></span></button>
+                  <button className="btn reset" type="reset" title="Reset Search"><span className="fa fa-repeat"></span></button>
+                </form>
+                <div className="filter-dropdown-container">
+                  <input
+                    type="text"
+                    placeholder="filter with.."
+                    className="filter-input"
+                    onClick={handleDropdownToggle}
+                    value={selectedFilter}
+                    readOnly
+                  />
+                  {isDropdownOpen && (
+                    <ul className="filter-dropdown-menu">
+                      {departments.map((department, index) => (
+                        <li
+                          key={index}
+                          className="filter-dropdown-item"
+                          onClick={() => handleFilterSelect(department)}
+                        >
+                          {department}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </aside>
+              <aside className="posts p-4 border">
+                <h3 className="aside-title">All Categories</h3>
+                <ul className="category">
+                  <li><a href="product-1.html"><span className="fa fa-laptop"></span>Electronics <label>(11)</label></a></li>
+                  <li><a href="product-2.html"><span className="fa fa-bed"></span>Furniture <label>(24)</label></a></li>
+                  <li><a href="product-3.html"><span className="fa fa-briefcase"></span>Jobs <label>(18)</label></a></li>
+                  <li><a href="product-4.html"><span className="fa fa-home"></span>Real Estate <label>(08)</label></a></li>
+                  <li><a href="product-5.html"><span className="fa fa-futbol-o"></span>Sports <label>(38)</label></a></li>
+                  <li><a href="product-6.html"><span className="fa fa-heart"></span>Health & Beauty <label>(26)</label></a></li>
+                </ul>
+              </aside>
+              <aside className="posts p-4 border">
+                <h3 className="aside-title">Premium Ads</h3>
+                <div className="posts-grid">
+                  <a href="blog-single.html">
+                    <img src="assets/images/b1.jpg" alt=" " className="img-responsive img-thumbnail" />
+                  </a>
+                  <a href="blog-single.html">
+                    <img src="assets/images/b2.jpg" alt=" " className="img-responsive img-thumbnail" />
+                  </a>
+                  <a href="blog-single.html">
+                    <img src="assets/images/b3.jpg" alt=" " className="img-responsive img-thumbnail" />
+                  </a>
+                </div>
+              </aside>
+              
+              <aside>
+                <h3 className="aside-title mb-3">Advertisement</h3>
+                <img src="assets/images/screen.jpg" alt="" className="img-fluid img-responsive" />
+              </aside>
+            </div>
 
               <div className="tab-content text-left">
                 <aside className="top-border d-flex">
-                  <h3 className="aside-title mb-3">Showing {startIndex + 1}–{Math.min(startIndex + itemsPerPage, products.length)} of {products.length} results</h3>
+                  <h3 className="aside-title mb-3">Showing {filteredProducts.length === 0 ? 0 : startIndex + 1}–{Math.min(startIndex + itemsPerPage, filteredProducts.length)} of {filteredProducts.length} results</h3>
                   <div className="input-group-btn">
                     <select className="btn btn-default" name="ext" required>
                       <option selected>Sort By Date</option>
@@ -191,12 +211,7 @@ const ProductList: React.FC = () => {
                               <li>{new Date(product.created_at).toLocaleDateString()}</li>
                               <li className="margin-effe">
                                 <a href="#fav" title="Add this to Favorite">
-                                  <span className="fa fa-heart-o"></span>
-                                </a>
-                              </li>
-                              <li>
-                                <a href="#share" title="Share">
-                                  <span className="fa fa-share"></span>
+                                  <span className="fa fa-heart"></span>
                                 </a>
                               </li>
                             </ul>
@@ -206,37 +221,29 @@ const ProductList: React.FC = () => {
                     </div>
                   )}
                 </div>
+
+                {!loading && !error && filteredProducts.length > 0 && (
+                  <div className="pagination">
+                    <ul>
+                      {[...Array(totalPages)].map((_, index) => (
+                        <li key={index}>
+                          <button
+                            className={currentPage === index + 1 ? 'active' : ''}
+                            onClick={() => handlePageChange(index + 1)}
+                          >
+                            {index + 1}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
-            </div>
-            <div className="pagination">
-              <ul className="pagination-list">
-                {totalPages > 1 && (
-                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-                      Previous
-                    </button>
-                  </li>
-                )}
-                {Array.from({ length: totalPages }).map((_, index) => (
-                  <li key={index} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
-                    <button onClick={() => handlePageChange(index + 1)}>
-                      {index + 1}
-                    </button>
-                  </li>
-                ))}
-                {totalPages > 1 && (
-                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                    <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-                      Next
-                    </button>
-                  </li>
-                )}
-              </ul>
+
             </div>
           </div>
         </div>
       </section>
-
       <Footer />
     </>
   );

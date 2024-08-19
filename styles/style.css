@@ -161,22 +161,22 @@
 
 .image-previews {
   display: flex;
-  flex-wrap: nowrap; /* Prevent wrapping to a new line */
-  overflow-x: auto; /* Allow horizontal scrolling if necessary */
-  gap: 10px; /* Space between images */
+  flex-wrap: nowrap; 
+  overflow-x: auto; 
+  gap: 10px;
 }
 
 .image-previews img {
-  width: 100px; /* Adjust the width as needed */
-  height: 100px; /* Adjust the height as needed */
-  object-fit: cover; /* Ensure the image fits well */
+  width: 100px; 
+  height: 100px;
+  object-fit: cover; 
 }
 
-/* styles/carousel.css */
+
 .carousel-image {
-  width: 80%; /* Ensure images take the full width of the carousel */
-  height: 400px; /* Set a fixed height for all images */
-  object-fit: cover; /* Ensure images cover the area without stretching */
+  width: 80%;
+  height: 400px; 
+  object-fit: cover; 
 }
 
 .pagination {
@@ -220,7 +220,7 @@
 
 .filter-dropdown-container {
   position: relative;
-  width: 200px;
+  width: 285px;
 }
 
 .filter-input {
@@ -249,4 +249,44 @@
 
 .filter-dropdown-item:hover {
   background-color: #f0f0f0;
+}
+
+
+/* Add this to your CSS file */
+.price-range-filter {
+  margin-top: 20px;
+}
+
+.price-range-filter label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.price-range-filter input {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.price-range-filter input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.filter-dropdown-container{
+  margin-top: 20px;
+}
+
+.filter-dropdown-container label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
 }
