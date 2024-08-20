@@ -65,6 +65,7 @@ const ProductList: React.FC = () => {
   const [isLocationDropdownOpen, setIsLocationDropdownOpen] = useState<boolean>(false);
   const [isConditionDropdownOpen, setIsConditionDropdownOpen] = useState<boolean>(false);
   const [sortOption, setSortOption] = useState<string>("date");
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -95,7 +96,8 @@ const ProductList: React.FC = () => {
       (selectedLocation === "Location" || product.location === selectedLocation) && // "Location" displays all products
       (selectedCondition === "Condition" || product.condition === selectedCondition) && // "Condition" displays all products
       (minPrice === '' || product.price >= minPrice) &&
-      (maxPrice === '' || product.price <= maxPrice)
+      (maxPrice === '' || product.price <= maxPrice) &&
+      (searchQuery === '' || product.name.toLowerCase().includes(searchQuery.toLowerCase()) || product.description.toLowerCase().includes(searchQuery.toLowerCase())) // Search filter
     );
   });
 
@@ -167,9 +169,22 @@ const ProductList: React.FC = () => {
     setCurrentPage(1);
   };
 
-  const getImageUrlsArray = (urls: string | string[]) => {
-    return typeof urls === 'string' ? [urls] : urls;
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+    setCurrentPage(1); // Reset to the first page after search input
   };
+
+  const getImageUrlsArray = (urls: any): string[] => {
+    console.log("Image URLs:", urls);
+    console.log("Type of image_urls:", Array.isArray(urls));
+    if (!urls || typeof urls === 'string' && urls.trim() === '') {
+      return [];
+    }
+    return Array.isArray(urls) ? urls : [urls];
+  };
+
+  
+
 
   return (
     <>
@@ -196,7 +211,15 @@ const ProductList: React.FC = () => {
                 <aside>
                   <h3 className="aside-title mb-3">Filter Ads</h3>
                   <form className="form-inline search-form" action="#" method="post">
-                  <input className="form-control" type="search" placeholder="Search here..." aria-label="email" required />
+                  <input 
+                  className="form-control" 
+                  type="search" 
+                  placeholder="Search here..." 
+                  aria-label="search" 
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  required 
+                  />
                   <button className="btn search" type="submit"><span className="fa fa-search"></span></button>
                   <button className="btn reset" type="reset" title="Reset Search"><span className="fa fa-repeat"></span></button>
                 </form>

@@ -85,6 +85,15 @@ const Products4Block: React.FC = () => {
     isEndingSoon(promotion.end_date)
   );
 
+  const getImageUrlsArray = (urls: any): string[] => {
+    console.log("Image URLs:", urls);
+    console.log("Type of image_urls:", Array.isArray(urls));
+    if (!urls || typeof urls === 'string' && urls.trim() === '') {
+      return [];
+    }
+    return Array.isArray(urls) ? urls : [urls];
+  };
+
   return (
     <div className="w3l-products-4">
       <div id="products4-block" className="text-center">
@@ -125,9 +134,9 @@ const Products4Block: React.FC = () => {
                     {lastProducts.map((product) => (
                       <div className="product" key={product.id}>
                         <Carousel showThumbs={false} infiniteLoop>
-                          {product.image_urls.map((imageUrl, index) => (
+                          {getImageUrlsArray(product.image_urls).map((imageUrl, index) => (
                             <div key={index}>
-                              <img src={imageUrl || '/Images/c1.jpg'} className="img-responsive" alt={product.name} />
+                              <img src={imageUrl} className="img-responsive" alt={`Image ${index + 1}`} />
                             </div>
                           ))}
                         </Carousel>
