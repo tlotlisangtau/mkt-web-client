@@ -1,5 +1,7 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
+import { useSearchParams } from 'next/navigation';
 import "../../../styles/globals.css";
 import "../../../styles/style.css";
 import Nav from "@/components/Nav";
@@ -46,21 +48,22 @@ const timeAgo = (dateString: string) => {
   return "Just now";
 };
 
-const types = ["Type", "Football", "Rugby", "Basketball", "Tennis", "Cricket"]; 
-const locations = ["Location", "All", "Maseru", "Leribe", "Qacha"]; 
+const types = ["Type", "Football", "Rugby", "Basketball", "Tennis", "Cricket"];
+const locations = ["Location", "All", "Maseru", "Leribe", "Qacha"];
 const conditions = ["Condition", "New", "Used"]; // "Condition" is the default value
 
 const ProductList: React.FC = () => {
+  const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 4;
   const [selectedType, setSelectedType] = useState<string>("Type"); // Default to "Type"
   const [selectedLocation, setSelectedLocation] = useState<string>("Location"); // Default to "Location"
   const [selectedCondition, setSelectedCondition] = useState<string>("Condition");   // Default to "Condition"
-  const [minPrice, setMinPrice] = useState<number | ''>(''); // Default to empty string
-  const [maxPrice, setMaxPrice] = useState<number | ''>(''); // Default to empty string
+  const [minPrice, setMinPrice] = useState<number | ''>('');
+  const [maxPrice, setMaxPrice] = useState<number | ''>('');
   const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState<boolean>(false);
   const [isLocationDropdownOpen, setIsLocationDropdownOpen] = useState<boolean>(false);
   const [isConditionDropdownOpen, setIsConditionDropdownOpen] = useState<boolean>(false);
@@ -69,6 +72,7 @@ const ProductList: React.FC = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
       try {
         const response = await fetch("http://127.0.0.1:8000/api/sports");
         if (!response.ok) {
@@ -90,14 +94,29 @@ const ProductList: React.FC = () => {
     fetchProducts();
   }, []);
 
+  useEffect(() => {
+    // Update URL parameters based on state
+    const params = new URLSearchParams();
+    if (selectedType !== "Type") params.set('type', selectedType);
+    if (selectedLocation !== "Location") params.set('location', selectedLocation);
+    if (selectedCondition !== "Condition") params.set('condition', selectedCondition);
+    if (minPrice !== '') params.set('min_price', minPrice.toString());
+    if (maxPrice !== '') params.set('max_price', maxPrice.toString());
+    if (searchQuery !== '') params.set('search', searchQuery);
+    params.set('sort', sortOption);
+    params.set('page', currentPage.toString());
+
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+  }, [selectedType, selectedLocation, selectedCondition, minPrice, maxPrice, searchQuery, sortOption, currentPage]);
+
   const filteredProducts = products.filter((product) => {
     return (
-      (selectedType === "Type" || product.type === selectedType) && // "Type" displays all products
-      (selectedLocation === "Location" || product.location === selectedLocation) && // "Location" displays all products
-      (selectedCondition === "Condition" || product.condition === selectedCondition) && // "Condition" displays all products
+      (selectedType === "Type" || product.type === selectedType) &&
+      (selectedLocation === "Location" || product.location === selectedLocation) &&
+      (selectedCondition === "Condition" || product.condition === selectedCondition) &&
       (minPrice === '' || product.price >= minPrice) &&
       (maxPrice === '' || product.price <= maxPrice) &&
-      (searchQuery === '' || product.name.toLowerCase().includes(searchQuery.toLowerCase()) || product.description.toLowerCase().includes(searchQuery.toLowerCase())) // Search filter
+      (searchQuery === '' || product.name.toLowerCase().includes(searchQuery.toLowerCase()) || product.description.toLowerCase().includes(searchQuery.toLowerCase()))
     );
   });
 
@@ -119,6 +138,7 @@ const ProductList: React.FC = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentProducts = sortedProducts.slice(startIndex, startIndex + itemsPerPage);
 
+
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -137,10 +157,10 @@ const ProductList: React.FC = () => {
 
   const handleConditionSelect = (condition: string) => {
     setSelectedCondition(condition);
+    setCurrentPage(1);
     setIsConditionDropdownOpen(false);
-    setCurrentPage(1); // Reset to the first page after selection
+    setCurrentPage(1);
   };
-
   const handleTypeDropdownToggle = () => {
     setIsTypeDropdownOpen((prev) => !prev);
   };
@@ -153,12 +173,9 @@ const ProductList: React.FC = () => {
     setIsConditionDropdownOpen((prev) => !prev);
   };
 
-
   const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMinPrice(event.target.value === '' ? '' : Number(event.target.value));
   };
-
-  
 
   const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMaxPrice(event.target.value === '' ? '' : Number(event.target.value));
@@ -171,19 +188,17 @@ const ProductList: React.FC = () => {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1); // Reset to the first page after search input
+    setCurrentPage(1);
   };
 
   const getImageUrlsArray = (urls: any): string[] => {
-    console.log("Image URLs:", urls);
-    console.log("Type of image_urls:", Array.isArray(urls));
     if (!urls || typeof urls === 'string' && urls.trim() === '') {
       return [];
     }
     return Array.isArray(urls) ? urls : [urls];
   };
 
-  
+
 
 
   return (
@@ -208,21 +223,21 @@ const ProductList: React.FC = () => {
             <div className="d-grid grid-colunm-2 grid-colunm">
 
               <div className="right-side-bar">
-                <aside>
+              <aside>
                   <h3 className="aside-title mb-3">Filter Ads</h3>
                   <form className="form-inline search-form" action="#" method="post">
-                  <input 
-                  className="form-control" 
-                  type="search" 
-                  placeholder="Search here..." 
-                  aria-label="search" 
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  required 
-                  />
-                  <button className="btn search" type="submit"><span className="fa fa-search"></span></button>
-                  <button className="btn reset" type="reset" title="Reset Search"><span className="fa fa-repeat"></span></button>
-                </form>
+                    <input 
+                      className="form-control" 
+                      type="search" 
+                      placeholder="Search here..." 
+                      aria-label="search" 
+                      value={searchQuery}
+                      onChange={handleSearchChange}
+                      required 
+                    />
+                    <button className="btn search" type="submit"><span className="fa fa-search"></span></button>
+                    <button className="btn reset" type="reset" title="Reset Search"><span className="fa fa-repeat"></span></button>
+                  </form>
 
                   {/* Type Filter */}
                   <div className="filter-dropdown-container">
@@ -230,7 +245,7 @@ const ProductList: React.FC = () => {
                       type="text"
                       placeholder="Filter by type..."
                       className="filter-input"
-                      onClick={handleTypeDropdownToggle}
+                      onClick={() => setIsTypeDropdownOpen(prev => !prev)}
                       value={selectedType}
                       readOnly
                     />
@@ -255,7 +270,7 @@ const ProductList: React.FC = () => {
                       type="text"
                       placeholder="Filter by location..."
                       className="filter-input"
-                      onClick={handleLocationDropdownToggle}
+                      onClick={() => setIsLocationDropdownOpen(prev => !prev)}
                       value={selectedLocation}
                       readOnly
                     />
@@ -276,40 +291,40 @@ const ProductList: React.FC = () => {
 
                   {/* Condition Filter */}
                   <div className="filter-dropdown-container">
-                      <input
-                        type="text"
-                        placeholder="Filter by condition..."
-                        className="filter-input"
-                        onClick={handleConditionDropdownToggle}
-                        value={selectedCondition}
-                        readOnly
-                      />
-                      {isConditionDropdownOpen && (
-                        <ul className="filter-dropdown-menu">
-                          {["Condition", "New", "Used"].map((condition, index) => (
-                            <li
-                              key={index}
-                              className="filter-dropdown-item"
-                              onClick={() => handleConditionSelect(condition)}
-                            >
-                              {condition}
-                            </li> 
-                          ))}
-                        </ul>
-                      )}
-                    </div>
+                    <input
+                      type="text"
+                      placeholder="Filter by condition..."
+                      className="filter-input"
+                      onClick={() => setIsConditionDropdownOpen(prev => !prev)}
+                      value={selectedCondition}
+                      readOnly
+                    />
+                    {isConditionDropdownOpen && (
+                      <ul className="filter-dropdown-menu">
+                        {conditions.map((condition, index) => (
+                          <li
+                            key={index}
+                            className="filter-dropdown-item"
+                            onClick={() => handleConditionSelect(condition)}
+                          >
+                            {condition}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
 
 
                   {/* Price Range Filter */}
                   <div className="price-range-filter">
-                    <label>Price Range</label>
-                    <input
+                  <label>Price Range</label>
+                  <input
                       type="number"
                       placeholder="Min Price"
                       value={minPrice === '' ? '' : minPrice}
                       onChange={handleMinPriceChange}
                     />
-                    <input
+                     <input
                       type="number"
                       placeholder="Max Price"
                       value={maxPrice === '' ? '' : maxPrice}
@@ -317,10 +332,10 @@ const ProductList: React.FC = () => {
                     />
                   </div>
                 </aside>
-              </div>
+                </div>
 
-              <div className="tab-content text-left">
-                <aside className="top-border d-flex">
+                <div className="tab-content text-left">
+                  <aside className="top-border d-flex">
                   <h3 className="aside-title mb-3">
                     Showing {filteredProducts.length === 0 ? 0 : startIndex + 1}–{Math.min(startIndex + itemsPerPage, filteredProducts.length)} of {filteredProducts.length} results
 
@@ -334,62 +349,62 @@ const ProductList: React.FC = () => {
                       <option value="price-desc">Price: High to Low</option>
                     </select>
                   </div>
-                </aside>
-                <div className="d-grid grid-col-4">
-                  {loading && <p>Loading...</p>}
-                  {error && <p>Error: {error}</p>}
-                  {!loading && !error && (
-                    <div className="d-grid grid-col-2">
-                      {currentProducts.map((product) => (
-                        <div className="product" key={product.id}>
-                          <Carousel showThumbs={false} infiniteLoop>
-                            {getImageUrlsArray(product.image_urls).map((imageUrl, index) => (
+                  </aside>
+              <div className="d-grid grid-col-4">
+                {loading && <p>Loading...</p>}
+                {error && <p>Error: {error}</p>}
+                {!loading && !error && (
+                <div className="d-grid grid-col-2">
+                  {currentProducts.map((product) => (
+                   <div className="product" key={product.id}>
+                        <Carousel showThumbs={false} infiniteLoop>
+                            {getImageUrlsArray(product.image_urls).map((url, index) => (
                               <div key={index}>
-                                <img src={imageUrl} className="img-responsive" alt={`Image ${index + 1}`} />
+                                <img src={url} alt={product.name} />
                               </div>
                             ))}
                           </Carousel>
-                          <div className="info-bg">
-                            <h5><a href={`/Productdetail?productId=${product.id}&category=${categoryMappings[product.category_id]}`}>{product.name}</a></h5>
-                            <p>{product.description}</p>
-                            <p>{product.location}</p>
-                            <p>Condition: {product.condition}</p>
-                            <p>Price: ${product.price}</p>
-                            <ul className="d-flex">
-                            <li>{timeAgo(product.created_at)}</li>
-                              <li className="margin-effe">
+                        <div className="info-bg">
+                        <h5><a href={`/Productdetail?productId=${product.id}&category=${categoryMappings[product.category_id]}`}>{product.name}</a></h5>
+                          <p>{product.description}</p>
+                          <p>{product.location}</p>
+                          <p>Condition: {product.condition}</p>
+                          <p>Price: ${product.price}</p>
+                          <ul className="d-flex">
+                          <li>{timeAgo(product.created_at)}</li>
+                          <li className="margin-effe">
                                 <a href="#fav" title="Add this to Favorite">
                                   <span className="fa fa-heart"></span>
                                 </a>
                               </li>
                             </ul>
-                          </div>
                         </div>
+                      </div>
                       ))}
                     </div>
                   )}
                 </div>
 
                 {!loading && !error && filteredProducts.length > 0 && (
-                  <div className="pagination">
-                    <ul>
-                      {[...Array(totalPages)].map((_, index) => (
-                        <li key={index}>
-                          <button
-                            className={currentPage === index + 1 ? "active" : ""}
-                            onClick={() => handlePageChange(index + 1)}
-                          >
-                            {index + 1}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </div>
+                <div className="pagination">
+                <ul>
+                {[...Array(totalPages)].map((_, index) => (
+                  <li key={index}>
+                  <button
+                    className={currentPage === index + 1 ? "active" : ""}
+                    onClick={() => handlePageChange(index + 1)}
+                  >
+                  {index + 1}
+                  </button>
+                </li>
+                 ))}
+                </ul>
+                </div>
+              )}
           </div>
         </div>
+      </div>
+      </div>
       </section>
       <Footer />
     </>
