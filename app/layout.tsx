@@ -1,5 +1,5 @@
-
-import Nav from '../components/Nav';
+'use client';
+import { SessionProvider } from 'next-auth/react';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -7,7 +7,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <title>Classify a Classifieds Ads Category Responsive Web Template - Home </title>
       </head>
-      <body>{children}</body>
+      <body>
+        <SessionProvider>{children}</SessionProvider>
+      </body>
     </html>
   );
 }

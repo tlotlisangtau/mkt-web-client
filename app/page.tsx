@@ -9,7 +9,6 @@ import Nav from '@/components/Nav';
 import Banner from '@/components/banner';
 import Searchform from '@/components/Searchform';
 import Categorysection from '@/components/Categorysection';
-import '@fortawesome/fontawesome-free/css/all.min.css';
 import Products4_block from '@/components/Products4_block';
 import Specifications from '@/components/Specifications';
 import Pricing from '@/components/pricing';
@@ -18,9 +17,8 @@ import Footer from '@/components/footer';
 import Sidebar from '@/components/sidebar';
 import ProductDetail from '@/components/ProductDetail';
 
-
 const queryClient = new QueryClient();
-const imagePath = 'public/Screenshot from 2024-03-15 04-28-26.png';
+
 const HomePage: React.FC = () => {
   return (
     <>
@@ -45,6 +43,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<HomePage />} />
             {/* Add more routes as needed */}
+            <Route path="/product-detail" element={<ProductDetail />} />
           </Routes>
         </Router>
       </QueryClientProvider>

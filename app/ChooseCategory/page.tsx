@@ -1,7 +1,8 @@
-// pages/categories.tsx
+'use client';
+
 import React from 'react';
-import CategorySelection from '../../components/CategoryList';
-import CategoryForm from '../../components/CategoryList';
+import CategoryForm from '@/components/CategoryList';
+import withAuth from '@/components/withAuth';
 
 const CategoriesPage: React.FC = () => {
   return (
@@ -11,5 +12,4 @@ const CategoriesPage: React.FC = () => {
   );
 };
 
-
-export default CategoriesPage;
+export default withAuth(CategoriesPage);

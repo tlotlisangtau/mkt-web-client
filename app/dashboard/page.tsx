@@ -1,31 +1,32 @@
-'use client';
+"use client"  
+import { useEffect, useState } from 'react';
+import { getSession } from 'next-auth/react';
+import { Session } from 'next-auth';
 
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-
-const DashboardPage: React.FC = () => {
-  const [authenticated, setAuthenticated] = useState(false);
-  const router = useRouter();
+const SomeProtectedComponent = () => {
+  // Define the state with the correct type
+  const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      router.push('/Login/');
-    } else {
-      // Optionally, you can verify the token with the backend here
-      setAuthenticated(true);
-    }
-  }, [router]);
+    const fetchSession = async () => {
+      const session = await getSession();
+      console.log('Session:', session);
+      setSession(session); // This is now correctly typed
+    };
 
-  if (!authenticated) {
-    return <p>Loading...</p>;
+    fetchSession();
+  }, []);
+
+  if (!session) {
+    return <div>Please log in first</div>;
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-2xl font-bold">Welcome to the Dashboard!</h1>
+    <div>
+      <h1>Welcome, {session.user?.name}!</h1>
+      {/* Render the protected content */}
     </div>
   );
 };
 
-export default DashboardPage;
+export default SomeProtectedComponent;
