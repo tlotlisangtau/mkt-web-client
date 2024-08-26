@@ -79,3 +79,27 @@
     color: #2563eb; /* Darker blue on hover */
   }
   
+
+  .googleButton {
+    width: 100%;
+    padding: 0.5rem;
+    font-weight: bold;
+    color: white;
+    background-color: #db4437; /* Google's red color */
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: 1rem; /* Add some space above the button */
+  }
+  
+  .googleButton:hover {
+    background-color: #c23321; /* Darker red on hover */
+  }
+  
+
+  .facebookButton {
+    background-color: #4267B2;
+    color: white;
+    margin-top: 10px;
+  }

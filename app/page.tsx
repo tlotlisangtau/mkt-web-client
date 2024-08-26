@@ -1,6 +1,5 @@
 'use client';
-
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';

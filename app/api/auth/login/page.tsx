@@ -2,9 +2,12 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
+import { toast, Toaster } from 'react-hot-toast';
+import styles from './LoginPage.module.css';
 
-const LoginPage = () => {
-  const [username, setUsername] = useState('');
+const LoginPage: React.FC = () => {
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
@@ -19,19 +22,21 @@ const LoginPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ identifier, password }),
       });
 
       if (response.ok) {
         const data = await response.json();
         const token = data.access;
-        //console.log('Login response:', data);
 
-        // Store the token in localStorage or cookies
         localStorage.setItem('accessToken', token);
-        console.log('Token stored in localStorage:', token);
-        // Redirect or perform any other action
-        router.push('/protected'); // Redirect to a protected page
+        toast.success('Logged in successfully!', {
+          style: { background: 'blue', color: 'white' },
+          duration: 4000,
+        });
+        setTimeout(() => {
+          router.push('/protected');
+        }, 2000);
       } else {
         const data = await response.json();
         setError(data.detail || 'Login failed');
@@ -42,32 +47,65 @@ const LoginPage = () => {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      {error && <p>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username:</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Login</button>
-      </form>
+    <div className={styles.container}>
+      <Toaster position="top-center" reverseOrder={false} />
+      <div className={styles.formWrapper}>
+        <h2 className={styles.title}>Login</h2>
+        {error && <p className={styles.error}>{error}</p>}
+        <form onSubmit={handleSubmit}>
+          <div className={styles.formElement}>
+            <label htmlFor="identifier" className={styles.label}>
+              Email or Phone Number
+            </label>
+            <input
+              type="text"
+              id="identifier"
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
+              className={styles.input}
+              required
+            />
+          </div>
+          <div className={styles.formElement}>
+            <label htmlFor="password" className={styles.label}>
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={styles.input}
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className={styles.button}
+          >
+            Login
+          </button>
+        </form>
+        <hr />
+        <button
+          onClick={() => signIn('google')}
+          className={`${styles.button} ${styles.googleButton}`}
+        >
+          Login with Google
+        </button>
+        <button
+          onClick={() => signIn('facebook')}
+          className={`${styles.button} ${styles.facebookButton}`}
+        >
+          Login with Facebook
+        </button>
+        <p className={styles.footerText}>
+          Don't have an account?{' '}
+          <a href="/register" className={styles.footerLink}>
+            Register
+          </a>
+        </p>
+      </div>
     </div>
   );
 };
