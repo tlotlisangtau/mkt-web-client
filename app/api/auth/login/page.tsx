@@ -2,12 +2,12 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
 import { toast, Toaster } from 'react-hot-toast';
-import styles from './LoginPage.module.css';
+import { signIn } from 'next-auth/react'; // Import signIn
+import styles from './LoginPage.module.css'; 
 
 const LoginPage: React.FC = () => {
-  const [identifier, setIdentifier] = useState('');
+  const [identifier, setIdentifier] = useState(''); // This will handle both email and phone number
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
@@ -22,20 +22,21 @@ const LoginPage: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ identifier, password }),
+        body: JSON.stringify({ identifier, password }), // Use identifier instead of username
       });
 
       if (response.ok) {
         const data = await response.json();
         const token = data.access;
 
+        // Store the token in localStorage or cookies
         localStorage.setItem('accessToken', token);
         toast.success('Logged in successfully!', {
           style: { background: 'blue', color: 'white' },
           duration: 4000,
         });
         setTimeout(() => {
-          router.push('/protected');
+          router.push('/dashboard'); // Redirect to a protected page
         }, 2000);
       } else {
         const data = await response.json();
@@ -44,6 +45,10 @@ const LoginPage: React.FC = () => {
     } catch (err) {
       setError('An error occurred');
     }
+  };
+
+  const handleGoogleLogin = () => {
+    signIn('google', { callbackUrl: '/protected' }); // Use Google provider
   };
 
   return (
@@ -86,18 +91,11 @@ const LoginPage: React.FC = () => {
             Login
           </button>
         </form>
-        <hr />
         <button
-          onClick={() => signIn('google')}
-          className={`${styles.button} ${styles.googleButton}`}
+          onClick={handleGoogleLogin}
+          className={styles.googleButton} // Add a new style for Google button
         >
           Login with Google
-        </button>
-        <button
-          onClick={() => signIn('facebook')}
-          className={`${styles.button} ${styles.facebookButton}`}
-        >
-          Login with Facebook
         </button>
         <p className={styles.footerText}>
           Don't have an account?{' '}
