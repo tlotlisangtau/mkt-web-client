@@ -89,7 +89,7 @@ const DashboardHeader = () => {
         </div>
       </nav>
       <div className="tg-rghtbox">
-        <a className="tg-btn" href="dashboard-postanad.html">
+        <a className="tg-btn" href="/ChooseCategory">
           <i className="icon-bookmark"></i>
           <span>Post an Ad</span>
         </a>

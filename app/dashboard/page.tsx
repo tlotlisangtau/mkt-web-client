@@ -36,12 +36,12 @@ interface JwtPayload {
 
 interface UserData {
   id: number;
-  username: string; // Include other properties as needed
+  username: string; 
   email: string;
   phone_number: string;
   first_name: string;
   last_name: string;
-  // add more fields as needed
+  image_url: string;
 }
 
 // Lazy load ProfileSettings component
@@ -94,13 +94,23 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     setActiveSection(section); // Update active section
   };
 
+  const getImageUrlsArray = (urls: any): string[] => {
+    console.log("Image URLs:", urls);
+    console.log("Type of image_urls:", Array.isArray(urls));
+    if (!urls || typeof urls === 'string' && urls.trim() === '') {
+      return [];
+    }
+    return Array.isArray(urls) ? urls : [urls];
+  };
+
+
   useEffect(() => {
     if ($('.tg-verticalscrollbar').length > 0) {
       $('.tg-verticalscrollbar').mCustomScrollbar({
         axis: 'y',
       });
     }
-
+  
     if ($('.tg-horizontalthemescrollbar').length > 0) {
       $('.tg-horizontalthemescrollbar').mCustomScrollbar({
         axis: 'x',
@@ -108,6 +118,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       });
     }
   }, []);
+  
 
   return (
     <>
@@ -116,22 +127,13 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         <Navbar />
         <Notification />
       <div id="tg-sidebarwrapper" className="tg-sidebarwrapper">
-				<span id="tg-btnmenutoggle" className="tg-btnmenutoggle">
-					<i className="fa fa-angle-left"></i>
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="67" viewBox="0 0 20 67">
-            <path
-              id="bg"
-              className="cls-1"
-              d="M20,27.652V39.4C20,52.007,0,54.728,0,67.265,0,106.515.026-39.528,0-.216-0.008,12.32,20,15.042,20,27.652Z"
-            />
-          </svg>
-				</span>
+
 				<div id="tg-verticalscrollbar" className="tg-verticalscrollbar">
 					<strong className="tg-logo"><a href="javascript:void(0);"><img src="/Images/logod.png" alt="image description"/></a></strong>
 					<div className="tg-user">
 						<figure>
 							<span className="tg-bolticon"><i className="fa fa-bolt"></i></span>
-							<a href="javascript:void(0);"><img src="/Images/author/img-07.jpg" alt="image description"/></a>
+							<a href="javascript:void(0);"><img src={userData?.image_url || "/Images/author/img-07.jpg"} alt="image description"/></a>
 						</figure>
 						<div className="tg-usercontent">
                   {error && <p>{error}</p>}
@@ -161,21 +163,23 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                     <span>Profile Settings</span>
                   </a>
                 </li>
-                <li className={activeSection === 'myAds' ? 'tg-active' : ''} id = "menu-item-has-children">
-								<a href="javascript:void(0);" onClick={() => handleNavClick('myAds')}>
-									<i className="icon-layers"></i>
-									<span>My Ads</span>
-								</a>
-								<ul className="sub-menu">
-									<li><a href="dashboard-myads.html">All Ads</a></li>
-									<li><a href="dashboard-myads.html">Featured Ads</a></li>
-									<li><a href="dashboard-myads.html">Active Ads</a></li>
-									<li><a href="dashboard-myads.html">Inactive Ads</a></li>
-									<li><a href="dashboard-myads.html">Sold Ads</a></li>
-									<li><a href="dashboard-myads.html">Expired Ads</a></li>
-									<li><a href="dashboard-myads.html">Deleted Ads</a></li>
-								</ul>
-							</li>
+                <li className={`relative ${activeSection === 'myAds' ? 'bg-gray-200' : ''} ml-4`} id="menu-item-has-children">
+                  <a href="javascript:void(0);" onClick={() => handleNavClick('myAds')} className="flex items-center space-x-2 p-2 hover:bg-gray-100">
+                    <i className="icon-layers"></i>
+                    <span>My Ads</span>
+                  </a>
+                  <ul className="sub-menu mt-2 ml-4 space-y-1">
+                    <li><a href="dashboard-myads.html" className="block p-2 hover:bg-red-200">All Ads</a></li>
+                    <li><a href="dashboard-myads.html" className="block p-2 hover:bg-gray-200">Featured Ads</a></li>
+                    <li><a href="dashboard-myads.html" className="block p-2 hover:bg-red-800">Active Ads</a></li>
+                    <li><a href="dashboard-myads.html" className="block p-2 hover:bg-gray-200">Inactive Ads</a></li>
+                    <li><a href="dashboard-myads.html" className="block p-2 hover:bg-gray-200">Sold Ads</a></li>
+                    <li><a href="dashboard-myads.html" className="block p-2 hover:bg-gray-200">Expired Ads</a></li>
+                    <li><a href="dashboard-myads.html" className="block p-2 hover:bg-gray-200">Deleted Ads</a></li>
+                    
+                  </ul>
+                </li>
+
 							<li className="menu-item-has-children">
 								<a href="javascript:void(0);">
 									<i className="icon-envelope"></i>
@@ -224,14 +228,14 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             </nav>
           </div>
         </div>
-        <main id="tg-main" className="tg-main tg-haslayout">
+        <main id="tg-main" className=" tg-haslayout">
         {activeSection === 'profile-settings' && (
             <Suspense fallback={<div>Loading...</div>}>
               <ProfileSettings />
             </Suspense>
           )}
           {activeSection === 'dashboard' && (
-            <section className="tg-dbsectionspace tg-haslayout tg-statistics">
+            <section className="tg-dbsectionspace tg-haslayout yes">
             <div className="row">
               <div className="col-xs-6 col-sm-6 col-md-6 col-lg-3">
                 <div className="tg-dashboardbox tg-statistic">

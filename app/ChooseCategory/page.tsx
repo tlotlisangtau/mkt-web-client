@@ -12,4 +12,4 @@ const CategoriesPage: React.FC = () => {
   );
 };
 
-export default withAuth(CategoriesPage);
+export default CategoriesPage;

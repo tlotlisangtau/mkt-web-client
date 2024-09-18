@@ -3,7 +3,7 @@ import React from 'react'
 function Notification() {
   return (
     <div className="tg-rghtbox">
-    <a className="tg-btn" href="dashboard-postanad.html">
+    <a className="tg-btn" href="/ChooseCategory">
         <i className="icon-bookmark"></i>
         <span>post an ad</span>
     </a>

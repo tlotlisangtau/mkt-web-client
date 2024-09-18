@@ -13,7 +13,7 @@ const withAuth = (Component: React.ComponentType) => {
         const session = await getSession();
 
         if (!session) {
-          router.push('/Login');  
+          router.push('/api/auth/login');  
         } else {
           setIsAuthenticated(true);
         }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {jwtDecode}  from 'jwt-decode'; // Import jwt_decode to decode the token
+import supabase from '../../../utils/supabaseClient';
 
 const ProfileSettings = () => {
   // State for user data
@@ -20,6 +21,8 @@ const ProfileSettings = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [userId, setUserId] = useState<string | null>(null); // State to store the user_id
+  const [profileImage, setProfileImage] = useState(null); // State to handle image upload
+  const [imageUrl, setImageUrl] = useState(''); // Store uploaded image URL
 
   // Function to extract user_id from the token
   const getUserIdFromToken = () => {
@@ -63,6 +66,32 @@ const ProfileSettings = () => {
 
     fetchUserData();
   }, []);
+
+  // Handle file selection
+  const handleFileChange = (e) => {
+    setProfileImage(e.target.files[0]);
+  };
+
+  // Handle image upload
+  const handleImageUpload = async () => {
+    if (!profileImage) return;
+
+    const fileName = `${userId}-${profileImage.name}`;
+    const { data, error: uploadError } = await supabase
+      .storage
+      .from('images')
+      .upload(fileName, profileImage);
+
+    if (uploadError) {
+      console.error('Error uploading image:', uploadError);
+      return;
+    }
+
+    const imageUrl = `https://mrcrgxijqzzfzrmhfkjb.supabase.co/storage/v1/object/public/images/${data.path}`;
+    setImageUrl(imageUrl); // Store the uploaded image URL
+    alert('Profile photo uploaded successfully!');
+  };
+
 
   // Handle form submission to update user data
   const handleUpdate = async () => {
@@ -147,85 +176,22 @@ const ProfileSettings = () => {
           Activity Start
       **************************************/}
       <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4 tg-lgcolwidthhalf">
-        <div className="tg-dashboardbox">
-          <div className="tg-dashboardboxtitle">
-            <h2>Profile Photo</h2>
-          </div>
-          <div className="tg-dashboardholder">
-            <label className="tg-fileuploadlabel" htmlFor="tg-photogallery">
-              <span>Drop files anywhere to upload</span>
-              <span>Or</span>
-              <span className="tg-btn">Select Files</span>
-              <span>Maximum upload file size: 500 KB</span>
-              <input id="tg-photogallery" className="tg-fileinput" type="file" name="file" />
-            </label>
-            <div className="tg-horizontalthemescrollbar tg-profilephotogallery">
-              <ul>
-                <li>
-                  <figure>
-                    <img src="images/thumbnail/img-01.jpg" alt="image description" />
-                    <i className="icon-trash"></i>
-                  </figure>
-                </li>
-                <li>
-                  <figure className="tg-activephoto">
-                    <img src="images/thumbnail/img-02.jpg" alt="image description" />
-                    <i className="fa fa-check-square-o"></i>
-                  </figure>
-                </li>
-                <li>
-                  <figure>
-                    <img src="images/thumbnail/img-02.jpg" alt="image description" />
-                    <i className="icon-trash"></i>
-                  </figure>
-                </li>
-                <li>
-                  <figure>
-                    <img src="images/thumbnail/img-04.jpg" alt="image description" />
-                    <i className="icon-trash"></i>
-                  </figure>
-                </li>
-                <li>
-                  <figure>
-                    <img src="images/thumbnail/img-05.jpg" alt="image description" />
-                    <i className="icon-trash"></i>
-                  </figure>
-                </li>
-                <li>
-                  <figure>
-                    <img src="images/thumbnail/img-01.jpg" alt="image description" />
-                    <i className="icon-trash"></i>
-                  </figure>
-                </li>
-                <li>
-                  <figure>
-                    <img src="images/thumbnail/img-02.jpg" alt="image description" />
-                    <i className="icon-trash"></i>
-                  </figure>
-                </li>
-                <li>
-                  <figure>
-                    <img src="images/thumbnail/img-02.jpg" alt="image description" />
-                    <i className="icon-trash"></i>
-                  </figure>
-                </li>
-                <li>
-                  <figure>
-                    <img src="images/thumbnail/img-04.jpg" alt="image description" />
-                    <i className="icon-trash"></i>
-                  </figure>
-                </li>
-                <li>
-                  <figure>
-                    <img src="images/thumbnail/img-05.jpg" alt="image description" />
-                    <i className="icon-trash"></i>
-                  </figure>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
+                <div className="tg-dashboardbox">
+                  <div className="tg-dashboardboxtitle">
+                    <h2>Profile Photo</h2>
+                  </div>
+                  <div className="tg-dashboardholder">
+                    <label className="tg-fileuploadlabel" htmlFor="tg-photogallery">
+                      <span>Drop files anywhere to upload</span>
+                      <span>Or</span>
+                      <span className="tg-btn">Select Files</span>
+                      <span>Maximum upload file size: 500 KB</span>
+                      <input id="tg-photogallery" className="tg-fileinput" type="file" name="file" onChange={handleFileChange} />
+                    </label>
+                    <button className="tg-btn"type="button" onClick={handleImageUpload}>Upload Photo</button>
+                  </div>
+                </div>
+              </div>
       {/*************************************
           Activity End
       **************************************/}

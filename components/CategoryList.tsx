@@ -3,6 +3,7 @@ import React, { useState, useEffect, FormEvent, DragEvent } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import supabase from '../utils/supabaseClient';
 import '../styles/style.css'; 
+import {jwtDecode} from 'jwt-decode';
 
 interface Category {
   id: number;
@@ -13,6 +14,14 @@ interface Category {
 interface FormField {
   name: string;
   type: string;
+}
+
+interface DecodedToken {
+  user_id: number;
+}
+
+interface User {
+  username: string;
 }
 
 const departments = [
@@ -44,6 +53,8 @@ const CategoryForm: React.FC = () => {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]); // For displaying image previews
   const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(null);
+  const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
     fetch('http://localhost:8000/api/categories/')
@@ -166,9 +177,73 @@ const CategoryForm: React.FC = () => {
     e.stopPropagation();
   };
 
+    // Function to fetch user data using user_id from the token
+    const fetchUsername = async (userId: number) => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/accounts/${userId}/`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+        const data: User = await response.json();
+        return data.username;
+      } catch (error) {
+        console.error("Error fetching username:", error);
+        return null;
+      }
+    };
+
+// Function to extract user's ID from the JWT token and fetch the username
+const getUserNameFromToken = async () => {
+  const token = localStorage.getItem('accessToken'); // Assuming the token is stored in localStorage
+
+  // Debugging log to check if token exists
+  console.log("Token in localStorage:", token);
+
+  if (token) {
+    try {
+      const decodedToken = jwtDecode<DecodedToken>(token); // Decode token to extract user_id
+      console.log("Decoded Token:", decodedToken); // Log the decoded token
+
+      if (decodedToken.user_id) {
+        setUserId(decodedToken.user_id);
+        const fetchedUsername = await fetchUsername(decodedToken.user_id);
+        return fetchedUsername || null; // Assuming the API returns 'username'
+      } else {
+        console.error("Decoded token does not have user_id");
+      }
+    } catch (error) {
+      console.error("Error decoding token:", error); // Log any decoding errors
+    }
+  } else {
+    console.error("No token found in localStorage");
+  }
+  return null;
+};
+
+// Use effect to get the username when the component mounts
+useEffect(() => {
+  if (userId !== null) {
+    console.log("User ID updated:", userId);
+  }
+}, [userId]);
+
+
+    // Use effect to get the username when the component mounts
+    useEffect(() => {
+      getUserNameFromToken().then((name) => {
+        if (name) {
+          setUsername(name);
+        } else {
+          console.log(userId);
+        }
+      });
+    }, []);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
+      const token = localStorage.getItem('accessToken'); // Retrieve the token from localStorage
+      console.log("Token in localStorage:", token);
       const imageUrls: string[] = [];
 
       for (const image of images) {
@@ -188,16 +263,19 @@ const CategoryForm: React.FC = () => {
         ...formData,
         category: selectedCategory, // Send the selectedCategory ID instead of name
         image_urls: imageUrls,
+        user_id: userId,
         type: formData.type // Include the array of image URLs
       };
 
-      console.log('Submitting data:', dataToSubmit); // Log the data being submitted
+      console.log('Submitting data:', dataToSubmit);
+      console.log(userId); // Log the data being submitted
 
       const endpoint = `http://127.0.0.1:8000/api/${getCategoryEndpoint()}/`;
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(dataToSubmit)
       });
@@ -232,7 +310,12 @@ const CategoryForm: React.FC = () => {
     <div className="container1">
       <Toaster />
       <div className="form-container1">
-        <h2 className="heading1">What are you listing today?</h2>
+        <h2 className="heading1">                
+        {username ? (
+                    <p className="user-greeting">Welcome, {username}!</p>
+                ) : (
+                    <p className="user-greeting">Welcome, Guest!</p>
+                )}</h2>
         
         <div className="space-y-6">
           <div>
