@@ -21,6 +21,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "utils/supabaseClient.ts", "app/dashboard/components/DashboardHeader.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "utils/supabaseClient.ts", "app/dashboard/components/DashboardHeader.tsx", "app/dashboard/page.tsx"],
   "exclude": ["node_modules"]
 }

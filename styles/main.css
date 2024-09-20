@@ -309,8 +309,9 @@ address { font-style: italic; }
 			Theme Global Elements				
 ==============================================*/
 .tg-haslayout {
-	width:100%;
+	width:85%;
 	float:left;
+	margin-left: 16%;
 }
 .tg-sectionspace {padding: 80px 0;}
 .tg-locationmap {
@@ -868,6 +869,7 @@ li.tg-rss a { background:#ff6600; }
 	z-index: 3;
 	position: relative;
 	width: 105%;
+	margin-left: 150px;
 }
 .tg-twocolumns{
 	width: 100%;

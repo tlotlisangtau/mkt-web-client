@@ -13,6 +13,7 @@ import '../../styles/bootstrap.css';
 import '../../styles/dashboard.css';
 import '../../styles/chartist.css';
 import '../../styles/color.css';
+import '../../styles/insides.css';
 import '../../styles/dbresponsive.css';
 import '../../styles/flags.css';
 import '../../styles/icomoon.css';
@@ -56,10 +57,11 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem('accessToken');
+      console.log('token');
 
       if (!token) {
         setError('No token found, please log in.');
-        router.push('/Login');
+        router.push('/api/auth/login');
         return;
       }
 
@@ -133,7 +135,13 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 					<div className="tg-user">
 						<figure>
 							<span className="tg-bolticon"><i className="fa fa-bolt"></i></span>
-							<a href="javascript:void(0);"><img src={userData?.image_url || "/Images/author/img-07.jpg"} alt="image description"/></a>
+              <a href="javascript:void(0);">
+                <img
+                  src={userData?.image_url || '/Images/author/img-07.jpg'} // Use profile picture URL or default image
+                   alt={`${userData?.first_name || 'User'} ${userData?.last_name || 'Name'}`} // Alt text with fallback names
+                  style={{ width: '50px', height: '50px', borderRadius: '50%' }} // Styling for circular profile picture
+                />
+              </a>
 						</figure>
 						<div className="tg-usercontent">
                   {error && <p>{error}</p>}
@@ -168,16 +176,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                     <i className="icon-layers"></i>
                     <span>My Ads</span>
                   </a>
-                  <ul className="sub-menu mt-2 ml-4 space-y-1">
-                    <li><a href="dashboard-myads.html" className="block p-2 hover:bg-red-200">All Ads</a></li>
-                    <li><a href="dashboard-myads.html" className="block p-2 hover:bg-gray-200">Featured Ads</a></li>
-                    <li><a href="dashboard-myads.html" className="block p-2 hover:bg-red-800">Active Ads</a></li>
-                    <li><a href="dashboard-myads.html" className="block p-2 hover:bg-gray-200">Inactive Ads</a></li>
-                    <li><a href="dashboard-myads.html" className="block p-2 hover:bg-gray-200">Sold Ads</a></li>
-                    <li><a href="dashboard-myads.html" className="block p-2 hover:bg-gray-200">Expired Ads</a></li>
-                    <li><a href="dashboard-myads.html" className="block p-2 hover:bg-gray-200">Deleted Ads</a></li>
-                    
-                  </ul>
                 </li>
 
 							<li className="menu-item-has-children">
@@ -229,64 +227,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
         </div>
         <main id="tg-main" className=" tg-haslayout">
-        {activeSection === 'profile-settings' && (
-            <Suspense fallback={<div>Loading...</div>}>
-              <ProfileSettings />
-            </Suspense>
-          )}
-          {activeSection === 'dashboard' && (
-            <section className="tg-dbsectionspace tg-haslayout yes">
-            <div className="row">
-              <div className="col-xs-6 col-sm-6 col-md-6 col-lg-3">
-                <div className="tg-dashboardbox tg-statistic">
-                  <figure><img src="/Images/icons/img-32.png" alt="image description"/></figure>
-                  <div className="tg-contentbox">
-                    <h2>562</h2>
-                    <h3>Total Ad Posted</h3>
-                    <a className="tg-btnviewdetail fa fa-angle-right" href="javascript:void(0);">View Detail</a>
-                  </div>
-                </div>
-              </div>
-              <div className="col-xs-6 col-sm-6 col-md-6 col-lg-3">
-                <div className="tg-dashboardbox tg-statistic">
-                  <figure><img src="/Images/icons/img-33.png" alt="image description"/></figure>
-                  <div className="tg-contentbox">
-                    <h2>06</h2>
-                    <h3>Featured Ads</h3>
-                    <a className="tg-btnviewdetail fa fa-angle-right" href="javascript:void(0);">View Detail</a>
-                  </div>
-                </div>
-              </div>
-              <div className="col-xs-6 col-sm-6 col-md-6 col-lg-3">
-                <div className="tg-dashboardbox tg-statistic">
-                  <figure><img src="/Images/icons/img-34.png" alt="image description"/></figure>
-                  <div className="tg-contentbox">
-                    <h2>04</h2>
-                    <h3>Inactive Ads</h3>
-                    <a className="tg-btnviewdetail fa fa-angle-right" href="javascript:void(0);">View Detail</a>
-                  </div>
-                </div>
-              </div>
-              <div className="col-xs-6 col-sm-6 col-md-6 col-lg-3">
-                <div className="tg-dashboardbox tg-statistic">
-                  <span className="tg-badge">7</span>
-                  <figure><img src="/Images/icons/img-35.png" alt="image description"/></figure>
-                  <div className="tg-contentbox">
-                    <h2>45706</h2>
-                    <h3>Offers / Messages</h3>
-                    <a className="tg-btnviewdetail fa fa-angle-right" href="javascript:void(0);">View Detail</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-          )}
-
-          {activeSection === 'myAds' && (
-            <Suspense fallback={<div>Loading...</div>}>
-              <MyAds />
-            </Suspense>
-          )}
 
           {activeSection === 'my-activity-log' && (
             <section className="tg-dbsectionspace tg-haslayout">
@@ -313,7 +253,51 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           )}
         </main>
     </header>
-    <DashboardBanner />
+    {activeSection === 'dashboard' && (
+           <section className="dashboard-stats">
+           <div className="stats-container">
+             <div className="stat-box">
+               <figure><img src="/Images/icons/img-32.png" alt="Total Ad Posted" /></figure>
+               <div className="stat-info">
+                 <h2>562</h2>
+                 <h3>Total Ad Posted</h3>
+                 <a href="javascript:void(0);" className="view-detail">View Detail <i className="fa fa-angle-right"></i></a>
+               </div>
+             </div>
+         
+             <div className="stat-box">
+               <figure><img src="/Images/icons/img-33.png" alt="Featured Ads" /></figure>
+               <div className="stat-info">
+                 <h2>06</h2>
+                 <h3>Featured Ads</h3>
+                 <a href="javascript:void(0);" className="view-detail">View Detail <i className="fa fa-angle-right"></i></a>
+               </div>
+             </div>
+         
+             <div className="stat-box">
+               <span className="badge">7</span>
+               <figure><img src="/Images/icons/img-35.png" alt="Offers / Messages" /></figure>
+               <div className="stat-info">
+                 <h2>45706</h2>
+                 <h3>Offers / Messages</h3>
+                 <a href="javascript:void(0);" className="view-detail">View Detail <i className="fa fa-angle-right"></i></a>
+               </div>
+             </div>
+           </div>
+         </section>
+        )}
+
+        {activeSection === 'profile-settings' && (
+            <Suspense fallback={<div>Loading...</div>}>
+              <ProfileSettings />
+            </Suspense>
+        )}
+
+        {activeSection === 'myAds' && (
+            <Suspense fallback={<div>Loading...</div>}>
+              <MyAds />
+            </Suspense>
+          )}
     
 
     </>

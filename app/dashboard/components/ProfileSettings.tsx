@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {jwtDecode}  from 'jwt-decode'; // Import jwt_decode to decode the token
 import supabase from '../../../utils/supabaseClient';
+import '../../../styles/profile.css';
 
 const ProfileSettings = () => {
   // State for user data
@@ -167,108 +168,161 @@ const ProfileSettings = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div id="tg-wrapper" className="tg-wrapper tg-haslayout">
-    <section className="tg-dbsectionspace tg-haslayout">
-<div className="row">
-  <form className="tg-formtheme tg-formdashboard">
-    <fieldset>
-      {/*************************************
-          Activity Start
-      **************************************/}
-      <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4 tg-lgcolwidthhalf">
-                <div className="tg-dashboardbox">
-                  <div className="tg-dashboardboxtitle">
-                    <h2>Profile Photo</h2>
-                  </div>
-                  <div className="tg-dashboardholder">
-                    <label className="tg-fileuploadlabel" htmlFor="tg-photogallery">
-                      <span>Drop files anywhere to upload</span>
-                      <span>Or</span>
-                      <span className="tg-btn">Select Files</span>
-                      <span>Maximum upload file size: 500 KB</span>
-                      <input id="tg-photogallery" className="tg-fileinput" type="file" name="file" onChange={handleFileChange} />
-                    </label>
-                    <button className="tg-btn"type="button" onClick={handleImageUpload}>Upload Photo</button>
-                  </div>
-                </div>
+<div>
+  <section className="section dashboard-section">
+    <div className="row">
+      <form className="form form-dashboard">
+        <fieldset>
+          {/* Profile Photo */}
+          <div>
+            <div className="dashboard-box1">
+              <div className="dashboard-box-title">
+                <h2>Profile Photo</h2>
               </div>
-      {/*************************************
-          Activity End
-      **************************************/}
-      {/*************************************
-          Approved Ads Start
-      **************************************/}
-      <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4 tg-lgcolwidthhalf">
-        <div className="tg-dashboardbox">
-          <div className="tg-dashboardboxtitle">
-            <h2>Profile Detail</h2>
+              <div className="dashboard-box-content">
+                <label className="file-upload-label" htmlFor="photo-gallery">
+                  <span>Drop files anywhere to upload</span>
+                  <span>Or</span>
+                  <span className="file-size">Maximum upload file size: 500 KB</span>
+                  <input
+                    id="photo-gallery"
+                    className="file-input"
+                    type="file"
+                    name="file"
+                    onChange={handleFileChange}
+                  />
+                </label>
+                <button className="btn-upload" type="button" onClick={handleImageUpload}>
+                  Upload Photo
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="tg-dashboardholder">
-            <div className="form-group">
-            <label>Username</label>
-              <input type="text" name="username" className="form-control" placeholder="Username" value={userData.username}
-              onChange={(e) => setUserData({ ...userData, username: e.target.value })} />
+
+          {/* Profile Details */}
+          <div>
+            <div className="dashboard-box2">
+              <div className="dashboard-box-title">
+                <h2>Profile Detail</h2>
+              </div>
+              <div className="dashboard-box-content">
+                <div className="form-group">
+                  <label>Username</label>
+                  <input
+                    type="text"
+                    name="username"
+                    className="form-controls"
+                    placeholder="Username"
+                    value={userData.username}
+                    onChange={(e) => setUserData({ ...userData, username: e.target.value })}
+                  />
+                </div>
+                <div className="form-groups">
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    className="form-controls"
+                    placeholder="Email"
+                    value={userData.email}
+                    onChange={(e) => setUserData({ ...userData, email: e.target.value })}
+                  />
+                </div>
+                <div className="form-groups">
+                  <label>First Name</label>
+                  <input
+                    type="text"
+                    name="firstname"
+                    className="form-controls"
+                    placeholder="First Name"
+                    value={userData.firstname}
+                    onChange={(e) => setUserData({ ...userData, firstname: e.target.value })}
+                  />
+                </div>
+                <div className="form-groups">
+                  <label>Last Name</label>
+                  <input
+                    type="text"
+                    name="lastname"
+                    className="form-controls"
+                    placeholder="Last Name"
+                    value={userData.lastname}
+                    onChange={(e) => setUserData({ ...userData, lastname: e.target.value })}
+                  />
+                </div>
+                <div className="form-groups">
+                  <label>Mobile Number</label>
+                  <input
+                    type="text"
+                    name="phonenumber"
+                    className="form-controls"
+                    placeholder="Phone Number"
+                    value={userData.phone_number}
+                    onChange={(e) => setUserData({ ...userData, phone_number: e.target.value })}
+                  />
+                </div>
+                <button className="btn-update" type="button" onClick={handleUpdate}>
+                  Update
+                </button>
+              </div>
             </div>
-            <div className="form-group">
-            <label>Email</label>
-              <input type="email" name="email" className="form-control" placeholder="Email*" value={userData.email}
-              onChange={(e) => setUserData({ ...userData, email: e.target.value })}/>
-            </div>
-            <div className="form-group">
-            <label>Firstname</label>
-              <input type="text" name="firstname" className="form-control" placeholder="First Name*" value={userData.firstname}
-              onChange={(e) => setUserData({ ...userData, firstname: e.target.value })}/>
-            </div>
-            <div className="form-group">
-            <label>Lastname</label>
-              <input type="text" name="lastname" className="form-control" placeholder="Last Name*" value={userData.lastname}
-              onChange={(e) => setUserData({ ...userData, lastname: e.target.value })}/>
-            </div>
-            <div className="form-group">
-            <label>Mobile Number</label>
-              <input type="text" name="phonenumber" className="form-control" placeholder="Phone Number*" value={userData.phone_number}
-              onChange={(e) => setUserData({ ...userData, phone_number: e.target.value })}/>
-            </div>
-            <button className="tg-btn" type="button" onClick={handleUpdate}>Update</button>
           </div>
-        </div>
-      </div>
-      {/*************************************
-          Approved Ads End
-      **************************************/}
-      {/*************************************
-          Change Password Start
-      **************************************/}
-      <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4 tg-lgcolwidthhalf">
-        <div className="tg-dashboardbox">
-          <div className="tg-dashboardboxtitle">
-            <h2>Change Password</h2>
+
+          {/* Change Password */}
+          <div>
+            <div className="dashboard-box3">
+              <div className="dashboard-box-title">
+                <h2>Change Password</h2>
+              </div>
+              <div className="dashboard-box-content">
+                <div className="form-groups">
+                  <input
+                    type="password"
+                    name="currentpassword"
+                    className="form-controls"
+                    placeholder="Current Password"
+                    value={passwordData.currentPassword}
+                    onChange={(e) =>
+                      setPasswordData({ ...passwordData, currentPassword: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="form-groups">
+                  <input
+                    type="password"
+                    name="newpassword"
+                    className="form-controls"
+                    placeholder="New Password"
+                    value={passwordData.newPassword}
+                    onChange={(e) =>
+                      setPasswordData({ ...passwordData, newPassword: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="form-groups">
+                  <input
+                    type="password"
+                    name="confirmpassword"
+                    className="form-controls"
+                    placeholder="Confirm New Password"
+                    value={passwordData.confirmPassword}
+                    onChange={(e) =>
+                      setPasswordData({ ...passwordData, confirmPassword: e.target.value })
+                    }
+                  />
+                </div>
+                <button className="btn-change-password" type="button" onClick={handleChangePassword}>
+                  Change Now
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="tg-dashboardholder">
-            <div className="form-group">
-              <input type="password" name="currentpassword" className="form-control" placeholder="Current Password" value={passwordData.currentPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <input type="password" name="newpassword" className="form-control" placeholder="New Password" value={passwordData.newPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}/>
-            </div>
-            <div className="form-group">
-              <input type="password" name="confirmpassword" className="form-control" placeholder="Confirm New Password" value={passwordData.confirmPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}/>
-            </div>
-            <button className="tg-btn" type="button" onClick={handleChangePassword}>Change Now</button>
-          </div>
-        </div>
-      </div>
-      {/*************************************
-          Change Password End
-      **************************************/}
-    </fieldset>
-  </form>
+        </fieldset>
+      </form>
+    </div>
+  </section>
 </div>
-</section>
-</div>
+
 )
 };
 

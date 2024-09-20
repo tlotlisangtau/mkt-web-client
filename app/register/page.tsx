@@ -48,7 +48,7 @@ const RegisterPage: React.FC = () => {
       if (response.ok) {
         notifySuccess();
         setTimeout(() => {
-          router.push('/Login');
+          router.push('/api/auth/login');
         }, 5000); // Redirect after 5 seconds
       } else {
         const errorData = await response.json();
@@ -146,7 +146,7 @@ const RegisterPage: React.FC = () => {
         </form>
         <p className={styles.footerText}>
           Already have an account?{' '}
-          <a href="/Login" className={styles.footerLink}>
+          <a href="/api/auth/login" className={styles.footerLink}>
             Login
           </a>
         </p>

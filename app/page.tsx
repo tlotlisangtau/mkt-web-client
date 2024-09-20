@@ -15,21 +15,14 @@ import WhyChooseUs from '@/components/WhyChooseUs';
 import Footer from '@/components/footer';
 import Sidebar from '@/components/sidebar';
 import ProductDetail from '@/components/ProductDetail';
+import Ssidebar from './dashboard/teest';
 
 const queryClient = new QueryClient();
 
 const HomePage: React.FC = () => {
   return (
     <>
-      <Nav />
-      <Banner />
-      <Searchform />
-      <Categorysection />
-      <Products4_block />
-      <Specifications />
-      <Pricing />
-      <WhyChooseUs />
-      <Footer />
+      <Ssidebar />
     </>
   );
 };

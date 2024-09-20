@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Link from 'next/link';
-import LoginPage from '../app/Login/page';
 import '../styles/globals.css';
 
 const Nav: React.FC = () => {
@@ -72,7 +71,7 @@ const Nav: React.FC = () => {
               <span className="fa fa-paper-plane-o mr-2" aria-hidden="true"></span>
               Post your Ad
             </Link>
-            <Link href="/Login/" className="bg-blue-500 text-white py-2 px-2 mb-3 rounded hover:bg-blue-600">
+            <Link href="/api/auth/login/" className="bg-blue-500 text-white py-2 px-2 mb-3 rounded hover:bg-blue-600">
               <span className="fa fa-paper-plane-o mr-2" aria-hidden="true"></span>
               Login
             </Link>
