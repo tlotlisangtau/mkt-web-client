@@ -1,14 +1,15 @@
-// pages/api/auth/error.tsx
+'use client';
+// app/api/auth/error/page.tsx
+import { useSearchParams } from 'next/navigation';
 
-import { NextPage } from 'next';
+export default function ErrorPage() {
+  const searchParams = useSearchParams();
+  const error = searchParams.get('error');
 
-const ErrorPage: NextPage = () => {
   return (
     <div>
-      <h1>Error</h1>
-      <p>There was an error processing your request. Please try again later.</p>
+      <h1>Authentication Error</h1>
+      <p>{error ? error : 'An unknown error occurred during authentication.'}</p>
     </div>
   );
-};
-
-export default ErrorPage;
+}

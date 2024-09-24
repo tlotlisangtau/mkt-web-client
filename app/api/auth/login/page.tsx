@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast, Toaster } from 'react-hot-toast';
 import { signIn } from 'next-auth/react'; // Import signIn
@@ -11,6 +11,7 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const [user, setUser] = useState(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -50,6 +51,111 @@ const LoginPage: React.FC = () => {
   const handleGoogleLogin = () => {
     signIn('google', { callbackUrl: '/protected' }); // Use Google provider
   };
+
+
+  const [sdkLoaded, setSdkLoaded] = useState(false); // State to track if SDK is loaded
+
+  useEffect(() => {
+    // Initialize the Facebook SDK when the component is mounted
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: '824628613116710', // Replace with your actual Facebook App ID
+        cookie: true,
+        xfbml: true,
+        version: 'v15.0', 
+      });
+      setSdkLoaded(true); // Set flag to true once SDK is initialized
+    };
+
+    // Dynamically load the Facebook SDK
+    (function (d, s, id) {
+      var js: HTMLScriptElement, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s) as HTMLScriptElement;
+      js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode?.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+  }, []); // Empty dependency array ensures this runs only once when the component mounts
+
+  // Facebook login function
+  function loginWithFacebook() {
+    if (sdkLoaded && typeof FB !== 'undefined') {
+      FB.login(function (response) {
+        if (response.authResponse) {
+          console.log('Login successful:', response);
+          //router.push('/dashboard');
+  
+          const { accessToken, userID } = response.authResponse;
+  
+          // Send the accessToken and userID to your backend API
+          fetch('http://127.0.0.1:8000/accounts/facebook/', { // Change to your backend URL
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              accessToken,
+              userID,
+            }),
+          })
+            .then(res => res.json())
+            .then(data => {
+            console.log('Backend response:', data);
+              //router.push('/dashboard');
+              // Handle the response store token
+              if (data.token) {
+                // Save the token in localStorage
+                localStorage.setItem('authToken', data.token);
+  
+                // Save user data in state session storage
+                setUser(data.user);
+                //console.log('User data :', data.user);
+                // Redirect the user to a dashboard page, for example
+                
+                window.location.href = '/dashboard';
+              }
+            })
+            .catch(err => {
+              console.error('Error sending data to backend:', err);
+            });
+          
+        } else {
+          console.log('User cancelled login or did not fully authorize.');
+        }
+      }, { scope: 'email' });
+    } else {
+      console.error('Facebook SDK is not loaded yet.');
+    }
+  } 
+
+  const handleLogout = () => {
+    console.log('User logged out from Facebook:');
+    
+    // Remove Facebook token(s) from localStorage
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('fblst_')) {
+        localStorage.removeItem(key);
+        console.log(`Removed from localStorage: ${key}`);
+      }
+    }
+  
+    // Remove Facebook token(s) from sessionStorage
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const key = sessionStorage.key(i);
+      if (key && key.startsWith('fbssls_')) {
+        sessionStorage.removeItem(key);
+        console.log(`Removed from sessionStorage: ${key}`);
+      }
+    }
+  
+    // Optionally, remove other user-related info like user ID
+    localStorage.removeItem('userID');
+  
+
+  };
+  
 
   return (
     <div className={styles.container}>
@@ -92,10 +198,13 @@ const LoginPage: React.FC = () => {
           </button>
         </form>
         <button
-          onClick={handleGoogleLogin}
+          onClick={loginWithFacebook}
           className={styles.googleButton} // Add a new style for Google button
         >
-          Login with Google
+          Login with Facebook
+        </button>
+        <button onClick={handleLogout} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+          Logout
         </button>
         <p className={styles.footerText}>
           Don't have an account?{' '}
