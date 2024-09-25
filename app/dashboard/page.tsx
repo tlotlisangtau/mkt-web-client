@@ -68,6 +68,8 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       try {
         const decoded = jwtDecode<JwtPayload>(token);
         const userId = decoded.user_id;
+        //console.log('User Name from API:', data.name);
+        
 
         const response = await fetch(`http://127.0.0.1:8000/accounts/users/${userId}/`, {
           method: 'GET',

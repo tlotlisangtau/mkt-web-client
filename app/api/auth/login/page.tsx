@@ -34,11 +34,11 @@ const LoginPage: React.FC = () => {
         localStorage.setItem('accessToken', token);
         toast.success('Logged in successfully!', {
           style: { background: 'blue', color: 'white' },
-          duration: 4000,
+          duration: 2000,
         });
         setTimeout(() => {
           router.push('/dashboard'); // Redirect to a protected page
-        }, 2000);
+        }, 1000);
       } else {
         const data = await response.json();
         setError(data.detail || 'Login failed');
@@ -83,8 +83,56 @@ const LoginPage: React.FC = () => {
     if (sdkLoaded && typeof FB !== 'undefined') {
       FB.login(function (response) {
         if (response.authResponse) {
+          if (response ) {
+            //const token = data.access;
+    
+            // Store the token in localStorage or cookies
+            //localStorage.setItem('accessToken', token);
+            //toast.success('Logged in successfully!', {
+            //  style: { background: 'blue', color: 'white' },
+            //  duration: 2000,
+            //});
+            //setTimeout(() => {
+            //  router.//push('/dashboard'); // Redirect to a protected page
+            //}, 1000);
+            const fbSessionKey = Object.keys(sessionStorage).find((key) => key.startsWith('fbssls_'));
+  
+            if (fbSessionKey) {
+              // Parse the sessionStorage value
+              const sessionValue = sessionStorage.getItem(fbSessionKey);
+
+              // Extract the accessToken
+              if (sessionValue) {
+                // Parse the sessionStorage value (guaranteed to be a string now)
+                const sessionData = JSON.parse(sessionValue);
+          
+                // Extract the accessToken
+                const accessToken = sessionData?.authResponse?.accessToken;
+                const userID = sessionData?.authResponse?.userID;
+          
+                if (accessToken) {
+                  console.log("Extracted Access Token:", accessToken);
+                  console.log("Extracted User ID:", userID);
+          
+                  // Optionally store it under 'accessToken' key for further use
+                  localStorage.setItem('accessToken', accessToken);
+                  localStorage.setItem('facebookID', userID);
+                } else {
+                  console.log("Access token not found");
+                }
+              } else {
+                console.log("Session value not found");
+              }
+            } else {
+              console.log("Facebook session key not found in sessionStorage");
+            }
+
+          } 
           console.log('Login successful:', response);
           //router.push('/dashboard');
+
+          const responsee = 'ok';
+
   
           const { accessToken, userID } = response.authResponse;
   
@@ -104,17 +152,23 @@ const LoginPage: React.FC = () => {
             console.log('Backend response:', data);
               //router.push('/dashboard');
               // Handle the response store token
-              if (data.token) {
-                // Save the token in localStorage
-                localStorage.setItem('authToken', data.token);
-  
-                // Save user data in state session storage
-                setUser(data.user);
-                //console.log('User data :', data.user);
-                // Redirect the user to a dashboard page, for example
-                
-                window.location.href = '/dashboard';
-              }
+            const response = 'ok';
+            if (response == 'ok' ) {
+              const token = data.access;
+      
+              // Store the token in localStorage or cookies
+              //localStorage.setItem('accessToken', token);
+              toast.success('Logged in successfully!', {
+                style: { background: 'blue', color: 'white' },
+                duration: 2000,
+              });
+              setTimeout(() => {
+                router.push('/dashboard'); // Redirect to a protected page
+              }, 1000);
+            } else {
+              //const data = await response.json();
+              setError(data.detail || 'Login failed');
+            }
             })
             .catch(err => {
               console.error('Error sending data to backend:', err);
@@ -135,7 +189,7 @@ const LoginPage: React.FC = () => {
     // Remove Facebook token(s) from localStorage
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key && key.startsWith('fblst_')) {
+      if (key && key.startsWith('fblst_' && 'facebookID')) {
         localStorage.removeItem(key);
         console.log(`Removed from localStorage: ${key}`);
       }

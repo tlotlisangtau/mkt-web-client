@@ -30,7 +30,9 @@ const Navbar = () => {
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem('accessToken');
-      console.log(token);
+      const facebookId = localStorage.getItem('facebookID');
+      console.log('heyy',token);
+      
 
       if (!token) {
         setError('No token found, please log in.');
@@ -39,21 +41,25 @@ const Navbar = () => {
       }
 
       try {
-        const decoded = jwtDecode<JwtPayload>(token);
-        const userId = decoded.user_id;
+        //const decoded = jwtDecode<JwtPayload>(token);
+    
+        const userId = facebookId;
+        
 
-        const response = await fetch(`http://127.0.0.1:8000/accounts/users/${userId}/`, {
+        const identifier = userId ;
+        console.log('User',identifier);
+        const response = await fetch(`http://127.0.0.1:8000/accounts/users/${identifier}/`, {
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `FBToken ${token}`,
             Accept: 'application/json',
           },
         });
-
+    
         if (response.ok) {
           const data = await response.json();
           setUserData(data);
-          console.log('User Name from API:', data.name);
+          console.log('Data from API:', data);
         } else {
           setError('Failed to fetch user data.');
         }
