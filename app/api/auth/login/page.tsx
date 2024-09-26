@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -11,7 +11,7 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
-  const [user, setUser] = useState(null);
+  const [sdkLoaded, setSdkLoaded] = useState(false); // State to track if Facebook SDK is loaded
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -48,12 +48,10 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    signIn('google', { callbackUrl: '/protected' }); // Use Google provider
-  };
 
 
-  const [sdkLoaded, setSdkLoaded] = useState(false); // State to track if SDK is loaded
+
+
 
   useEffect(() => {
     // Initialize the Facebook SDK when the component is mounted
@@ -78,102 +76,103 @@ const LoginPage: React.FC = () => {
     }(document, 'script', 'facebook-jssdk'));
   }, []); // Empty dependency array ensures this runs only once when the component mounts
 
+  // Google Login Script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+
+    script.onload = () => {
+      if (window.google) {
+        window.google.accounts.id.initialize({
+          client_id: '774735286879-1liiqcdt99ut6hev3n42a48955rfn932.apps.googleusercontent.com',
+          callback: handleGoogleLoginResponse,
+        });
+        window.google.accounts.id.renderButton(
+          document.querySelector('.g_id_signin'),
+          { theme: 'outline', size: 'large' }
+        );
+      }
+    };
+  }, []);
+
+  const handleGoogleLoginResponse = (response: google.accounts.id.CredentialResponse) => {
+    const googleToken = response.credential;
+  
+    if (googleToken) {
+      const decodedToken = JSON.parse(atob(googleToken.split('.')[1])); // Decode the token payload
+      const { sub, email, given_name,family_name, picture } = decodedToken;
+  
+      // Send the user information to your backend
+      fetch('http://127.0.0.1:8000/accounts/google/', { // Your backend URL
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sub,    // Google unique user ID
+          email,
+          given_name,  // Email
+          family_name,   // Full name
+          picture // Profile picture
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.user_id) {
+            console.log('User ID:', data.user_id);
+            localStorage.setItem('accessToken', googleToken);
+            toast.success('Logged in successfully!', {
+              style: { background: 'green', color: 'white' },
+              duration: 2000,
+            });
+            setTimeout(() => {
+              router.push('/dashboard'); // Redirect to dashboard
+            }, 1000);
+          } else {
+            setError('Login failed');
+          }
+        })
+        .catch(() => setError('An error occurred'));
+    }
+  };
+  
+  
+  
+
   // Facebook login function
   function loginWithFacebook() {
     if (sdkLoaded && typeof FB !== 'undefined') {
       FB.login(function (response) {
         if (response.authResponse) {
-          if (response ) {
-            //const token = data.access;
-    
-            // Store the token in localStorage or cookies
-            //localStorage.setItem('accessToken', token);
-            //toast.success('Logged in successfully!', {
-            //  style: { background: 'blue', color: 'white' },
-            //  duration: 2000,
-            //});
-            //setTimeout(() => {
-            //  router.//push('/dashboard'); // Redirect to a protected page
-            //}, 1000);
-            const fbSessionKey = Object.keys(sessionStorage).find((key) => key.startsWith('fbssls_'));
-  
-            if (fbSessionKey) {
-              // Parse the sessionStorage value
-              const sessionValue = sessionStorage.getItem(fbSessionKey);
-
-              // Extract the accessToken
-              if (sessionValue) {
-                // Parse the sessionStorage value (guaranteed to be a string now)
-                const sessionData = JSON.parse(sessionValue);
-          
-                // Extract the accessToken
-                const accessToken = sessionData?.authResponse?.accessToken;
-                const userID = sessionData?.authResponse?.userID;
-          
-                if (accessToken) {
-                  console.log("Extracted Access Token:", accessToken);
-                  console.log("Extracted User ID:", userID);
-          
-                  // Optionally store it under 'accessToken' key for further use
-                  localStorage.setItem('accessToken', accessToken);
-                  localStorage.setItem('facebookID', userID);
-                } else {
-                  console.log("Access token not found");
-                }
-              } else {
-                console.log("Session value not found");
-              }
-            } else {
-              console.log("Facebook session key not found in sessionStorage");
-            }
-
-          } 
-          console.log('Login successful:', response);
-          //router.push('/dashboard');
-
-          const responsee = 'ok';
-
-  
           const { accessToken, userID } = response.authResponse;
-  
+
           // Send the accessToken and userID to your backend API
-          fetch('http://127.0.0.1:8000/accounts/facebook/', { // Change to your backend URL
+          fetch('http://127.0.0.1:8000/accounts/facebook/', { // Your backend URL for Facebook login
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-              accessToken,
-              userID,
-            }),
+            body: JSON.stringify({ accessToken, userID }),
           })
-            .then(res => res.json())
-            .then(data => {
-            console.log('Backend response:', data);
-              //router.push('/dashboard');
-              // Handle the response store token
-            const response = 'ok';
-            if (response == 'ok' ) {
-              const token = data.access;
-      
-              // Store the token in localStorage or cookies
-              //localStorage.setItem('accessToken', token);
-              toast.success('Logged in successfully!', {
-                style: { background: 'blue', color: 'white' },
-                duration: 2000,
-              });
-              setTimeout(() => {
-                router.push('/dashboard'); // Redirect to a protected page
-              }, 1000);
-            } else {
-              //const data = await response.json();
-              setError(data.detail || 'Login failed');
-            }
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.access) {
+                localStorage.setItem('accessToken', data.access);
+                toast.success('Logged in with Facebook successfully!', {
+                  style: { background: 'blue', color: 'white' },
+                  duration: 2000,
+                });
+                setTimeout(() => {
+                  router.push('/dashboard'); // Redirect to dashboard
+                }, 1000);
+              } else {
+                setError('Facebook login failed');
+              }
             })
-            .catch(err => {
-              console.error('Error sending data to backend:', err);
-            });
-          
+            .catch(() => setError('An error occurred'));
         } else {
           console.log('User cancelled login or did not fully authorize.');
         }
@@ -181,35 +180,7 @@ const LoginPage: React.FC = () => {
     } else {
       console.error('Facebook SDK is not loaded yet.');
     }
-  } 
-
-  const handleLogout = () => {
-    console.log('User logged out from Facebook:');
-    
-    // Remove Facebook token(s) from localStorage
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key && key.startsWith('fblst_' && 'facebookID')) {
-        localStorage.removeItem(key);
-        console.log(`Removed from localStorage: ${key}`);
-      }
-    }
-  
-    // Remove Facebook token(s) from sessionStorage
-    for (let i = 0; i < sessionStorage.length; i++) {
-      const key = sessionStorage.key(i);
-      if (key && key.startsWith('fbssls_')) {
-        sessionStorage.removeItem(key);
-        console.log(`Removed from sessionStorage: ${key}`);
-      }
-    }
-  
-    // Optionally, remove other user-related info like user ID
-    localStorage.removeItem('userID');
-  
-
-  };
-  
+  }
 
   return (
     <div className={styles.container}>
@@ -251,15 +222,15 @@ const LoginPage: React.FC = () => {
             Login
           </button>
         </form>
-        <button
-          onClick={loginWithFacebook}
-          className={styles.googleButton} // Add a new style for Google button
-        >
+
+        {/* Facebook Login Button */}
+        <button onClick={loginWithFacebook} className={styles.facebookButton}>
           Login with Facebook
         </button>
-        <button onClick={handleLogout} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-          Logout
-        </button>
+
+        {/* Google Login Button */}
+        <div className="g_id_signin" style={{ marginTop: '10px' }}></div>
+
         <p className={styles.footerText}>
           Don't have an account?{' '}
           <a href="/register" className={styles.footerLink}>
