@@ -22,7 +22,13 @@ const queryClient = new QueryClient();
 const HomePage: React.FC = () => {
   return (
     <>
+      <Nav />
+      <Banner />
+      <Searchform />
+      <Categorysection />
+      <Products4_block />
       <Ssidebar />
+
     </>
   );
 };

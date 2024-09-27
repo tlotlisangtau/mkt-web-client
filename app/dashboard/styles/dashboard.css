@@ -1,0 +1,74 @@
+/* Add to insides.css or other appropriate file */
+.toggle-btn {
+    padding: 10px;
+    background-color: #1e90ff;
+    color: white;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 20;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 256px;
+    background-color: #2d2d2d;
+    color: white;
+    transition: transform 0.3s ease-in-out;
+    z-index: 10;
+  }
+  
+  .sidebar-closed {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar-open {
+    transform: translateX(0);
+  }
+  
+  .sidebar-menu {
+    padding: 30px 15px;
+    margin-top: 40px;
+    list-style: none;
+  }
+  
+  .menu-item {
+    padding: 12px 10px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .menu-item:hover {
+    background-color: #404040;
+  }
+  
+  .menu-item.active {
+    background-color: #1e90ff;
+  }
+  
+  .menu-link {
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .menu-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+  }
+  

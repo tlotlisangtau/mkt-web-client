@@ -7,6 +7,7 @@ import '../../styles/table.css';
 import { useState , lazy, Suspense} from 'react';
 import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/24/outline';
 import Logout from './components/Logout';
+import ReceivedMessages from './components/ReceivedMessages';
 
 const ProfileSettings = lazy(() => import('./components/ProfileSettings'));
 const Ssidebar = () => {
@@ -155,7 +156,7 @@ const Ssidebar = () => {
 
         {activeSection === 'messages' && (
             <Suspense fallback={<div>Loading...</div>}>
-              <h1>Messages</h1>
+              <ReceivedMessages />
             </Suspense>
         )}
 
