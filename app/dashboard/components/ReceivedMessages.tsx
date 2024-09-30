@@ -1,20 +1,20 @@
-"use client";
-
 import React, { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import '../styles/messages.css'; 
 
-interface Message {
-  reply?: string;
+interface Reply {
   id: number;
-  buyer: number;
-  seller: number;
-  job: number | null;
-  sport: number | null;
-  furniture: number | null;
-  real_estate: number | null;
-  health_beauty: number | null;
+  content: string;
+  sender_username: string;
+  timestamp: string;  // Ensure it's treated as a string
+}
+
+interface Message {
+  id: number;
+  buyer_username: string;
+  seller_username: string;
   message_content: string;
+  replies: Reply[];  // Updated to expect replies as an array
   timestamp: string;
 }
 
@@ -26,17 +26,18 @@ const ReceivedMessages: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [userId, setUserId] = useState<number | null>(null); // State for seller ID
-  const [openedMessageId, setOpenedMessageId] = useState<number | null>(null); // State to track opened message
+  const [userId, setUserId] = useState<number | null>(null);
+  const [openedMessageId, setOpenedMessageId] = useState<number | null>(null);
   const [replyContent, setReplyContent] = useState<{ [key: number]: string }>({});
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    // Decode token to get the seller's (user) ID
+    // Decode token to get the user's ID
     const token = localStorage.getItem("accessToken");
     if (token) {
       try {
         const decodedToken = jwtDecode<DecodedToken>(token);
-        setUserId(decodedToken.user_id); // Set the seller's ID
+        setUserId(decodedToken.user_id);
       } catch (err) {
         setError('Invalid token');
         setIsLoading(false);
@@ -75,9 +76,9 @@ const ReceivedMessages: React.FC = () => {
     };
 
     if (userId !== null) {
-      fetchMessages(); // Fetch messages only if userId is set
+      fetchMessages();
     }
-  }, [userId]); // Re-run when userId is set
+  }, [userId]);
 
   if (isLoading) {
     return <p>Loading messages...</p>;
@@ -91,13 +92,15 @@ const ReceivedMessages: React.FC = () => {
     setOpenedMessageId(openedMessageId === messageId ? null : messageId);
   };
 
+  
+
   const handleReplyChange = (messageId: number, content: string) => {
     setReplyContent(prev => ({ ...prev, [messageId]: content }));
   };
 
   const handleReplySubmit = async (messageId: number) => {
-    const reply = replyContent[messageId]; // Get the reply content for the specific message
-    if (!reply) return; // Do nothing if reply is empty
+    const reply = replyContent[messageId];
+    if (!reply) return;
 
     try {
       const token = localStorage.getItem("accessToken");
@@ -109,9 +112,9 @@ const ReceivedMessages: React.FC = () => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          message_id: messageId, // Send the message ID for which we are replying
-          reply_content: reply, // The reply content
-          user_id: userId, // Seller's ID (from token)
+          message_id: messageId,
+          reply_content: reply,
+          user_id: userId,
         }),
       });
 
@@ -119,19 +122,25 @@ const ReceivedMessages: React.FC = () => {
         throw new Error('Failed to send reply.');
       }
 
-      const updatedMessage = await response.json(); // Get the updated message with the reply
+      const updatedMessage = await response.json();
       setMessages(prevMessages =>
         prevMessages.map(msg => (msg.id === updatedMessage.id ? updatedMessage : msg))
-      ); // Update the message in the list with the new reply
+      );
     } catch (err: any) {
       setError(err.message);
     }
   };
 
-
+  const formatTimestamp = (timestamp: string) => {
+    const date = new Date(timestamp);
+    if (isNaN(date.getTime())) {
+      return 'Invalid Date';
+    }
+    return date.toLocaleString();
+  };
 
   return (
-<div className="messages-container">
+    <div className="messages-container">
       <h2>Received Messages</h2>
       {messages.length === 0 ? (
         <p>No messages received yet.</p>
@@ -141,9 +150,9 @@ const ReceivedMessages: React.FC = () => {
             <li key={message.id} className="message-item">
               <div className="message-header" onClick={() => toggleMessage(message.id)}>
                 <p>
-                  <strong>Message from Buyer (ID: {message.buyer})</strong>
+                  <strong>Message from Buyer: {message.buyer_username}</strong>
                   <span className="message-date">
-                    {new Date(message.timestamp).toLocaleString()}
+                    {formatTimestamp(message.timestamp)}
                   </span>
                 </p>
                 <button className="toggle-button">
@@ -154,12 +163,13 @@ const ReceivedMessages: React.FC = () => {
                 <div className="message-content">
                   <p>{message.message_content}</p>
 
-                  {/* Display reply if it exists */}
-                  {message.reply && (
-                    <p>
-                      <strong>Your Reply:</strong> {message.reply}
-                    </p>
-                  )}
+                  {/* Display replies */}
+                  {message.replies.map(reply => (
+                    <div key={reply.id} className="reply">
+                      <p><strong>{reply.sender_username}:</strong> {reply.content}</p>
+                      <p className="reply-date">{formatTimestamp(reply.timestamp)}</p>
+                    </div>
+                  ))}
 
                   {/* Reply input form */}
                   <textarea

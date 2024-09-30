@@ -12,6 +12,7 @@ const LoginPage: React.FC = () => {
   const [error, setError] = useState('');
   const router = useRouter();
   const [sdkLoaded, setSdkLoaded] = useState(false); // State to track if Facebook SDK is loaded
+  const [showModal, setShowModal] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -182,54 +183,72 @@ const LoginPage: React.FC = () => {
     }
   }
 
+  const handleModalToggle = () => {
+    setShowModal(!showModal);
+  };
+
   return (
     <div className={styles.container}>
       <Toaster position="top-center" reverseOrder={false} />
       <div className={styles.formWrapper}>
         <h2 className={styles.title}>Login</h2>
         {error && <p className={styles.error}>{error}</p>}
-        <form onSubmit={handleSubmit}>
-          <div className={styles.formElement}>
-            <label htmlFor="identifier" className={styles.label}>
-              Email or Phone Number
-            </label>
-            <input
-              type="text"
-              id="identifier"
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
-              className={styles.input}
-              required
-            />
-          </div>
-          <div className={styles.formElement}>
-            <label htmlFor="password" className={styles.label}>
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={styles.input}
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className={styles.button}
-          >
-            Login
-          </button>
-        </form>
+
+        {/* Use Phone or Email Button */}
+        <button className={styles.button} onClick={handleModalToggle}>
+          Use Phone or Email
+        </button>
 
         {/* Facebook Login Button */}
         <button onClick={loginWithFacebook} className={styles.facebookButton}>
           Login with Facebook
         </button>
 
-        {/* Google Login Button */}
+        {/* Google Login Button (outside the modal) */}
         <div className="g_id_signin" style={{ marginTop: '10px' }}></div>
+
+        {/* Modal for Phone or Email Login */}
+        {showModal && (
+          <div className={styles.modal}>
+            <div className={styles.modalContent}>
+              <span className={styles.closeBtn} onClick={handleModalToggle}>
+                &times;
+              </span>
+              <h3>Login with Phone or Email</h3>
+              <form onSubmit={handleSubmit}>
+                <div className={styles.formElement}>
+                  <label htmlFor="identifier" className={styles.label}>
+                    Email or Phone Number
+                  </label>
+                  <input
+                    type="text"
+                    id="identifier"
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
+                    className={styles.input}
+                    required
+                  />
+                </div>
+                <div className={styles.formElement}>
+                  <label htmlFor="password" className={styles.label}>
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className={styles.input}
+                    required
+                  />
+                </div>
+                <button type="submit" className={styles.button}>
+                  Login
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
 
         <p className={styles.footerText}>
           Don't have an account?{' '}

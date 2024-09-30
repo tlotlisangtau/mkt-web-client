@@ -1,61 +1,96 @@
+/* Container for messages */
 .messages-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  h2 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  .message-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .message-item {
-    border: 1px solid #ddd;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    padding: 10px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .message-item:hover {
-    background-color: #f9f9f9;
-  }
-  
-  .message-header {
-    display: flex;
-    justify-content: space-between;
-    cursor: pointer;
-    align-items: center;
-  }
-  
-  .message-date {
-    font-size: 0.9em;
-    color: #666;
-  }
-  
-  .toggle-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
-  .toggle-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .message-content {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #f0f0f0;
-    border-radius: 8px;
-  }
-  
+  padding: 20px;
+}
+
+/* Message list */
+.message-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.message-item {
+  padding: 10px;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.toggle-button {
+  padding: 5px 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.toggle-button:hover {
+  background-color: #45a049;
+}
+
+/* Modal Styles */
+.message-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.message-modal {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-button {
+  background-color: red;
+  color: white;
+  padding: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  background-color: darkred;
+}
+
+.modal-body {
+  margin-top: 10px;
+}
+
+.reply-input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.reply-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.reply-button:hover {
+  background-color: #45a049;
+}
