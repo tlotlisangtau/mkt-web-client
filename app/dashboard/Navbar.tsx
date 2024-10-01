@@ -2,9 +2,10 @@
 
 import { useEffect,useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { MinusIcon, XMarkIcon, UserIcon } from '@heroicons/react/24/outline';
+import { MinusIcon, XMarkIcon, UserIcon ,Bars3Icon} from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import {jwtDecode} from 'jwt-decode';
+import './styles/navbar.css';
 
 interface JwtPayload {
     user_id: number;
@@ -30,8 +31,8 @@ const Navbar = () => {
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem('accessToken');
-      const facebookId = localStorage.getItem('facebookID');
-      console.log('heyy',token);
+      const userID = localStorage.getItem('userID');
+      console.log('heyy',userID);
       
 
       if (!token) {
@@ -43,12 +44,12 @@ const Navbar = () => {
       try {
         //const decoded = jwtDecode<JwtPayload>(token);
     
-        const userId = facebookId;
+        //const userId = facebookId;
         
 
-        const identifier = userId ;
+        const identifier = userID ;
         console.log('User',identifier);
-        const response = await fetch(`http://127.0.0.1:8000/accounts/users/${identifier}/`, {
+        const response = await fetch(`http://127.0.0.1:8000/accounts/${identifier}/`, {
           method: 'GET',
           headers: {
             Authorization: `FBToken ${token}`,
@@ -81,55 +82,50 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white p-4 shadow-md">
-      <div className="container mx-auto flex justify-between items-center">
-        {/* Logo */}
-        <div className="`${
-            isOpen ? 'block' : 'hidden'
-          } md:flex md:items-center md:space-x-6 p-8`">
-        <Link href="/" className="text-black hover:text-gray-400">Home</Link>
-          <Link href="/about" className="text-black hover:text-gray-400">About</Link>
-          <Link href="/services" className="text-black hover:text-gray-400">Services</Link>
-          <Link href="/contact" className="text-black hover:text-gray-400">Contact</Link>
-        </div>
+<nav className="navbar">
+  <div className="navbar-container">
+    {/* Logo and Links */}
+    <div className={`nav-links ${isOpen ? 'active' : ''} md-active`}>
+      <Link href="/" className="nav-link">Home</Link>
+      <Link href="/about" className="nav-link">About</Link>
+      <Link href="/services" className="nav-link">Services</Link>
+      <Link href="/contact" className="nav-link">Contact</Link>
+    </div>
 
-        {/* Hamburger Menu Button (Mobile) */}
-        <div className="md:hidden">
-          <button
-            onClick={toggleMenu}
-            className="text-white absolute top-7 focus:outline-none"
-          >
-            {isOpen ? (
-              <XMarkIcon className="h-6 w-6" />
-            ) : (
-              <MinusIcon className="h-6 w-6" />
-            )}
-          </button>
-        </div>
+    {/* Hamburger Menu Button (Mobile) */}
+    <div className="md:hidden">
+      <button
+        onClick={toggleMenu}
+        className="hamburger-btn"
+      >
+        {isOpen ? (
+          <XMarkIcon className="h" />
+        ) : (
+          <>
+          <Bars3Icon className="h" />
+          </>
 
-        {/* Links */}
-        <div
-          className={`${
-            isOpen ? 'block' : 'hidden'
-          } md:flex md:items-center md:space-x-6`}
-        >
-          <div className="hidden md:flex items-center space-x-2">
-          <img
-            src={userData?.image_url || '/Images/author/img-07.jpg'} // Use profile picture URL or default image // Alt text with fallback names
-            style={{ width: '50px', height: '50px', borderRadius: '50%' }} // Styling for circular profile picture
-            />
-         
-          {userData ? (
-            <div>
-                <h3>Hi! {userData.username}</h3>
-                </div>
-            ) : (
-                <p>Loading user data...</p>
-            )}
+        )}
+      </button>
+    </div>
+
+    {/* Profile section */}
+    <div className={'profile-container'}>
+      <img
+        src={userData?.image_url || '/Images/author/img-07.jpg'}
+        alt="Profile picture"
+        className="profile-pic"
+      />
+      {userData ? (
+        <div className="username">
+          <h3>Hi! {userData.username}</h3>
         </div>
-        </div>
-      </div>
-    </nav>
+      ) : (
+        <p>Loading user data...</p>
+      )}
+    </div>
+  </div>
+</nav>
   );
 };
 

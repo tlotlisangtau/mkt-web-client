@@ -101,10 +101,27 @@ const ReceivedMessages: React.FC = () => {
   const handleReplySubmit = async (messageId: number) => {
     const reply = replyContent[messageId];
     if (!reply) return;
-
+  
     try {
       const token = localStorage.getItem("accessToken");
-
+  
+      
+      const newReply: Reply = {
+        id: Date.now(),  // Temporary ID until the backend returns the actual one
+        content: reply,
+        sender_username: 'You',  // Since it's from the logged-in user
+        timestamp: new Date().toISOString()  // Use the current timestamp
+      };
+  
+      setMessages(prevMessages =>
+        prevMessages.map(msg =>
+          msg.id === messageId
+            ? { ...msg, replies: [...msg.replies, newReply] }
+            : msg
+        )
+      );
+  
+      // Now send the reply to the backend
       const response = await fetch(`http://127.0.0.1:8000/api/reply/`, {
         method: 'POST',
         headers: {
@@ -117,19 +134,26 @@ const ReceivedMessages: React.FC = () => {
           user_id: userId,
         }),
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to send reply.');
       }
-
+  
       const updatedMessage = await response.json();
+  
+     
       setMessages(prevMessages =>
         prevMessages.map(msg => (msg.id === updatedMessage.id ? updatedMessage : msg))
       );
+  
+      // Clear the reply input after successful submission
+      setReplyContent(prev => ({ ...prev, [messageId]: '' }));
+  
     } catch (err: any) {
       setError(err.message);
     }
   };
+  
 
   const formatTimestamp = (timestamp: string) => {
     const date = new Date(timestamp);
@@ -150,7 +174,8 @@ const ReceivedMessages: React.FC = () => {
             <li key={message.id} className="message-item">
               <div className="message-header" onClick={() => toggleMessage(message.id)}>
                 <p>
-                  <strong>Message from Buyer: {message.buyer_username}</strong>
+                  <strong>Message from: {message.buyer_username}</strong>
+                  <br />
                   <span className="message-date">
                     {formatTimestamp(message.timestamp)}
                   </span>
@@ -160,29 +185,34 @@ const ReceivedMessages: React.FC = () => {
                 </button>
               </div>
               {openedMessageId === message.id && (
-                <div className="message-content">
-                  <p>{message.message_content}</p>
-
-                  {/* Display replies */}
-                  {message.replies.map(reply => (
-                    <div key={reply.id} className="reply">
-                      <p><strong>{reply.sender_username}:</strong> {reply.content}</p>
-                      <p className="reply-date">{formatTimestamp(reply.timestamp)}</p>
+                  <div className="message-content-wrapper">
+                    <div className="message-left">
+                      <p>{message.message_content}</p>
                     </div>
-                  ))}
+                    
+                    <div className="message-right">
+                      {/* Display replies */}
+                      {message.replies.map(reply => (
+                        <div key={reply.id} className="reply">
+                          <p>{reply.content}</p>
+                          <p className="reply-date">{formatTimestamp(reply.timestamp)}</p>
+                        </div>
+                      ))}
 
-                  {/* Reply input form */}
-                  <textarea
-                    placeholder="Type your reply..."
-                    value={replyContent[message.id] || ''}
-                    onChange={(e) => handleReplyChange(message.id, e.target.value)}
-                    className="reply-input"
-                  />
-                  <button onClick={() => handleReplySubmit(message.id)} className="reply-button">
-                    Send Reply
-                  </button>
-                </div>
-              )}
+                      {/* Reply input form */}
+                      <textarea
+                        placeholder="Type your reply..."
+                        value={replyContent[message.id] || ''}
+                        onChange={(e) => handleReplyChange(message.id, e.target.value)}
+                        className="reply-input"
+                      />
+                      <button onClick={() => handleReplySubmit(message.id)} className="reply-button">
+                        Send Reply
+                      </button>
+                    </div>
+                  </div>
+                )}
+
             </li>
           ))}
         </ul>

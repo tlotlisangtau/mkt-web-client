@@ -124,7 +124,9 @@ const LoginPage: React.FC = () => {
         .then((data) => {
           if (data.user_id) {
             console.log('User ID:', data.user_id);
-            localStorage.setItem('accessToken', googleToken);
+            localStorage.setItem('userID', data.user_id);
+            localStorage.setItem('accessToken', data.token);
+            console.log('accessToken:', data.token);
             toast.success('Logged in successfully!', {
               style: { background: 'green', color: 'white' },
               duration: 2000,

@@ -94,3 +94,71 @@
 .reply-button:hover {
   background-color: #45a049;
 }
+
+/* Container for message content and replies */
+.message-content-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 10px;
+  gap: 20px; 
+}
+
+/* Left side for the actual message */
+.message-left {
+  flex: 1;
+  padding-right: 20px;
+  border-right: 1px solid #ccc;
+  background-color: #e0f7fa;
+  padding: 10px;
+  border-radius: 15px 15px 15px 0;
+  margin-bottom: 5px;
+  position: relative;
+  width:30px;
+}
+
+/* Right side for the replies */
+.message-right {
+  flex: 1;
+}
+
+/* Style each reply */
+.reply {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 15px;
+  border: 1px solid #e0e0e0;
+}
+
+/* Reply input */
+.reply-input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Reply button */
+.reply-button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.reply-button:hover {
+  background-color: #0056b3;
+}
+
+.reply-date{
+  font-size: 12px;
+}
+
+.message-date{
+  font-size: 12px;
+}

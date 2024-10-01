@@ -39,7 +39,7 @@ const ProfileSettings = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const id = getUserIdFromToken(); // Get the dynamic user_id
+        const id = getUserIdFromToken() || localStorage.getItem('userID'); // Get the dynamic user_id
         if (!id) {
           throw new Error('User ID not found');
         }
@@ -99,6 +99,7 @@ const ProfileSettings = () => {
     try {
       const id = userId; 
       const token = localStorage.getItem('accessToken'); 
+      console.log('token',token)
       if (!id || !token) {
         throw new Error('User ID or token not available');
       }
@@ -110,6 +111,7 @@ const ProfileSettings = () => {
           'Authorization': `Bearer ${token}`, 
         },
         body: JSON.stringify({
+          username: userData.username || '',
           first_name: userData.firstname || '',
           last_name: userData.lastname || '',
           phone_number: userData.phone_number || '',

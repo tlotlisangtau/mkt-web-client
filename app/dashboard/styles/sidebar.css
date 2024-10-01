@@ -1,0 +1,72 @@
+/* sidebar.css */
+
+.sidebar-button {
+    padding: 10px;
+    background-color: #3b82f6; /* Same as bg-blue-500 */
+    color: white;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 20;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .sidebar-button:hover {
+    background-color: #2563eb; /* Darker blue on hover */
+  }
+  
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 256px;
+    background-color: #1f2937; /* Same as bg-gray-800 */
+    color: white;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 10;
+  }
+  
+  .sidebar-open {
+    transform: translateX(0);
+  }
+  
+  .sidebar ul {
+    padding: 36px;
+    margin-top: 40px;
+  }
+  
+  .sidebar li {
+    padding: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .sidebar a {
+    color: aliceblue;
+    text-decoration: none;
+  }
+  
+  .sidebar li:hover {
+    background-color: #374151; /* Same as hover:bg-gray-700 */
+  }
+  
+  .sidebar .active {
+    background-color: #2563eb; /* Custom active background */
+  }
+  
+  .icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+  }
+  
+  .size-6 {
+    width: 24px;
+    height: 24px;
+  }
+  

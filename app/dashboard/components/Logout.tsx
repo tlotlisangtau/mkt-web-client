@@ -9,6 +9,8 @@ const Logout = () => {
   const handleLogout = () => {
     // Clear the token or any authentication data
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('google_token');
+    localStorage.removeItem('userID');
 
     // Redirect to login or homepage
     router.push('/api/auth/login'); // or '/homepage'
