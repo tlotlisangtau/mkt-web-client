@@ -86,10 +86,7 @@ const Navbar = () => {
   <div className="navbar-container">
     {/* Logo and Links */}
     <div className={`nav-links ${isOpen ? 'active' : ''} md-active`}>
-      <Link href="/" className="nav-link">Home</Link>
-      <Link href="/about" className="nav-link">About</Link>
-      <Link href="/services" className="nav-link">Services</Link>
-      <Link href="/contact" className="nav-link">Contact</Link>
+      <Link href="/" className="nav-link">Return To Store</Link>
     </div>
 
     {/* Hamburger Menu Button (Mobile) */}
@@ -107,7 +104,7 @@ const Navbar = () => {
 
         )}
       </button>
-    </div>
+    </div>  
 
     {/* Profile section */}
     <div className={'profile-container'}>

@@ -1,0 +1,26 @@
+/* customStyles.css */
+
+.fullscreen-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh; 
+}
+
+.logout-button {
+    background-color: #e3342f; 
+    color: white;
+    padding: 10px; 
+    width: 130px;
+    border-radius: 19px; 
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.logout-button:hover {
+    background-color: #c53030; /* Tailwind red-700 */
+}
+
+.logout-button:focus {
+    outline: none; /* Remove default focus outline */
+    ring: 2px solid #e3342f; /* Tailwind focus:ring-2 focus:ring-red-600 */
+}

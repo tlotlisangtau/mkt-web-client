@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import '../styles/logout.css';
 
 const Logout = () => {
   const router = useRouter();
@@ -17,10 +18,10 @@ const Logout = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="fullscreen-center">
       <button
         onClick={handleLogout}
-        className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600"
+        className="logout-button"
       >
         Logout
       </button>

@@ -10,7 +10,52 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-  
+/* General button styles */
+.btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  margin: 10px; /* Add spacing between buttons */
+}
+
+/* Edit Button */
+.btn-edit {
+  background-color: #007bff; /* Blue */
+  color: white;
+  border: none;
+}
+
+.btn-edit:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Delete Button */
+.btn-delete {
+  background-color: #dc3545; /* Red */
+  color: white;
+  border: none;
+}
+
+.btn-delete:hover {
+  background-color: #b02a37; /* Darker red on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Back Button */
+.btn-back {
+  background-color: #6c757d; /* Gray */
+  color: white;
+  border: none;
+}
+
+.btn-back:hover {
+  background-color: #5a6268; /* Darker gray on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 
 .add-ad-form h1 {
   font-size: 1.5rem;

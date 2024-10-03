@@ -34,21 +34,25 @@
   }
   
   .sidebar ul {
+
     padding: 36px;
-    margin-top: 40px;
+    margin-top: 80px;
   }
   
   .sidebar li {
-    padding: 8px;
+    padding: 18px;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
     cursor: pointer;
+    position: relative;
   }
 
   .sidebar a {
     color: aliceblue;
     text-decoration: none;
+    position: relative;
+    margin-left: 5px;
   }
   
   .sidebar li:hover {
@@ -63,10 +67,14 @@
     width: 24px;
     height: 24px;
     margin-right: 8px;
+    position: relative;
   }
   
   .size-6 {
     width: 24px;
     height: 24px;
+    position: relative;
+    top: 5px;
+    
   }
   

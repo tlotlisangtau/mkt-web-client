@@ -27,7 +27,6 @@ const HomePage: React.FC = () => {
       <Searchform />
       <Categorysection />
       <Products4_block />
-      <Ssidebar />
 
     </>
   );

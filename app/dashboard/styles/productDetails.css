@@ -1,0 +1,56 @@
+/* Button Styling */
+.btn-primary {
+    background-color: #4CAF50; /* Green background */
+    color: white;              /* White text */
+    padding: 10px 20px;        /* Padding */
+    border: none;              /* Remove border */
+    border-radius: 5px;        /* Rounded corners */
+    cursor: pointer;           /* Pointer cursor on hover */
+    font-size: 16px;           /* Font size */
+    transition: background-color 0.3s ease; /* Smooth transition */
+  }
+  
+  .btn-primary:hover {
+    background-color: #45a049; /* Darker green on hover */
+  }
+  
+  .btn-danger {
+    background-color: #f44336; /* Red background */
+    color: white;              /* White text */
+    padding: 10px 20px;        /* Padding */
+    border: none;              /* Remove border */
+    border-radius: 5px;        /* Rounded corners */
+    cursor: pointer;           /* Pointer cursor on hover */
+    font-size: 16px;           /* Font size */
+    transition: background-color 0.3s ease; /* Smooth transition */
+  }
+  
+  .btn-danger:hover {
+    background-color: #e53935; /* Darker red on hover */
+  }
+  
+  .btn-secondary {
+    background-color: #008CBA; /* Blue background */
+    color: white;              /* White text */
+    padding: 10px 20px;        /* Padding */
+    border: none;              /* Remove border */
+    border-radius: 5px;        /* Rounded corners */
+    cursor: pointer;           /* Pointer cursor on hover */
+    font-size: 16px;           /* Font size */
+    transition: background-color 0.3s ease; /* Smooth transition */
+  }
+  
+  .btn-secondary:hover {
+    background-color: #007bb5; /* Darker blue on hover */
+  }
+  
+  /* Button container for spacing */
+  .btn-container {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;          /* Space between buttons */
+
+    margin-left: 60px;    /* Space above the button container */
+  }
+
+  

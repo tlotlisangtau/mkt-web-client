@@ -6,6 +6,7 @@ import '../../../styles/profile.css';
 const ProfileSettings = () => {
   // State for user data
   const [userData, setUserData] = useState({
+    
     username: '',
     firstname: '',
     lastname: '',
