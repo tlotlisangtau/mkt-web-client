@@ -6,6 +6,7 @@ import '../../../styles/globals.css';
 import '../../../styles/style.css'; // Import carousel styles
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import '../styles/productDetails.css';
+import { toast, Toaster } from 'react-hot-toast';
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -43,11 +44,23 @@ interface Post {
 interface ProductDetailsProps {
   post: Post;
   onBack: () => void; // Function to go back to the ads list
+  onDeleteSuccess: () => void; // Function to handle success after deletion
 }
 
-const ProductDetails: React.FC<ProductDetailsProps> = ({ post, onBack }) => {
+const categoryMap: { [key: number]: string } = {
+  5: 'jobs',
+  7: 'sports',
+  8: 'furniture',
+  9: 'real_estate',
+  10: 'health_beauty',
+  // Add more mappings as needed
+};
+
+
+const ProductDetails: React.FC<ProductDetailsProps> = ({ post, onBack, onDeleteSuccess }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [productDetails, setProductDetails] = useState<Post>(post); // Add local state for the product
+  const [showDeleteModal, setShowDeleteModal] = useState(false); 
 
   // Function to handle success after saving the ad details
   const handleSaveSuccess = (updatedPost: Post) => {
@@ -59,6 +72,36 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ post, onBack }) => {
   const handleEditClick = () => {
     setIsEditing(true); // Switch to the Edit view when the 'Edit' button is clicked
   };
+
+
+  
+  const handleDeleteAd = async () => {
+    const category = categoryMap[post.category_id];
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/${category}/ads/${post.id}/`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        console.log('Ad deleted successfully.');
+        toast.success('Ad deleted successfully!', {
+            style: { background: 'green', color: 'white' },
+            duration: 2000,
+        });
+        setShowDeleteModal(false); // Close modal after deletion
+        setTimeout(() => {
+            onDeleteSuccess(); // Call the function to handle success after deletion
+            onBack();  // Call the parent component to refresh
+        }, 2000); // Adjust the timeout duration as needed
+    } else {
+        console.error('Failed to delete ad:', await response.text());
+      }
+    } catch (error) {
+      console.error('Error deleting ad:', error);
+    }
+  };
+
+  const handleDeleteClick = () => setShowDeleteModal(true);
 
   useEffect(() => {
     if (productDetails.image_urls) {
@@ -77,8 +120,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ post, onBack }) => {
     );
   }
 
+
   return (
     <section className="w3l-products-page w3l-blog-single w3l-products-4">
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="single blog">
         <div className="wrapper">
           <h3 className="title-main">Product Single Ad</h3>
@@ -131,7 +176,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ post, onBack }) => {
         <button onClick={handleEditClick} className="btn-primary">
             Edit
         </button>
-        <button className="btn-danger">
+        <button onClick={handleDeleteClick} className="btn-danger">
             Delete
         </button>
         <button onClick={onBack} className="btn-secondary">
@@ -139,7 +184,23 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ post, onBack }) => {
         </button>
       </div>
       
+      {showDeleteModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>Are you sure you want to delete this ad?</h3>
+            <div className="modal-buttons">
+              <button className="btn btn-danger" onClick={handleDeleteAd}>
+                Yes, Delete
+              </button>
+              <button className="btn btn-secondary" onClick={() => setShowDeleteModal(false)}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
+
   );
 };
 

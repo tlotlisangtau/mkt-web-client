@@ -117,10 +117,19 @@ function MyAds() {
   if (loading) {
     return <p>Loading...</p>;
   }
-
+  const refreshAds = (deletedPostId: number) => {
+    setPosts((prevPosts) => prevPosts.filter((post) => post.id !== deletedPostId));
+    setViewDetails(false); // Go back to ads list after delete
+  };
 
   if (viewDetails && selectedPost) {
-    return <ProductDetails post={selectedPost} onBack={handleBackToAds} />;
+    return (
+      <ProductDetails
+        post={selectedPost}
+        onBack={handleBackToAds}
+        onDeleteSuccess={() => refreshAds(selectedPost.id)} // Pass the deletion handler
+      />
+    );
   }
 
   return (
