@@ -45,6 +45,7 @@ interface ProductDetailsProps {
   post: Post;
   onBack: () => void; // Function to go back to the ads list
   onDeleteSuccess: () => void; // Function to handle success after deletion
+  onSaveSuccess: (updatedPost: Post) => void;
 }
 
 const categoryMap: { [key: number]: string } = {
@@ -57,7 +58,7 @@ const categoryMap: { [key: number]: string } = {
 };
 
 
-const ProductDetails: React.FC<ProductDetailsProps> = ({ post, onBack, onDeleteSuccess }) => {
+const ProductDetails: React.FC<ProductDetailsProps> = ({ post, onBack, onDeleteSuccess,onSaveSuccess }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [productDetails, setProductDetails] = useState<Post>(post); // Add local state for the product
   const [showDeleteModal, setShowDeleteModal] = useState(false); 
@@ -67,6 +68,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ post, onBack, onDeleteS
     setProductDetails(updatedPost); // Update the product details with the new saved data
     setIsEditing(false); // Go back to the view mode after saving
     console.log('Ad details saved successfully!');
+    onSaveSuccess(updatedPost);
   };
 
   const handleEditClick = () => {
@@ -122,6 +124,15 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ post, onBack, onDeleteS
 
 
   return (
+
+    <>
+    <div className="btn-container">
+    <button onClick={onBack} className="btn-secondary">
+            Back
+    </button>
+
+    </div>
+    
     <section className="w3l-products-page w3l-blog-single w3l-products-4">
       <Toaster position="top-center" reverseOrder={false} />
       <div className="single blog">
@@ -179,9 +190,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ post, onBack, onDeleteS
         <button onClick={handleDeleteClick} className="btn-danger">
             Delete
         </button>
-        <button onClick={onBack} className="btn-secondary">
-            Back
-        </button>
       </div>
       
       {showDeleteModal && (
@@ -192,15 +200,13 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ post, onBack, onDeleteS
               <button className="btn btn-danger" onClick={handleDeleteAd}>
                 Yes, Delete
               </button>
-              <button className="btn btn-secondary" onClick={() => setShowDeleteModal(false)}>
-                Cancel
-              </button>
+
             </div>
           </div>
         </div>
       )}
     </section>
-
+    </>
   );
 };
 

@@ -113,6 +113,14 @@ function MyAds() {
     setViewDetails(false); // Return to the ads list
   };
 
+  const handleUpdateAd = (updatedPost: Post) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === updatedPost.id ? updatedPost : post
+      )
+    );
+    setSelectedPost(updatedPost); // Update the selected post to reflect changes
+  };
 
   if (loading) {
     return <p>Loading...</p>;
@@ -128,6 +136,7 @@ function MyAds() {
         post={selectedPost}
         onBack={handleBackToAds}
         onDeleteSuccess={() => refreshAds(selectedPost.id)} // Pass the deletion handler
+        onSaveSuccess={handleUpdateAd}
       />
     );
   }

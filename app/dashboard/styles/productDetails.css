@@ -8,6 +8,8 @@
     cursor: pointer;           /* Pointer cursor on hover */
     font-size: 16px;           /* Font size */
     transition: background-color 0.3s ease; /* Smooth transition */
+    position: relative;
+    top: -25px;
   }
   
   .btn-primary:hover {
@@ -23,6 +25,8 @@
     cursor: pointer;           /* Pointer cursor on hover */
     font-size: 16px;           /* Font size */
     transition: background-color 0.3s ease; /* Smooth transition */
+    position: relative;
+    top: -25px;
   }
   
   .btn-danger:hover {
@@ -38,6 +42,8 @@
     cursor: pointer;           /* Pointer cursor on hover */
     font-size: 16px;           /* Font size */
     transition: background-color 0.3s ease; /* Smooth transition */
+    position: relative;
+    top: 25px;
   }
   
   .btn-secondary:hover {
@@ -49,8 +55,8 @@
     display: flex;
     justify-content: flex-start;
     gap: 10px;          /* Space between buttons */
-
-    margin-left: 60px;    /* Space above the button container */
+    margin-left: 120px; 
+    position: relative;   /* Space above the button container */
   }
 
 /* productDetails.css */
