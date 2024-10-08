@@ -1,0 +1,61 @@
+/* Modal overlay */
+.modal-overlayyy {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6); /* semi-transparent background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000; /* Ensures it appears above other content */
+  }
+  
+  /* Modal box */
+  .modalll {
+    background-color: #fff;
+    padding: 20px;
+    width: 300px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* soft shadow for depth */
+    text-align: center;
+  }
+  
+  .modalll h3 {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+  }
+  
+  .modalll button,
+  .modallll .btnnn {
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .modalll button {
+    background-color: #ccc;
+    color: #333;
+  }
+  
+  .modalll .btnnn {
+    background-color: #007bff; /* Primary color */
+    color: white;
+    text-decoration: none;
+    padding: 5px;
+  }
+  
+  .modalll button:hover,
+  .modalll .btnnn:hover {
+    opacity: 0.8;
+  }
+
+  .modalll button:focus,
+  .modalll .btnnn:focus {
+    outline: none;
+  }
+  

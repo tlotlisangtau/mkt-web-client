@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, FormEvent, DragEvent } from 'react';
+import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 import supabase from '../utils/supabaseClient';
 import '../styles/style.css'; 
@@ -55,6 +56,7 @@ const CategoryForm: React.FC = () => {
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     fetch('http://localhost:8000/api/categories/')
@@ -97,7 +99,8 @@ const CategoryForm: React.FC = () => {
           { name: 'Material', type: 'text' },
           { name: 'Dimensions', type: 'text' },
           { name: 'Color', type: 'text' },
-          { name: 'Mobile Number', type: 'text' }
+          { name: 'Mobile Number', type: 'text' },
+          { name: 'Condition', type: 'select' }
         ]);
         break;
       case 9: // Assume 9 is the ID for Real Estate
@@ -108,7 +111,8 @@ const CategoryForm: React.FC = () => {
           { name: 'Property Type', type: 'text' },
           { name: 'Location', type: 'text' },
           { name: 'Size', type: 'text' },
-          { name: 'Mobile Number', type: 'text' }
+          { name: 'Mobile Number', type: 'text' },
+          { name: 'Condition', type: 'select' }
         ]);
         break;
       case 10: // Assume 10 is the ID for Health & Beauty
@@ -119,7 +123,8 @@ const CategoryForm: React.FC = () => {
           { name: 'Brand', type: 'text' },
           { name: 'Type', type: 'text' },
           { name: 'Ingredients', type: 'text' },
-          { name: 'Mobile Number', type: 'text' }
+          { name: 'Mobile Number', type: 'text' },
+          { name: 'Condition', type: 'select' }
         ]);
         break;
       default:
@@ -284,6 +289,9 @@ useEffect(() => {
         const responseData = await response.json();
         console.log('Success:', responseData);
         toast.success('Product added successfully!');
+        setTimeout(() => {
+          router.push('/dashboard'); // Redirect to a protected page
+        }, 1000);
       } else {
         const responseText = await response.text();
         console.error('Error response:', responseText);
@@ -388,8 +396,8 @@ useEffect(() => {
                       onChange={handleChange}
                     >
                       <option value="">Select Condition</option>
-                      <option value="NEW">New</option>
-                      <option value="USED">Used</option>
+                      <option value="New">New</option>
+                      <option value="Used">Used</option>
                     </select>
                   ) : (
                     <input

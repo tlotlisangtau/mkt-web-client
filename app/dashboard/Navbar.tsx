@@ -81,12 +81,22 @@ const Navbar = () => {
     return Array.isArray(urls) ? urls : [urls];
   };
 
+  const toStore = () => {
+    window.location.href = '/';
+
+  };
+
   return (
 <nav className="navbar">
   <div className="navbar-container">
     {/* Logo and Links */}
     <div className={`nav-links ${isOpen ? 'active' : ''} md-active`}>
-      <Link href="/" className="nav-link">Return To Store</Link>
+      <button
+        onClick={toStore}
+        className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+        >
+              Return To Store
+            </button>
     </div>
 
     {/* Hamburger Menu Button (Mobile) */}

@@ -40,8 +40,9 @@
   }
   
   .sidebar li {
-    padding: 18px;
+    padding: 15px;
     margin-bottom: 20px;
+    margin-left: 10px;
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -74,7 +75,7 @@
     width: 24px;
     height: 24px;
     position: relative;
-    top: 5px;
-    
+    top: 22px;
+    left: -25px;
   }
   

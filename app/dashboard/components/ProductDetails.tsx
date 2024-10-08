@@ -19,6 +19,7 @@ const formatDate = (dateString: string) => {
 interface Post {
   id: number;
   status: string;
+  size: string;
   image_urls: string[];
   category: string;
   description: string;
@@ -27,15 +28,19 @@ interface Post {
   name: string;
   salary?: string;
   job_location: string;
+  department: string;
   location: string;
   created_at: string;
   user_id: number;
+  condition?: string;
   category_id: number;
   complete: boolean;
   company: string;
   material: string;
+  type?: string;
   ingredients: string;
   property_type: string;
+  mobile_number?: string;
   valid_until: string;
   color: string;
   dimensions: string;
@@ -52,8 +57,8 @@ const categoryMap: { [key: number]: string } = {
   5: 'jobs',
   7: 'sports',
   8: 'furniture',
-  9: 'real_estate',
-  10: 'health_beauty',
+  9: 'realeystate',
+  10: 'healthbeauty',
   // Add more mappings as needed
 };
 
@@ -111,6 +116,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ post, onBack, onDeleteS
     }
   }, [productDetails.image_urls]);
 
+
   if (isEditing) {
     // When switching to edit mode, pass the `productDetails`, `onBack`, and `onSaveSuccess` as props
     return (
@@ -141,9 +147,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ post, onBack, onDeleteS
           <div className="grid-colunm-2 d-flex">
             <div className="tab-content text-left single-left-content left-product-sing">
               <h3 className="aside-title single-prt">{productDetails.name || 'Loading...'}</h3>
-              <p className="para-single">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-
-              <p>Images here</p>
+              <br />
               {Array.isArray(productDetails.image_urls) && productDetails.image_urls.length > 0 ? (
                 <Carousel showThumbs={false} infiniteLoop autoPlay>
                   {productDetails.image_urls.map((url, index) => (
@@ -164,16 +168,22 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ post, onBack, onDeleteS
                     <li>Price: R{productDetails.price || productDetails.salary}</li><br />
                   </ul>
                   <ul>
-                    <li>Posted: {productDetails.valid_until ? formatDate(productDetails.valid_until) : 'No date available'}</li>
-                  </ul>
+                  <li>
+                    Posted: {productDetails.valid_until ? formatDate(productDetails.valid_until) : formatDate(productDetails.created_at)}
+                  </li>
+                </ul>
+
                 </div>
 
                 <h3 className="aside-title top-sec-space">Features</h3>
                 <div className="d-grid list-styles">
                   <ul className="ad-lists">
-                    <li><span className="fa fa-check-circle" aria-hidden="true"></span>{productDetails.job_location || 'No location'}</li>
-                    <li><span className="fa fa-check-circle" aria-hidden="true"></span>{productDetails.company || 'No company'}</li>
-                    <li><span className="fa fa-check-circle" aria-hidden="true"></span>{productDetails.salary || 'No salary'}</li>
+                    <li><span className="fa fa-check-circle" aria-hidden="true"></span>{productDetails.job_location || productDetails.location }</li>
+                    <li><span className="fa fa-check-circle" aria-hidden="true"></span>{productDetails.company || 'Owner'}</li>
+                    <li><span className="fa fa-check-circle" aria-hidden="true"></span>{productDetails.material || productDetails.color || productDetails.department}</li>
+                    <li><span className="fa fa-check-circle" aria-hidden="true"></span>{productDetails.size || productDetails.dimensions || productDetails.salary}</li>
+                    <li><span className="fa fa-check-circle" aria-hidden="true"></span>{productDetails.condition || productDetails.valid_until}</li>
+                    <li><span className="fa fa-check-circle" aria-hidden="true"></span>{productDetails.complete || 'No salary'}</li>
                   </ul>
                 </div>
               </div>
@@ -199,6 +209,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ post, onBack, onDeleteS
             <div className="modal-buttons">
               <button className="btn btn-danger" onClick={handleDeleteAd}>
                 Yes, Delete
+              </button>
+
+              <button onClick={() => setShowDeleteModal(false)} className="btn-cancel">
+                Cancel
               </button>
 
             </div>

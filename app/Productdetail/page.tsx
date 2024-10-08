@@ -15,10 +15,15 @@ interface Product {
   name: string;
   description: string;
   price: string;
+  condition?: string;
   image_urls: string[];
   job_location: string;
+  location: string;
   company: string;
+  created_at: string;
   salary: string;
+  size: string;
+  dimensions: string;
   valid_until: string;
   category: string;
 }
@@ -87,9 +92,8 @@ const ProductDetail: React.FC = () => {
             <div className="grid-colunm-2 d-flex">
               <div className="tab-content text-left single-left-content left-product-sing">
                 <h3 className="aside-title single-prt">{product ? product.name : 'Loading...'}</h3>
-                <p className="para-single">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-
-                <p>Images here</p>
+                
+                <br />
                 {loading && <p>Loading...</p>}
                 {error && <p>Error: {error}</p>}
                 {!loading && !error && product?.image_urls && (
@@ -111,7 +115,7 @@ const ProductDetail: React.FC = () => {
                         <li>Price: R{product.price}</li><br />
                       </ul>
                       <ul>
-                        <li>Posted: {formatDate(product.valid_until)}</li>
+                        <li>Posted: {formatDate(product.valid_until || product.created_at)}</li>
                       </ul>
                     </div>
                   )}
@@ -119,9 +123,9 @@ const ProductDetail: React.FC = () => {
                   <h3 className="aside-title top-sec-space">Features</h3>
                   <div className="d-grid list-styles">
                     <ul className="ad-lists">
-                      <li><span className="fa fa-check-circle" aria-hidden="true"></span>{product?.job_location}</li>
-                      <li><span className="fa fa-check-circle" aria-hidden="true"></span>{product?.company}</li>
-                      <li><span className="fa fa-check-circle" aria-hidden="true"></span>{product?.salary}</li>
+                      <li><span className="fa fa-check-circle" aria-hidden="true"></span>{product?.job_location  || product?.location}</li>
+                      <li><span className="fa fa-check-circle" aria-hidden="true"></span>{product?.size  || product?.dimensions}</li>
+                      <li><span className="fa fa-check-circle" aria-hidden="true"></span>{product?.salary  || product?.condition}</li>
                     </ul>
                   </div>
                 </div>

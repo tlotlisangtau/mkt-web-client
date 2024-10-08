@@ -62,9 +62,8 @@ function MyAds() {
           console.error('Error decoding token:', error);
         }
       }
-
       try {
-        const [jobsResponse, sportsResponse] = await Promise.all([
+        const [jobsResponse, sportsResponse, furnitureResponse, realestateResponse, healthbeautyResponse] = await Promise.all([
           fetch('http://127.0.0.1:8000/api/jobs/ads/', {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -75,11 +74,31 @@ function MyAds() {
               Authorization: `Bearer ${token}`,
             },
           }),
+          fetch('http://127.0.0.1:8000/api/furniture/ads/', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          fetch('http://127.0.0.1:8000/api/realestate/ads/', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          fetch('http://127.0.0.1:8000/api/healthbeauty/ads/', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
         ]);
-
-        const jobsData = await jobsResponse.json();
-        const sportsData = await sportsResponse.json();
-
+      
+        const [jobsData, sportsData, furnitureData, realestateData, healthbeautyData] = await Promise.all([
+          jobsResponse.json(),
+          sportsResponse.json(),
+          furnitureResponse.json(),
+          realestateResponse.json(),
+          healthbeautyResponse.json(),
+        ]);
+      
         const categorizedJobs = jobsData.map((job: Post) => ({
           ...job,
           category: 'Jobs',
@@ -88,17 +107,34 @@ function MyAds() {
           ...sport,
           category: 'Sports',
         }));
-
-        const combinedPosts = [...categorizedJobs, ...categorizedSports].filter(
-          (post: Post) => post.user_id === userId
-        );
-
+        const categorizedFurniture = furnitureData.map((furniture: Post) => ({
+          ...furniture,
+          category: 'Furniture',
+        }));
+        const categorizedRealEstate = realestateData.map((realestate: Post) => ({
+          ...realestate,
+          category: 'Real Estate',
+        }));
+        const categorizedHealthBeauty = healthbeautyData.map((healthbeauty: Post) => ({
+          ...healthbeauty,
+          category: 'Health & Beauty',
+        }));
+      
+        const combinedPosts = [
+          ...categorizedJobs,
+          ...categorizedSports,
+          ...categorizedFurniture,
+          ...categorizedRealEstate,
+          ...categorizedHealthBeauty,
+        ].filter((post: Post) => post.user_id === userId);
+      
         setPosts(combinedPosts);
       } catch (error) {
         console.error('Error fetching posts:', error);
       } finally {
         setLoading(false);
       }
+      
     };
 
     fetchPosts();

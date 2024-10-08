@@ -138,3 +138,17 @@
   font-size: 20px;
   cursor: pointer;
 }
+
+.back {
+  position: absolute;
+  padding: 8px;
+  top: 30px;
+  right: 1220px;
+  font-size: 15px;
+  cursor: pointer;
+  width: 80px;
+  border: 1px solid rgb(46, 45, 45);
+  background-color: #2563eb;
+  color: #ffffff;
+  border-radius: 8px;
+}

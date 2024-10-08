@@ -1,10 +1,31 @@
-"use client";
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import '../styles/globals.css';
 
 const Nav: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  useEffect(() => {
+    const userToken = localStorage.getItem('accessToken');
+    setIsLoggedIn(!!userToken);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    setIsLoggedIn(false);
+    setShowLogoutModal(false);
+    window.location.reload();
+  };
+
+  const handleLoginLogout = () => {
+    if (isLoggedIn) {
+      setShowLogoutModal(true);
+    } else {
+      window.location.href = '/api/auth/login';
+    }
+  };
+
   return (
     <header className="bg-white shadow-md">
       <div className="container mx-auto px-4 py-2">
@@ -19,68 +40,49 @@ const Nav: React.FC = () => {
           </div>
           <nav className="hidden lg:flex space-x-4 p-3">
             <Link href="/" className="text-gray-800 hover:text-gray-600">Home</Link>
-            <div className="relative group">
-              <Link href="#" className="text-gray-800 hover:text-gray-600 flex items-center">
-                All Ads <span className="fa fa-angle-down ml-2" aria-hidden="true"></span>
-              </Link>
-              <div className="absolute bg-white shadow-lg mt-2 hidden group-hover:grid p-8 w-auto" style={{ zIndex: 20 }}>
-                <Link href="/category" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">All Ads</Link>
-                <Link href="/product-1" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Electronics</Link>
-                <Link href="/product-2" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Furniture</Link>
-                <Link href="/product-3" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Jobs</Link>
-                <Link href="/product-4" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Real Estate</Link>
-                <Link href="/product-5" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Sports</Link>
-                <Link href="/product-6" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Health & Beauty</Link>
-                <Link href="/product-single" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Single Ad</Link>
-              </div>
-            </div>
-            <div className="relative group">
-              <Link href="#" className="text-gray-800 hover:text-gray-600 flex items-center">
-                Pages <span className="fa fa-angle-down ml-2" aria-hidden="true"></span>
-              </Link>
-              <div className="absolute bg-white shadow-lg mt-2 hidden group-hover:grid p-4 w-auto" style={{ zIndex: 20 }}>
-                <Link href="/about" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">About</Link>
-                <Link href="/services" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">How it Works?</Link>
-                <Link href="/pricing" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Pricing</Link>
-                <Link href="/team" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Team</Link>
-                <Link href="/team-single" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Team Member</Link>
-                <Link href="/blog" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Blog</Link>
-                <Link href="/blog-single" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Blog Single</Link>
-                <Link href="/timeline" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Timeline</Link>
-                <Link href="/faq" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Faq</Link>
-                <Link href="/coming-soon" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Coming Soon</Link>
-                <Link href="/404" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">404</Link>
-                <Link href="/search-results" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Search Results</Link>
-                <Link href="/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Login</Link>
-                <Link href="/signup" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Signup</Link>
-                <Link href="/email-template" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Email Template</Link>
-              </div>
-            </div>
-            <div className="relative group">
-              <Link href="#" className="text-gray-800 hover:text-gray-600 flex items-center">
-                Shop <span className="fa fa-angle-down ml-2" aria-hidden="true"></span>
-              </Link>
-              <div className="absolute bg-white shadow-lg mt-2 hidden group-hover:grid p-4 w-auto" style={{ zIndex: 20 }}>
-                <Link href="/ecommerce" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Ecommerce</Link>
-                <Link href="/ecommerce-single" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Ecommerce Single</Link>
-                <Link href="/ecommerce-cart" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Ecommerce Cart</Link>
-              </div>
-            </div>
-            <Link href="/contact" className="text-gray-800 hover:text-gray-600">Contact</Link>
+            {/* Other links */}
             <Link href="/ChooseCategory" className="bg-blue-500 text-white py-2 px-2 mb-3 rounded hover:bg-blue-600">
               <span className="fa fa-paper-plane-o mr-2" aria-hidden="true"></span>
               Post your Ad
             </Link>
-            <Link href="/api/auth/login/" className="bg-blue-500 text-white py-2 px-2 mb-3 rounded hover:bg-blue-600">
+            <button
+              onClick={handleLoginLogout}
+              className="bg-blue-500 text-white py-2 px-2 mb-3 rounded hover:bg-blue-600"
+            >
               <span className="fa fa-paper-plane-o mr-2" aria-hidden="true"></span>
-              Login
-            </Link>
+              {isLoggedIn ? 'Logout' : 'Login'}
+            </button>
           </nav>
           <button className="lg:hidden text-gray-800 hover:text-gray-600">
             <span className="fa fa-bars text-2xl"></span>
           </button>
         </div>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutModal && (
+        <div className="modal-overlay">
+        <div className="modal-content">
+          <h2 className="text-lg font-semibold mb-4">Confirm Logout</h2>
+          <p className="mb-6">Are you sure you want to log out?</p>
+          <div className="flex justify-end space-x-4">
+            <button
+              onClick={() => setShowLogoutModal(false)}
+              className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      )}
     </header>
   );
 };

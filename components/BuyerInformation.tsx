@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import '../styles/globals.css';
-import {jwtDecode}  from 'jwt-decode';
+import '../styles/modal.css';
+import { jwtDecode } from 'jwt-decode';
 
 const BuyerInformation: React.FC = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -11,65 +12,92 @@ const BuyerInformation: React.FC = () => {
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
-  const [buyerId, setBuyerId] = useState<number | null>(null); // State for buyer ID
-  const [category, setCategory] = useState<string | null>(null); // State for category
-  const [productId, setProductId] = useState<number | null>(null); // State for product ID
-  const [sellerId, setSellerId] = useState<number | null>(null); 
+  const [buyerId, setBuyerId] = useState<number | null>(null);
+  const [category, setCategory] = useState<string | null>(null);
+  const [productId, setProductId] = useState<number | null>(null);
+  const [sellerId, setSellerId] = useState<number | null>(null);
+  const [sellerName, setSellerName] = useState<string | null>(null);
+  const [sellerLocation, setSellerLocation] = useState<string | null>(null);
+  const [sellerPhone, setSellerPhone] = useState<string | null>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   interface DecodedToken {
     user_id: number;
   }
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken'); // Replace with your token key
-    if (token) {  
-      const decodedToken = jwtDecode<DecodedToken>(token);  // Decode the token
-      setBuyerId(decodedToken.user_id); // Set the buyer ID (assuming the ID is stored in the 'id' field)
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      const decodedToken = jwtDecode<DecodedToken>(token);
+      setBuyerId(decodedToken.user_id);
     }
 
-        // Get productId and category from the URL
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get('productId');
-        const cat = params.get('category');
-        setProductId(id ? parseInt(id) : null); // Set the product ID
-        setCategory(cat); // Set the category 
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('productId');
+    const cat = params.get('category');
+    setProductId(id ? parseInt(id) : null);
+    setCategory(cat);
   }, []);
 
-      // Fetch product details to get the seller's ID
-      const fetchProductDetails = async (id: number) => {
-        try {
-          const response = await fetch(`http://127.0.0.1:8000/api/${category}/${id}/`); // Adjust the URL to match your API
-          if (response.ok) {
-            const productData = await response.json();
-            setSellerId(productData.user_id); // Extract seller's ID from product data
-          } else {
-            console.error('Failed to fetch product details');
-          }
-        } catch (error) {
-          console.error('Error fetching product details:', error);
-        }
-      };  
-      if (productId) {
-        fetchProductDetails(productId);
+  const fetchProductDetails = async (id: number) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/${category}/${id}/`);
+      if (response.ok) {
+        const productData = await response.json();
+        setSellerId(productData.user_id);
+        // Fetch additional seller details using seller's ID
+        fetchSellerDetails(productData.user_id);
+      } else {
+        console.error('Failed to fetch product details');
       }
+    } catch (error) {
+      console.error('Error fetching product details:', error);
+    }
+  };
 
+  const fetchSellerDetails = async (id: number) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/accounts/${id}/`);
+      if (response.ok) {
+        const sellerData = await response.json();
+        setSellerName(sellerData.first_name);
+        setSellerLocation(sellerData.location);
+        setSellerPhone(sellerData.phone_number);
+      } else {
+        console.error('Failed to fetch seller details');
+      }
+    } catch (error) {
+      console.error('Error fetching seller details:', error);
+    }
+  };
 
-  //console.log('heyy ',buyerId)
+  useEffect(() => {
+    if (productId) {
+      fetchProductDetails(productId);
+    }
+  }, [productId]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!buyerId) {
+      // If user is not logged in, show the login modal
+      setShowLoginModal(true);
+      return;
+    }
     setIsSubmitting(true);
 
     const messageData = {
-      buyer: buyerId, // Use the actual buyer's ID from the token
-      seller: sellerId, // Replace with the actual seller's ID
+      buyer: buyerId,
+      seller: sellerId,
       job: category === 'jobs' ? productId : null,
       sport: category === 'sports' ? productId : null,
       furniture: category === 'furniture' ? productId : null,
       real_estate: category === 'realestate' ? productId : null,
       health_beauty: category === 'healthbeauty' ? productId : null,
-      message_content: message
+      message_content: message,
     };
-
+    console.log("Payload being sent:", messageData); // Log the payload
     try {
       const response = await fetch("http://127.0.0.1:8000/api/messages/", {
         method: "POST",
@@ -103,13 +131,10 @@ const BuyerInformation: React.FC = () => {
         </span>
       </aside>
       <aside className="posts p-4 border">
-        <h3 className="aside-title">Buyer Information</h3>
+        <h3 className="aside-title">Seller Information</h3>
         <ul className="category product-page">
-          <li className="user-text"><span className="fa fa-user yelp"></span>Maria Zoe</li>
-          <li>
-            <span className="fa fa-map-marker"></span>
-            London, 235 Terry, 10001<br />
-            House#18, Road#07
+          <li className="user-text">
+            <span className="fa fa-user yelp"></span>{sellerName}
           </li>
           <li>
             <a href="product-1.html" className="colors">
@@ -121,27 +146,17 @@ const BuyerInformation: React.FC = () => {
       </aside>
       <aside className="bg-effe bg-effe-2">
         <h3 className="aside-title margin-b-3">
-          <a href="tel:+44-000-888-999">+44-000-888-999</a>
+          <a href={`tel:${sellerPhone}`}>{sellerPhone}</a>
         </h3>
-        <p className="para-calls">Conse ctetur adip iscing elit</p>
+        <p className="para-calls">Contact the seller for more information</p>
         <span className="pos-icon pos-icon-2">
           <span className="fa fa-phone"></span>
         </span>
       </aside>
+      {/* Contact Buyer Form */}
       <aside className="posts p-4 border">
-        <h3 className="aside-title">Contact Buyer</h3>
+        <h3 className="aside-title">Contact Seller</h3>
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <input
-              type="email"
-              name="Email"
-              className="form-control"
-              placeholder="Your Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
           <div className="form-group">
             <input
               type="text"
@@ -171,6 +186,7 @@ const BuyerInformation: React.FC = () => {
           {statusMessage && <p>{statusMessage}</p>}
         </form>
       </aside>
+      {/* Ad Action */}
       <aside className="posts p-4 border actions">
         <h3 className="aside-title">Ad Action</h3>
         <ul className="links-single">
@@ -180,6 +196,15 @@ const BuyerInformation: React.FC = () => {
           <li><a href="#report"><span className="fa fa-flag-o"></span>Report</a></li>
         </ul>
       </aside>
+
+      {showLoginModal && (
+        <div className="modal-overlayyy">
+          <div className="modalll">
+            <h3>You need to be logged in to send a message</h3>
+            <button onClick={() => window.location.href = `/api/auth/login?redirect=${encodeURIComponent(window.location.href)}`}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

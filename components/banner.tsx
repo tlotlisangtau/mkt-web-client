@@ -73,8 +73,7 @@ const Banner: React.FC = () => {
           <div className="cover-top-center-9">
             <div className="w3ls_cover_txt-9">
               <h3 className="title-cover-9">Buy, Sell, Rent & Exchange in one Click</h3>
-              <p className="para-cover-9">Once aute irure dolor in reprehenderit in voluptate velit
-                esse cillum dolore eu fugiat nulla pariatur consectetur adipiscing elit.</p>
+              <p className="para-cover-9">Experience a seamless marketplace for all your needs. Whether buying, selling, renting, or trading, find what you’re looking for with just one click. </p>
                 {username ? (
                     <p className="user-greeting">Welcome, {username}!</p>
                 ) : (

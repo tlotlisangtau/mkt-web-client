@@ -14,6 +14,7 @@ interface Post {
   brand?: string;
   size?: string;
   material: string;
+  department: string;
   ingredients: string;
   property_type: string;
   color: string;
@@ -43,6 +44,7 @@ const categoryMap: { [key: number]: string } = {
 };
 
 function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
+  const [isComplete, setIsComplete] = useState(false);
   const [adDetails, setAdDetails] = useState<Post | null>(null);
   const [isSaving, setIsSaving] = useState(false); // State for tracking saving status
   const [images, setImages] = useState<File[]>([]); // State for the uploaded image
@@ -68,8 +70,8 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
 
-    // Check if the input type is checkbox, then handle checked property
     const inputValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+    console.log(`Checkbox '${name}' clicked. New value: ${inputValue}`);
 
     setAdDetails((prevDetails) =>
       prevDetails ? { ...prevDetails, [name]: inputValue } : null
@@ -162,6 +164,16 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
       case 5: // Jobs category
         return (
           <>
+              <div className="form-group">
+              <label>Description:</label>
+              <input
+                type="text"
+                name="company"
+                className="form-control"
+                value={adDetails.description || ''}
+                onChange={handleInputChange}
+              />
+            </div>
             <div className="form-group">
               <label>Company:</label>
               <input
@@ -169,6 +181,16 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
                 name="company"
                 className="form-control"
                 value={adDetails.company || ''}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Price:</label>
+              <input
+                type="text"
+                name="price"
+                className="form-control"
+                value={adDetails.salary || ''}
                 onChange={handleInputChange}
               />
             </div>
@@ -183,21 +205,22 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
               />
             </div>
             <div className="form-group">
-              <label>Publish:</label>
-              <input
-                type="checkbox"
-                name="complete"
-                checked={adDetails.complete || false}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="form-group">
               <label>Upload Image:</label>
               <input
                 type="file"
                 className="form-control"
                 accept="image/*"
                 onChange={handleImageChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Publish:</label>
+              <input
+                type="checkbox"
+                name="complete"
+                className="form-control"
+                checked={adDetails.complete}
+                onChange={handleInputChange}
               />
             </div>
           </>
@@ -246,6 +269,15 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
                 <option value="New">New</option>
                 <option value="Used">Used</option>
               </select>
+            </div>
+            <div className="form-group">
+              <label>Upload Image:</label>
+              <input
+                type="file"
+                className="form-control"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
             </div>
             <div className="form-group">
               <label>Publish:</label>
@@ -395,7 +427,7 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
         </div>
         {renderCategorySpecificFields()}
         <div className="form-group">
-          <button type="submit" className="btn btn-primary" disabled={isSaving}>
+          <button type="submit" className='savechanges' disabled={isSaving}>
             {isSaving ? 'Saving...' : 'Save Changes'}
           </button>
           <button type="button" className="btn btn-secondary" onClick={onCancel}>

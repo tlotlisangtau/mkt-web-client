@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { toast, Toaster } from 'react-hot-toast';
 import { signIn } from 'next-auth/react'; // Import signIn
 import styles from './LoginPage.module.css'; 
@@ -11,6 +11,8 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const searchParams = useSearchParams(); // Get search parameters
+  const redirectTo = searchParams.get('redirect');
   const [sdkLoaded, setSdkLoaded] = useState(false); // State to track if Facebook SDK is loaded
   const [showModal, setShowModal] = useState(false);
 
@@ -30,7 +32,6 @@ const LoginPage: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         const token = data.access;
-
         // Store the token in localStorage or cookies
         localStorage.setItem('accessToken', token);
         toast.success('Logged in successfully!', {
@@ -38,7 +39,7 @@ const LoginPage: React.FC = () => {
           duration: 2000,
         });
         setTimeout(() => {
-          router.push('/dashboard'); // Redirect to a protected page
+          router.push(redirectTo || '/dashboard'); // Redirect to a protected page
         }, 1000);
       } else {
         const data = await response.json();
@@ -132,7 +133,7 @@ const LoginPage: React.FC = () => {
               duration: 2000,
             });
             setTimeout(() => {
-              router.push('/dashboard'); // Redirect to dashboard
+              router.push(redirectTo || '/dashboard');// Redirect to dashboard
             }, 1000);
           } else {
             setError('Login failed');
@@ -169,7 +170,7 @@ const LoginPage: React.FC = () => {
                   duration: 2000,
                 });
                 setTimeout(() => {
-                  router.push('/dashboard'); // Redirect to dashboard
+                  router.push(redirectTo || '/dashboard'); // Redirect to dashboard
                 }, 1000);
               } else {
                 setError('Facebook login failed');
@@ -189,8 +190,17 @@ const LoginPage: React.FC = () => {
     setShowModal(!showModal);
   };
 
+  const handleBack = () => {
+    router.push('/');
+  };
+
   return (
+    <>
+    
     <div className={styles.container}>
+    <button onClick={handleBack} className={styles.back}>
+      Back
+    </button>
       <Toaster position="top-center" reverseOrder={false} />
       <div className={styles.formWrapper}>
         <h2 className={styles.title}>Login</h2>
@@ -260,6 +270,7 @@ const LoginPage: React.FC = () => {
         </p>
       </div>
     </div>
+    </>
   );
 };
 

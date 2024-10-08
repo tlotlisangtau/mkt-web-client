@@ -28,6 +28,20 @@
     position: relative;
     top: -25px;
   }
+
+  .btn-cancel {
+    background-color: #4dd481; /* Red background */
+    color: white;              /* White text */
+    padding: 10px 20px;        /* Padding */
+    border: none;              /* Remove border */
+    border-radius: 5px;        /* Rounded corners */
+    cursor: pointer;           /* Pointer cursor on hover */
+    font-size: 16px;           /* Font size */
+    transition: background-color 0.3s ease; /* Smooth transition */
+    position: relative;
+    height: 45px;
+    top: -17px;
+  }
   
   .btn-danger:hover {
     background-color: #e53935; /* Darker red on hover */
