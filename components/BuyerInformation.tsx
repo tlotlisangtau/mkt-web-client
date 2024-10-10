@@ -95,7 +95,7 @@ const BuyerInformation: React.FC = () => {
       furniture: category === 'furniture' ? productId : null,
       real_estate: category === 'realestate' ? productId : null,
       health_beauty: category === 'healthbeauty' ? productId : null,
-      message_content: message,
+      content: message,
     };
     console.log("Payload being sent:", messageData); // Log the payload
     try {
@@ -120,6 +120,10 @@ const BuyerInformation: React.FC = () => {
     }
 
     setIsSubmitting(false);
+  };
+
+  const handleCloseModal = () => {
+    setShowLoginModal(false);
   };
 
   return (
@@ -200,8 +204,9 @@ const BuyerInformation: React.FC = () => {
       {showLoginModal && (
         <div className="modal-overlayyy">
           <div className="modalll">
-            <h3>You need to be logged in to send a message</h3>
-            <button onClick={() => window.location.href = `/api/auth/login?redirect=${encodeURIComponent(window.location.href)}`}>Close</button>
+            <h5>You need to be logged in to send a message</h5>
+            <button onClick={() => window.location.href = `/api/auth/login?redirect=${encodeURIComponent(window.location.href)}`}>Login</button>
+            <button onClick={handleCloseModal}>Close</button> {/* Close button */}
           </div>
         </div>
       )}

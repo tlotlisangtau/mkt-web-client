@@ -13,8 +13,9 @@ interface Product {
   name: string;
   description: string;
   price: number;
-  image_urls: string[]; // Updated to use an array for multiple images
-  category_id: number; // Ensure category_id is included
+  salary: string;
+  image_urls: string[]; 
+  category_id: number; 
 }
 
 interface CategoryCounts {
@@ -144,7 +145,7 @@ const Products4Block: React.FC = () => {
                           <h5><a href={`/Productdetail?productId=${product.id}&category=${categoryMappings[product.category_id] || 'unknown'}`}>{product.name}</a></h5>
                           <p>{product.description}</p>
                           <ul className="d-flex">
-                            <li><span className="fa fa-usd"></span> {product.price}</li>
+                            <li><span className="fa fa"></span>R {product.price|| product?.salary}</li>
                             <li className="margin-effe"><a href="#fav" title="Add this to Favorite"><span className="fa fa-heart-o"></span></a></li>
                             <li><a href="#share" title="Share"><span className="fa fa-share"></span></a></li>
                           </ul>
@@ -168,10 +169,9 @@ const Products4Block: React.FC = () => {
                   </div>
                   <div className="info-bg">
                     <h5><a href={`promotion-${promotion.id}.html`}>Promotion {promotion.id}</a></h5>
-                    <p>Price: {promotion.price}</p>
                     <p>End Date: {formatDate(promotion.end_date)}</p>
                     <ul className="d-flex">
-                      <li><span className="fa fa-usd"></span> {promotion.price}</li>
+                      <li><span className="fa fa"></span>R {promotion.price|| promotion?.salary}</li>
                       <li className="margin-effe"><a href="#fav" title="Add this to Favorite"><span className="fa fa-heart-o"></span></a></li>
                       <li><a href="#share" title="Share"><span className="fa fa-share"></span></a></li>
                     </ul>
@@ -190,10 +190,10 @@ const Products4Block: React.FC = () => {
                   </a>
                   <div className="info-bg">
                     <h5><a href={`promotion-${promotion.id}.html`}>Promotion {promotion.id}</a></h5>
-                    <p>Price: {promotion.price}</p>
+                    
                     <p>End Date: {formatDate(promotion.end_date)}</p>
                     <ul className="d-flex">
-                      <li><span className="fa fa-usd"></span> {promotion.price}</li>
+                      <li><span className="fa "></span>R {promotion.price || promotion?.salary}</li>
                       <li className="margin-effe"><a href="#fav" title="Add this to Favorite"><span className="fa fa-heart-o"></span></a></li>
                       <li><a href="#share" title="Share"><span className="fa fa-share"></span></a></li>
                     </ul>

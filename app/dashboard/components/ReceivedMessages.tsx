@@ -5,17 +5,21 @@ import '../styles/messages.css';
 interface Reply {
   id: number;
   content: string;
+  sender: number;
+  receiver: number;
   sender_username: string;
-  timestamp: string;  // Ensure it's treated as a string
+  timestamp: string;
 }
 
 interface Message {
   id: number;
   buyer_username: string;
   seller_username: string;
-  message_content: string;
-  replies: Reply[];  // Updated to expect replies as an array
+  content: string; 
+  replies: Reply[]; // Updated to expect replies as an array
   timestamp: string;
+  sender: number; // Add sender property
+  receiver: number; // Add receiver property
 }
 
 interface DecodedToken {
@@ -92,68 +96,68 @@ const ReceivedMessages: React.FC = () => {
     setOpenedMessageId(openedMessageId === messageId ? null : messageId);
   };
 
-  
-
   const handleReplyChange = (messageId: number, content: string) => {
     setReplyContent(prev => ({ ...prev, [messageId]: content }));
   };
 
-  const handleReplySubmit = async (messageId: number) => {
-    const reply = replyContent[messageId];
-    if (!reply) return;
-  
-    try {
-      const token = localStorage.getItem("accessToken");
-  
-      
-      const newReply: Reply = {
-        id: Date.now(),  // Temporary ID until the backend returns the actual one
-        content: reply,
-        sender_username: 'You',  // Since it's from the logged-in user
-        timestamp: new Date().toISOString()  // Use the current timestamp
-      };
-  
-      setMessages(prevMessages =>
-        prevMessages.map(msg =>
-          msg.id === messageId
-            ? { ...msg, replies: [...msg.replies, newReply] }
-            : msg
-        )
-      );
-  
-      // Now send the reply to the backend
-      const response = await fetch(`http://127.0.0.1:8000/api/reply/`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          message_id: messageId,
-          reply_content: reply,
-          user_id: userId,
-        }),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Failed to send reply.');
-      }
-  
-      const updatedMessage = await response.json();
-  
+const handleReplySubmit = async (messageId: number) => {
+  const replyContentText = replyContent[messageId];
+  if (!replyContentText) return;
+
+  try {
+    const token = localStorage.getItem("accessToken");
+
+    // Optimistically update the UI
+    const newReply: Reply = {
+      id: Date.now(),  
+      content: replyContentText,
+      sender_username: 'You',  
+      timestamp: new Date().toISOString(), 
+      message: messageId, 
      
-      setMessages(prevMessages =>
-        prevMessages.map(msg => (msg.id === updatedMessage.id ? updatedMessage : msg))
-      );
-  
-      // Clear the reply input after successful submission
-      setReplyContent(prev => ({ ...prev, [messageId]: '' }));
-  
-    } catch (err: any) {
-      setError(err.message);
+    };
+
+    setMessages(prevMessages =>
+      prevMessages.map(msg =>
+        msg.id === messageId
+          ? { ...msg, replies: [...msg.replies, newReply] }
+          : msg
+      )
+    );
+
+    // Send the reply to the backend
+    const response = await fetch(`http://127.0.0.1:8000/api/reply/`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: messageId,  
+        content: replyContentText,
+        
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to send reply.');
     }
-  };
-  
+
+    const updatedMessage = await response.json();
+
+    setMessages(prevMessages =>
+      prevMessages.map(msg => (msg.id === updatedMessage.id ? updatedMessage : msg))
+    );
+
+    // Clear the reply input after successful submission
+    setReplyContent(prev => ({ ...prev, [messageId]: '' }));
+
+  } catch (err: any) {
+    setError(err.message);
+  }
+};
+
 
   const formatTimestamp = (timestamp: string) => {
     const date = new Date(timestamp);
@@ -163,6 +167,32 @@ const ReceivedMessages: React.FC = () => {
     return date.toLocaleString();
   };
 
+  const handleClearChat = async (messageId: number) => {
+  const token = localStorage.getItem("accessToken");
+
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/api/messages/${messageId}/`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to clear chat.');
+    }
+
+    // Update the local state to remove the message
+    setMessages(prevMessages => prevMessages.filter(msg => msg.id !== messageId));
+    
+  } catch (err: any) {
+    setError(err.message);
+  }
+};
+
+
   return (
     <div className="messages-container">
       <h2>Received Messages</h2>
@@ -170,51 +200,65 @@ const ReceivedMessages: React.FC = () => {
         <p>No messages received yet.</p>
       ) : (
         <ul className="message-list">
-          {messages.map((message) => (
-            <li key={message.id} className="message-item">
-              <div className="message-header" onClick={() => toggleMessage(message.id)}>
-                <p>
-                  <strong>Message from: {message.buyer_username}</strong>
-                  <br />
-                  <span className="message-date">
-                    {formatTimestamp(message.timestamp)}
-                  </span>
-                </p>
-                <button className="toggle-button">
-                  {openedMessageId === message.id ? 'Close' : 'Open'}
-                </button>
-              </div>
-              {openedMessageId === message.id && (
-                  <div className="message-content-wrapper">
-                    <div className="message-left">
-                      <p>{message.message_content}</p>
-                    </div>
-                    
-                    <div className="message-right">
-                      {/* Display replies */}
-                      {message.replies.map(reply => (
-                        <div key={reply.id} className="reply">
-                          <p>{reply.content}</p>
-                          <p className="reply-date">{formatTimestamp(reply.timestamp)}</p>
-                        </div>
-                      ))}
+          {messages.map((message) => {
+            const isSender = message.sender === userId; // True if the logged-in user is the sender
+            const isReceiver = message.receiver === userId; // True if the logged-in user is the receiver
 
-                      {/* Reply input form */}
+            return (
+              <li key={message.id} className="message-item">
+                <div className="message-header" onClick={() => toggleMessage(message.id)}>
+                  <p>
+                    <strong>Message from: {isSender ? message.buyer_username : message.seller_username}</strong>
+                    <br />
+                    <span className="message-date">{formatTimestamp(message.timestamp)}</span>
+                  </p>
+                  <button className="toggle-button">
+                    {openedMessageId === message.id ? 'Close' : 'Open'}
+                  </button>
+                </div>
+                {openedMessageId === message.id && (
+                  <div className="message-content-wrapper">
+                    <div className={`message-bubble ${isSender ? 'message-right' : 'message-left'}`}>
+                      <p>{message.content}</p>
+                    </div>  
+                    <div className="message-replies">
+                      {message.replies.map(reply => {
+                        const isReplySender = reply.sender === userId; 
+                        return (
+                          <div
+                            key={reply.id}
+                            className={`reply ${isReplySender ? 'reply-right' : 'reply-left'}`}
+                          >
+                            <p><strong>{reply.sender_username}</strong></p>
+                            <p>{reply.content}</p>
+                            <p className="reply-date">{formatTimestamp(reply.timestamp)}</p>
+                          </div>
+                        );
+                      })}
                       <textarea
                         placeholder="Type your reply..."
                         value={replyContent[message.id] || ''}
                         onChange={(e) => handleReplyChange(message.id, e.target.value)}
                         className="reply-input"
                       />
-                      <button onClick={() => handleReplySubmit(message.id)} className="reply-button">
+                      <button
+                        onClick={() => handleReplySubmit(message.id)}
+                        className="reply-button"
+                      >
                         Send Reply
                       </button>
+                      <button
+                      onClick={() => handleClearChat(message.id)} // Calls the handler for clearing the chat
+                      className="clear-chat-button"
+                    >
+                      Clear Chat
+                    </button>
                     </div>
                   </div>
                 )}
-
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

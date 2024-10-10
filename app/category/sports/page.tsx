@@ -369,7 +369,7 @@ const ProductList: React.FC = () => {
                           <p>{product.description}</p>
                           <p>{product.location}</p>
                           <p>Condition: {product.condition}</p>
-                          <p>Price: ${product.price}</p>
+                          <p>Price: R{product.price}</p>
                           <ul className="d-flex">
                           <li>{timeAgo(product.created_at)}</li>
                           <li className="margin-effe">

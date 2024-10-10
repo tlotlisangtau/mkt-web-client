@@ -112,7 +112,7 @@ const ProductDetail: React.FC = () => {
                     <div>
                       <p>{product.description}</p>
                       <ul className="d-flex">
-                        <li>Price: R{product.price}</li><br />
+                        <li>Price: R{product.price || product?.salary}</li><br />
                       </ul>
                       <ul>
                         <li>Posted: {formatDate(product.valid_until || product.created_at)}</li>
@@ -124,7 +124,7 @@ const ProductDetail: React.FC = () => {
                   <div className="d-grid list-styles">
                     <ul className="ad-lists">
                       <li><span className="fa fa-check-circle" aria-hidden="true"></span>{product?.job_location  || product?.location}</li>
-                      <li><span className="fa fa-check-circle" aria-hidden="true"></span>{product?.size  || product?.dimensions}</li>
+                      <li><span className="fa fa-check-circle" aria-hidden="true"></span>{product?.size  || product?.company}</li>
                       <li><span className="fa fa-check-circle" aria-hidden="true"></span>{product?.salary  || product?.condition}</li>
                     </ul>
                   </div>

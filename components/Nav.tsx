@@ -20,10 +20,9 @@ const Nav: React.FC = () => {
 
   const handleLoginLogout = () => {
     if (isLoggedIn) {
-      setShowLogoutModal(true);
-    } else {
-      window.location.href = '/api/auth/login';
+      window.location.href = '/dashboard';
     }
+      
   };
 
   return (
@@ -50,7 +49,7 @@ const Nav: React.FC = () => {
               className="bg-blue-500 text-white py-2 px-2 mb-3 rounded hover:bg-blue-600"
             >
               <span className="fa fa-paper-plane-o mr-2" aria-hidden="true"></span>
-              {isLoggedIn ? 'Logout' : 'Login'}
+              {isLoggedIn ? 'Dashboard' : 'Login'}
             </button>
           </nav>
           <button className="lg:hidden text-gray-800 hover:text-gray-600">
@@ -60,29 +59,7 @@ const Nav: React.FC = () => {
       </div>
 
       {/* Logout Confirmation Modal */}
-      {showLogoutModal && (
-        <div className="modal-overlay">
-        <div className="modal-content">
-          <h2 className="text-lg font-semibold mb-4">Confirm Logout</h2>
-          <p className="mb-6">Are you sure you want to log out?</p>
-          <div className="flex justify-end space-x-4">
-            <button
-              onClick={() => setShowLogoutModal(false)}
-              className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </div>
       
-      )}
     </header>
   );
 };
