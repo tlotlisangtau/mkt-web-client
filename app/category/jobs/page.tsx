@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import '../../../styles/globals.css';
 import '../../../styles/style.css';
 import Nav from '@/components/Nav';
+import { useSearchParams } from 'next/navigation';
 import RightSideBar from '@/components/rightSideBar';
 import Footer from '@/components/footer';
 import { Carousel } from 'react-responsive-carousel';
@@ -23,7 +24,7 @@ interface Product {
 }
 
 const departments = [
-  'None',
+  'Department',
   'Sale & Marketing',
   'IT & Engineering',
   'Finance & Accounting',
@@ -35,14 +36,47 @@ const departments = [
   'Others'
 ];
 
+  // Function to calculate relative time
+  const timeAgo = (dateString: string) => {
+    const now = new Date();
+    const createdTime = new Date(dateString);
+    const diffInSeconds = Math.floor((now.getTime() - createdTime.getTime()) / 1000);
 
+    const intervals: { [key: string]: number } = {
+      year: 31536000,
+      month: 2592000,
+      week: 604800,
+      day: 86400,
+      hour: 3600,
+      minute: 60,
+    };
+
+    for (let key in intervals) {
+      const interval = intervals[key];
+      const timePassed = Math.floor(diffInSeconds / interval);
+      if (timePassed >= 1) {
+        return `${timePassed} ${key}${timePassed > 1 ? "s" : ""} ago`;
+      }
+    }
+    return "Just now";
+  };
+  const locations = ["Location", "All", "Maseru", "Leribe", "Qacha"];
 
 const ProductList: React.FC = () => {
+  const searchParams = useSearchParams();
+  const [selectedLocation, setSelectedLocation] = useState<string>("Location");
+  const [selectedDepartment, setSelectedDepartment] = useState<string>("Department");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
+  const [sortOption, setSortOption] = useState<string>("date");
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [minPrice, setMinPrice] = useState<number | ''>('');
+  const [maxPrice, setMaxPrice] = useState<number | ''>('');
+  const [isDepartmentDropdownOpen, setIsDepartmentDropdownOpen] = useState<boolean>(false);
+  const [isLocationDropdownOpen, setIsLocationDropdownOpen] = useState<boolean>(false);
   const [selectedFilter, setSelectedFilter] = useState<string>('None'); // Default filter is 'None'
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -69,27 +103,99 @@ const ProductList: React.FC = () => {
     fetchProducts();
   }, []);
 
-  const filteredProducts = products.filter(
-    product => selectedFilter === 'None' || product.department === selectedFilter
-  );
+      useEffect(() => {
+      // Update URL parameters based on state
+      const params = new URLSearchParams();
+      if (selectedDepartment!== "Department") params.set('department', selectedDepartment);
+      if (selectedLocation !== "Location") params.set('location', selectedLocation);
+      if (minPrice !== '') params.set('min_price', minPrice.toString());
+      if (maxPrice !== '') params.set('max_price', maxPrice.toString());
+      if (searchQuery !== '') params.set('search', searchQuery);
+      params.set('sort', sortOption);
+      params.set('page', currentPage.toString());
 
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+      window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+    }, [selectedDepartment, selectedLocation, minPrice, maxPrice, searchQuery, sortOption, currentPage]);
 
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
+    const filteredProducts = products.filter((product) => {
+      return (
+        (selectedDepartment === "Department" || product.department === selectedDepartment) &&
+        (selectedLocation === "Location" || product.job_location === selectedLocation) &&
+        (minPrice === '' || product.price >= minPrice) &&
+        (maxPrice === '' || product.price <= maxPrice) &&
+        (searchQuery === '' || product.name.toLowerCase().includes(searchQuery.toLowerCase()) || product.description.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
+    });
 
-  const handleFilterSelect = (filter: string) => {
-    setSelectedFilter(filter);
-    setIsDropdownOpen(false); 
-    setCurrentPage(1); // Reset to the first page when filter changes
-  };
+    const sortedProducts = filteredProducts.sort((a, b) => {
+      switch (sortOption) {
+        case "name":
+          return a.name.localeCompare(b.name);
+        case "price-asc":
+          return a.price - b.price;
+        case "price-desc":
+          return b.price - a.price;
+        case "date":
+        default:
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      }
+    });
 
-  const handleDropdownToggle = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+    const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const currentProducts = sortedProducts.slice(startIndex, startIndex + itemsPerPage);
+
+    const handlePageChange = (pageNumber: number) => {
+      setCurrentPage(pageNumber);
+    };
+
+    const handleDepartmentSelect = (department: string) => {
+      setSelectedDepartment(department);
+      setIsDepartmentDropdownOpen(false);
+      setCurrentPage(1);
+    };
+
+    const handleLocationSelect = (job_location: string) => {
+      setSelectedLocation(job_location);
+      setIsLocationDropdownOpen(false);
+      setCurrentPage(1);
+    };
+
+    const handleDepartmentDropdownToggle = () => {
+      setIsDepartmentDropdownOpen((prev) => !prev);
+    };
+
+    const handleLocationDropdownToggle = () => {
+      setIsLocationDropdownOpen((prev) => !prev);
+    };
+
+
+    const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setMinPrice(event.target.value === '' ? '' : Number(event.target.value));
+    };
+
+    const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setMaxPrice(event.target.value === '' ? '' : Number(event.target.value));
+    };
+
+    const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+      setSortOption(event.target.value);
+      setCurrentPage(1);
+    };
+
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(event.target.value);
+      setCurrentPage(1);
+    };
+
+
+
+    const getImageUrlsArray = (urls: any): string[] => {
+      if (!urls || typeof urls === 'string' && urls.trim() === '') {
+        return [];
+      }
+      return Array.isArray(urls) ? urls : [urls];
+    };
 
   return (
     <>
@@ -115,64 +221,84 @@ const ProductList: React.FC = () => {
             <div className="right-side-bar">
               <aside>
                 <h3 className="aside-title mb-3">Filter Ads</h3>
-                <form className="form-inline search-form" action="#" method="post">
-                  <input className="form-control" type="search" placeholder="Search here..." aria-label="email" required />
-                  <button className="btn search" type="submit"><span className="fa fa-search"></span></button>
-                  <button className="btn reset" type="reset" title="Reset Search"><span className="fa fa-repeat"></span></button>
-                </form>
-                <div className="filter-dropdown-container">
-                  <input
-                    type="text"
-                    placeholder="filter with.."
-                    className="filter-input"
-                    onClick={handleDropdownToggle}
-                    value={selectedFilter}
-                    readOnly
-                  />
-                  {isDropdownOpen && (
-                    <ul className="filter-dropdown-menu">
-                      {departments.map((department, index) => (
-                        <li
-                          key={index}
-                          className="filter-dropdown-item"
-                          onClick={() => handleFilterSelect(department)}
-                        >
-                          {department}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </aside>
-              <aside className="posts p-4 border">
-                <h3 className="aside-title">All Categories</h3>
-                <ul className="category">
-                  <li><a href="product-1.html"><span className="fa fa-laptop"></span>Electronics <label>(11)</label></a></li>
-                  <li><a href="product-2.html"><span className="fa fa-bed"></span>Furniture <label>(24)</label></a></li>
-                  <li><a href="product-3.html"><span className="fa fa-briefcase"></span>Jobs <label>(18)</label></a></li>
-                  <li><a href="product-4.html"><span className="fa fa-home"></span>Real Estate <label>(08)</label></a></li>
-                  <li><a href="product-5.html"><span className="fa fa-futbol-o"></span>Sports <label>(38)</label></a></li>
-                  <li><a href="product-6.html"><span className="fa fa-heart"></span>Health & Beauty <label>(26)</label></a></li>
-                </ul>
-              </aside>
-              <aside className="posts p-4 border">
-                <h3 className="aside-title">Premium Ads</h3>
-                <div className="posts-grid">
-                  <a href="blog-single.html">
-                    <img src="assets/images/b1.jpg" alt=" " className="img-responsive img-thumbnail" />
-                  </a>
-                  <a href="blog-single.html">
-                    <img src="assets/images/b2.jpg" alt=" " className="img-responsive img-thumbnail" />
-                  </a>
-                  <a href="blog-single.html">
-                    <img src="assets/images/b3.jpg" alt=" " className="img-responsive img-thumbnail" />
-                  </a>
-                </div>
-              </aside>
-              
-              <aside>
-                <h3 className="aside-title mb-3">Advertisement</h3>
-                <img src="assets/images/screen.jpg" alt="" className="img-fluid img-responsive" />
+                  <form className="form-inline search-form" action="#" method="post">
+                      <input 
+                        className="form-control" 
+                        type="search" 
+                        placeholder="Search here..." 
+                        aria-label="search" 
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        required 
+                      />
+                      <button className="btn search" type="submit"><span className="fa fa-search"></span></button>
+                      <button className="btn reset" type="reset" title="Reset Search"><span className="fa fa-repeat"></span></button>
+                    </form>
+                {/* Type Filter */}
+                    <div className="filter-dropdown-container">
+                      <input
+                        type="text"
+                        placeholder="Filter by type..."
+                        className="filter-input"
+                        onClick={() => setIsDepartmentDropdownOpen(prev => !prev)}
+                        value={selectedDepartment}
+                        readOnly
+                      />
+                      {isDepartmentDropdownOpen && (
+                        <ul className="filter-dropdown-menu">
+                          {departments.map((department, index) => (
+                            <li
+                              key={index}
+                              className="filter-dropdown-item"
+                              onClick={() => handleDepartmentSelect(department)}
+                            >
+                              {department}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                    {/* Location Filter */}
+                      <div className="filter-dropdown-container">
+                        <input
+                          type="text"
+                          placeholder="Filter by location..."
+                          className="filter-input"
+                          onClick={() => setIsLocationDropdownOpen(prev => !prev)}
+                          value={selectedLocation}
+                          readOnly
+                        />
+                        {isLocationDropdownOpen && (
+                          <ul className="filter-dropdown-menu">
+                            {locations.map((job_location, index) => (
+                              <li
+                                key={index}
+                                className="filter-dropdown-item"
+                                onClick={() => handleLocationSelect(job_location)}
+                              >
+                                {job_location}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+
+                {/* Price Range Filter */}
+                    <div className="price-range-filter">
+                    <label>Price Range</label>
+                    <input
+                        type="number"
+                        placeholder="Min Price"
+                        value={minPrice === '' ? '' : minPrice}
+                        onChange={handleMinPriceChange}
+                      />
+                      <input
+                        type="number"
+                        placeholder="Max Price"
+                        value={maxPrice === '' ? '' : maxPrice}
+                        onChange={handleMaxPriceChange}
+                      />
+                    </div>
               </aside>
             </div>
 
@@ -180,13 +306,13 @@ const ProductList: React.FC = () => {
                 <aside className="top-border d-flex">
                   <h3 className="aside-title mb-3">Showing {filteredProducts.length === 0 ? 0 : startIndex + 1}–{Math.min(startIndex + itemsPerPage, filteredProducts.length)} of {filteredProducts.length} results</h3>
                   <div className="input-group-btn">
-                    <select className="btn btn-default" name="ext" required>
-                      <option selected>Sort By Date</option>
-                      <option>Sort By Expire</option>
-                      <option>Sort By Popularity</option>
-                      <option>Sort By Price - Ascending</option>
-                      <option>Sort By Price - Descending</option>
-                    </select>
+                    <label htmlFor="Sort By :">Sort By :</label>
+                  <select id="sort" value={sortOption} onChange={handleSortChange}>
+                        <option value="date">Date</option>
+                        <option value="name">Name</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                      </select>
                   </div>
                 </aside>
                 <div className="d-grid grid-col-4">
