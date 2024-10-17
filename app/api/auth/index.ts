@@ -1,9 +1,9 @@
 // /auth/index.ts
 import NextAuth from 'next-auth';
 import { authOptions } from '../../../next-auth';
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const handlers = {
-  GET: async (req: NextRequest) => NextAuth(authOptions),
-  POST: async (req: NextRequest) => NextAuth(authOptions),
+  GET: async (req: NextRequest) => NextAuth(authOptions)(req, NextResponse),
+  POST: async (req: NextRequest) => NextAuth(authOptions)(req, NextResponse),
 };
