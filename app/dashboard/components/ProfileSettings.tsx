@@ -23,7 +23,7 @@ const ProfileSettings = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [userId, setUserId] = useState<string | null>(null); // State to store the user_id
-  const [profileImage, setProfileImage] = useState(null); // State to handle image upload
+  const [profileImage, setProfileImage] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState(''); // Store uploaded image URL
 
   // Function to extract user_id from the token
@@ -70,8 +70,10 @@ const ProfileSettings = () => {
   }, []);
 
   // Handle file selection
-  const handleFileChange = (e) => {
-    setProfileImage(e.target.files[0]);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setProfileImage(e.target.files[0]);
+    }
   };
 
   // Handle image upload

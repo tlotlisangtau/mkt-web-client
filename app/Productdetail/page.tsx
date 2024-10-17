@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import '../../styles/globals.css';
 import '../../styles/style.css';
@@ -71,15 +71,21 @@ const ProductDetail: React.FC = () => {
   }, [productId]);
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <Nav />
       <section className="w3l-inner-banner-main">
         <div className="about-inner inner2">
           <div className="wrapper seen-w3">
             <ul className="breadcrumbs-custom-path">
-              <li><a href="/">Home</a></li>
-              <li><span className="fa fa-angle-right" aria-hidden="true"></span></li>
-              <li className="active">{product ? product.name : 'Loading...'}</li>
+              <li>
+                <a href="/">Home</a>
+              </li>
+              <li>
+                <span className="fa fa-angle-right" aria-hidden="true"></span>
+              </li>
+              <li className="active">
+                {product ? product.name : "Loading..."}
+              </li>
             </ul>
           </div>
         </div>
@@ -91,8 +97,10 @@ const ProductDetail: React.FC = () => {
             <h3 className="title-main">Product Single Ad</h3>
             <div className="grid-colunm-2 d-flex">
               <div className="tab-content text-left single-left-content left-product-sing">
-                <h3 className="aside-title single-prt">{product ? product.name : 'Loading...'}</h3>
-                
+                <h3 className="aside-title single-prt">
+                  {product ? product.name : "Loading..."}
+                </h3>
+
                 <br />
                 {loading && <p>Loading...</p>}
                 {error && <p>Error: {error}</p>}
@@ -100,7 +108,11 @@ const ProductDetail: React.FC = () => {
                   <Carousel showThumbs={false} infiniteLoop>
                     {product.image_urls.map((url, index) => (
                       <div key={index}>
-                        <img src={url} alt={`Image ${index + 1}`} className="carousel-image" />
+                        <img
+                          src={url}
+                          alt={`Image ${index + 1}`}
+                          className="carousel-image"
+                        />
                       </div>
                     ))}
                   </Carousel>
@@ -112,10 +124,16 @@ const ProductDetail: React.FC = () => {
                     <div>
                       <p>{product.description}</p>
                       <ul className="d-flex">
-                        <li>Price: R{product.price || product?.salary}</li><br />
+                        <li>Price: R{product.price || product?.salary}</li>
+                        <br />
                       </ul>
                       <ul>
-                        <li>Posted: {formatDate(product.valid_until || product.created_at)}</li>
+                        <li>
+                          Posted:{" "}
+                          {formatDate(
+                            product.valid_until || product.created_at
+                          )}
+                        </li>
                       </ul>
                     </div>
                   )}
@@ -123,21 +141,39 @@ const ProductDetail: React.FC = () => {
                   <h3 className="aside-title top-sec-space">Features</h3>
                   <div className="d-grid list-styles">
                     <ul className="ad-lists">
-                      <li><span className="fa fa-check-circle" aria-hidden="true"></span>{product?.job_location  || product?.location}</li>
-                      <li><span className="fa fa-check-circle" aria-hidden="true"></span>{product?.size  || product?.company}</li>
-                      <li><span className="fa fa-check-circle" aria-hidden="true"></span>{product?.salary  || product?.condition}</li>
+                      <li>
+                        <span
+                          className="fa fa-check-circle"
+                          aria-hidden="true"
+                        ></span>
+                        {product?.job_location || product?.location}
+                      </li>
+                      <li>
+                        <span
+                          className="fa fa-check-circle"
+                          aria-hidden="true"
+                        ></span>
+                        {product?.size || product?.company}
+                      </li>
+                      <li>
+                        <span
+                          className="fa fa-check-circle"
+                          aria-hidden="true"
+                        ></span>
+                        {product?.salary || product?.condition}
+                      </li>
                     </ul>
                   </div>
                 </div>
               </div>
-              <BuyerInformation/>
+              <BuyerInformation />
             </div>
           </div>
         </div>
       </section>
 
       <Footer />
-    </>
+    </Suspense>
   );
 };
 

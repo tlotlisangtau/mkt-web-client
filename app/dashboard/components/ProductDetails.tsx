@@ -18,33 +18,32 @@ const formatDate = (dateString: string) => {
 
 interface Post {
   id: number;
-  status: string;
-  size: string;
-  image_urls: string[];
-  category: string;
-  description: string;
-  featured: boolean;
+  name?: string;
   price: string;
-  name: string;
-  salary?: string;
-  job_location: string;
-  department: string;
   location: string;
-  created_at: string;
-  user_id: number;
-  condition?: string;
-  category_id: number;
-  complete: boolean;
   company: string;
+  job_location: string;
+  description: string;
+  mobile_number?: string;
+  brand?: string;
+  size?: string;
   material: string;
-  type?: string;
+  department: string;
   ingredients: string;
   property_type: string;
-  mobile_number?: string;
-  valid_until: string;
   color: string;
   dimensions: string;
+  condition?: string;
+  type?: string;
+  category_id: number;
+  category: string;
+  salary?: string;
+  valid_until?: string;
+  created_at: string;
+  complete?: boolean;
+  image_urls: string[]; // Add image_url to the Post interface
 }
+
 
 interface ProductDetailsProps {
   post: Post;
@@ -59,7 +58,7 @@ const categoryMap: { [key: number]: string } = {
   8: 'furniture',
   9: 'realeystate',
   10: 'healthbeauty',
-  // Add more mappings as needed
+
 };
 
 

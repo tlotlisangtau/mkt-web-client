@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import '../../../styles/globals.css';
 import '../../../styles/style.css';
 import Nav from '@/components/Nav';
-import { useSearchParams } from 'next/navigation';
 import RightSideBar from '@/components/rightSideBar';
 import Footer from '@/components/footer';
 import { Carousel } from 'react-responsive-carousel';
@@ -63,7 +62,6 @@ const departments = [
   const locations = ["Location", "All", "Maseru", "Leribe", "Qacha"];
 
 const ProductList: React.FC = () => {
-  const searchParams = useSearchParams();
   const [selectedLocation, setSelectedLocation] = useState<string>("Location");
   const [selectedDepartment, setSelectedDepartment] = useState<string>("Department");
   const [products, setProducts] = useState<Product[]>([]);

@@ -3,7 +3,7 @@ import axios from 'axios';
 export const getCategoriesData = async () => {
   try {
     // Fetch data from each category endpoint
-    const [
+    const [ 
       jobsResponse,
       furnitureResponse,
       sportsResponse,

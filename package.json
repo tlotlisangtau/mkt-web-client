@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
+    "@types/google.accounts": "^0.0.15",
     "@types/jquery": "^3.5.30",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20",

@@ -14,7 +14,7 @@ interface Product {
   image: string;
 }
 
-const product_9: React.FC = () => {
+const Product_9: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -220,4 +220,4 @@ const product_9: React.FC = () => {
   );
 }
 
-export default product_9;
+export default Product_9;

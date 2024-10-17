@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast, Toaster } from 'react-hot-toast';
-import { signIn } from 'next-auth/react'; // Import signIn
+import { signIn } from 'next-auth/react'; 
 import styles from './LoginPage.module.css'; 
 
 const LoginPage: React.FC = () => {
@@ -263,7 +263,7 @@ const LoginPage: React.FC = () => {
         )}
 
         <p className={styles.footerText}>
-          Don't have an account?{' '}
+          Do not have an account?
           <a href="/register" className={styles.footerLink}>
             Register
           </a>

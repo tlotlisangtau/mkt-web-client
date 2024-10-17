@@ -4,6 +4,7 @@ import '../styles/messages.css';
 
 interface Reply {
   id: number;
+  message: number;
   content: string;
   sender: number;
   receiver: number;
@@ -20,7 +21,7 @@ interface Message {
   timestamp: string;
   sender: number; // Add sender property
   receiver: number; // Add receiver property
-}
+} 
 
 interface DecodedToken {
   user_id: number;
@@ -106,15 +107,20 @@ const handleReplySubmit = async (messageId: number) => {
 
   try {
     const token = localStorage.getItem("accessToken");
+    const originalMessage = messages.find((msg) => msg.id === messageId);
+    if (!originalMessage || !userId) return;
 
-    // Optimistically update the UI
     const newReply: Reply = {
-      id: Date.now(),  
+      id: Date.now(),
       content: replyContentText,
-      sender_username: 'You',  
-      timestamp: new Date().toISOString(), 
-      message: messageId, 
-     
+      sender_username: "You",
+      timestamp: new Date().toISOString(),
+      message: messageId,
+      sender: userId || 0, // Assuming userId is not null; otherwise, handle accordingly
+      receiver:
+        originalMessage.sender === userId
+          ? originalMessage.receiver
+          : originalMessage.sender,
     };
 
     setMessages(prevMessages =>

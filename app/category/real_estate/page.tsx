@@ -1,7 +1,6 @@
 'use client';
 
   import React, { useEffect, useState } from "react";
-  import { useSearchParams } from 'next/navigation';
   import "../../../styles/globals.css";
   import "../../../styles/style.css";
   import Nav from "@/components/Nav";
@@ -53,7 +52,6 @@
   const conditions = ["Condition", "New", "Used"]; // "Condition" is the default value
 
 const ProductList: React.FC = () => {
-    const searchParams = useSearchParams();
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);

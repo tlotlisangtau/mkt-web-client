@@ -13,6 +13,7 @@ interface Post {
   mobile_number?: string;
   brand?: string;
   size?: string;
+  created_at: string;
   material: string;
   department: string;
   ingredients: string;
