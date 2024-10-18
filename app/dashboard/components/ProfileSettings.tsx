@@ -46,7 +46,9 @@ const ProfileSettings = () => {
         }
         setUserId(id);
 
-        const response = await fetch(`http://127.0.0.1:8000/accounts/${id}/`); // Use dynamic user_id
+        const response = await fetch(
+          `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/accounts/${id}/`
+        ); // Use dynamic user_id
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -107,20 +109,23 @@ const ProfileSettings = () => {
         throw new Error('User ID or token not available');
       }
 
-      const response = await fetch(`http://127.0.0.1:8000/accounts/${id}/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, 
-        },
-        body: JSON.stringify({
-          username: userData.username || '',
-          first_name: userData.firstname || '',
-          last_name: userData.lastname || '',
-          phone_number: userData.phone_number || '',
-          email: userData.email || '',
-        }),
-      });
+      const response = await fetch(
+        `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/accounts/${id}/`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            username: userData.username || "",
+            first_name: userData.firstname || "",
+            last_name: userData.lastname || "",
+            phone_number: userData.phone_number || "",
+            email: userData.email || "",
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error('Failed to update user data');
@@ -147,17 +152,20 @@ const ProfileSettings = () => {
         throw new Error('User ID or token not available');
       }
 
-      const response = await fetch(`http://127.0.0.1:8000/accounts/${id}/`, {
-        method: 'PATCH', 
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          current_password: currentPassword,
-          new_password: newPassword,
-        }),
-      });
+      const response = await fetch(
+        `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/accounts/${id}/`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            current_password: currentPassword,
+            new_password: newPassword,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error('Failed to change password');

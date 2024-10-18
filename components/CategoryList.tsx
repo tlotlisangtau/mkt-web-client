@@ -59,16 +59,16 @@ const CategoryForm: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/categories/')
-      .then(response => response.json())
-      .then(data => setCategories(data))
-      .catch(error => console.error('Error fetching categories:', error));
+    fetch("https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/categories/")
+      .then((response) => response.json())
+      .then((data) => setCategories(data))
+      .catch((error) => console.error("Error fetching categories:", error));
   }, []);
 
   useEffect(() => {
     setFormData({});
     switch (selectedCategory) {
-      case 5: // Assume 5 is the ID for Jobs
+      case 1: // Assume 5 is the ID for Jobs
         setFormFields([
           { name: 'Name', type: 'text' },
           { name: 'Description', type: 'text' },
@@ -79,7 +79,7 @@ const CategoryForm: React.FC = () => {
           { name: 'Valid Until', type: 'date' }
         ]);
         break;
-      case 7: // Assume 7 is the ID for Sports
+      case 2: // Assume 7 is the ID for Sports
         setFormFields([
           { name: 'Name', type: 'text' },
           { name: 'Description', type: 'text' },
@@ -91,7 +91,7 @@ const CategoryForm: React.FC = () => {
           { name: 'Condition', type: 'select' } // Added Condition field
         ]);
         break;
-      case 8: // Assume 8 is the ID for Furniture
+      case 3: // Assume 8 is the ID for Furniture
         setFormFields([
           { name: 'Name', type: 'text' },
           { name: 'Description', type: 'text' },
@@ -103,7 +103,7 @@ const CategoryForm: React.FC = () => {
           { name: 'Condition', type: 'select' }
         ]);
         break;
-      case 9: // Assume 9 is the ID for Real Estate
+      case 4: // Assume 9 is the ID for Real Estate
         setFormFields([
           { name: 'Name', type: 'text' },
           { name: 'Description', type: 'text' },
@@ -115,7 +115,7 @@ const CategoryForm: React.FC = () => {
           { name: 'Condition', type: 'select' }
         ]);
         break;
-      case 10: // Assume 10 is the ID for Health & Beauty
+      case 5: // Assume 10 is the ID for Health & Beauty
         setFormFields([
           { name: 'Name', type: 'text' },
           { name: 'Description', type: 'text' },
@@ -185,7 +185,9 @@ const CategoryForm: React.FC = () => {
     // Function to fetch user data using user_id from the token
     const fetchUsername = async (userId: number) => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/accounts/${userId}/`);
+        const response = await fetch(
+          `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/accounts/${userId}/`
+        );
         if (!response.ok) {
           throw new Error('Failed to fetch user data');
         }
@@ -275,7 +277,7 @@ useEffect(() => {
       console.log('Submitting data:', dataToSubmit);
       console.log(userId); // Log the data being submitted
 
-      const endpoint = `http://127.0.0.1:8000/api/${getCategoryEndpoint()}/`;
+      const endpoint = `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/${getCategoryEndpoint()}/`;
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -305,11 +307,11 @@ useEffect(() => {
 
   const getCategoryEndpoint = () => {
     switch (selectedCategory) {
-      case 5: return 'jobs';
-      case 7: return 'sports';
-      case 8: return 'furniture';
-      case 9: return 'realestate';
-      case 10: return 'healthbeauty';
+      case 1: return 'jobs';
+      case 2: return 'sports';
+      case 3: return 'furniture';
+      case 4: return 'realestate';
+      case 5: return 'healthbeauty';
       default: return '';
     }
   };
@@ -343,7 +345,7 @@ useEffect(() => {
             </select>
           </div>
 
-          {selectedCategory === 5 && (
+          {selectedCategory === 1 && (
             <div>
               <label htmlFor="department" className="label1">Department</label>
               <select

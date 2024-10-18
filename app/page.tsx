@@ -8,6 +8,10 @@ import Banner from "@/components/banner";
 import Searchform from "@/components/Searchform";
 import Categorysection from "@/components/Categorysection";
 import Products4_block from "@/components/Products4_block";
+import Footer from "@/components/footer";
+import Pricing from "@/components/pricing";
+import WhyChooseUs from "@/components/WhyChooseUs";
+import Specifications from "@/components/Specifications";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +23,10 @@ const HomePage: React.FC = () => {
       <Searchform />
       <Categorysection />
       <Products4_block />
+      <Specifications />
+      <WhyChooseUs />
+      <Pricing />
+      <Footer />
     </>
   );
 };

@@ -37,11 +37,11 @@ interface EditAdDetailsProps {
 }
 
 const categoryMap: { [key: number]: string } = {
-  5: 'jobs',
-  7: 'sports',
-  8: 'furniture',
-  9: 'realestate',  
-  10: 'healthbeauty',
+  1: 'jobs',
+  2: 'sports',
+  3: 'furniture',
+  4: 'realestate',  
+  5: 'healthbeauty',
 };
 
 function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
@@ -56,7 +56,9 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
     const fetchAdDetails = async () => {
       const category = post.category?.toLowerCase(); 
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/${category}/ads/${post.id}/`);
+        const response = await fetch(
+          `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/${category}/ads/${post.id}/`
+        );
         const data = await response.json();
         console.log('Fetched data:', data);
         setAdDetails({ ...data, complete: data.complete ?? false }); // Set the fetched ad details
@@ -130,13 +132,16 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
     }
   
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/${category}/ads/${post.id}/`, {
-        method: 'PATCH', // Or 'PATCH' if you're only updating part of the ad
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(adDetails),
-      });
+      const response = await fetch(
+        `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/${category}/ads/${post.id}/`,
+        {
+          method: "PATCH", // Or 'PATCH' if you're only updating part of the ad
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(adDetails),
+        }
+      );
   
       if (response.ok) {
         console.log('Changes saved successfully.');

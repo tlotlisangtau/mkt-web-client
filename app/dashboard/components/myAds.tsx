@@ -64,32 +64,53 @@
           }
         }
         try {
-          const [jobsResponse, sportsResponse, furnitureResponse, realestateResponse, healthbeautyResponse] = await Promise.all([
-            fetch('http://127.0.0.1:8000/api/jobs/ads/', {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }),
-            fetch('http://127.0.0.1:8000/api/sports/ads/', {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }),
-            fetch('http://127.0.0.1:8000/api/furniture/ads/', {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }),
-            fetch('http://127.0.0.1:8000/api/realestate/ads/', {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }),
-            fetch('http://127.0.0.1:8000/api/healthbeauty/ads/', {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }),
+          const [
+            jobsResponse,
+            sportsResponse,
+            furnitureResponse,
+            realestateResponse,
+            healthbeautyResponse,
+          ] = await Promise.all([
+            fetch(
+              "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/jobs/ads/",
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            ),
+            fetch(
+              "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/sports/ads/",
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            ),
+            fetch(
+              "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/furniture/ads/",
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            ),
+            fetch(
+              "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/realestate/ads/",
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            ),
+            fetch(
+              "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/healthbeauty/ads/",
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            ),
           ]);
         
           const [jobsData, sportsData, furnitureData, realestateData, healthbeautyData] = await Promise.all([

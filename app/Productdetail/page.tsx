@@ -53,7 +53,9 @@ const ProductDetail: React.FC = () => {
       }
 
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/${category}/${productId}/`);
+        const response = await fetch(
+          `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/${category}/${productId}/`
+        );
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

@@ -59,12 +59,15 @@ const ReceivedMessages: React.FC = () => {
       if (userId !== null) {
         try {
           const token = localStorage.getItem("accessToken");
-          const response = await fetch(`http://127.0.0.1:8000/api/messages/users/${userId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json"
-            },
-          });
+          const response = await fetch(
+            `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/messages/users/${userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
 
           if (!response.ok) {
             throw new Error('Failed to fetch messages.');

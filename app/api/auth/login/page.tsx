@@ -21,13 +21,16 @@ const LoginPage: React.FC = () => {
     setError('');
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/accounts/login/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ identifier, password }), // Use identifier instead of username
-      });
+      const response = await fetch(
+        "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/accounts/login/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ identifier, password }), // Use identifier instead of username
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -108,38 +111,42 @@ const LoginPage: React.FC = () => {
       const { sub, email, given_name,family_name, picture } = decodedToken;
   
       // Send the user information to your backend
-      fetch('http://127.0.0.1:8000/accounts/google/', { // Your backend URL
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          sub,    // Google unique user ID
-          email,
-          given_name,  // Email
-          family_name,   // Full name
-          picture // Profile picture
-        }),
-      })
+      fetch(
+        "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/accounts/google/",
+        {
+          // Your backend URL
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sub, // Google unique user ID
+            email,
+            given_name, // Email
+            family_name, // Full name
+            picture, // Profile picture
+          }),
+        }
+      )
         .then((res) => res.json())
         .then((data) => {
           if (data.user_id) {
-            console.log('User ID:', data.user_id);
-            localStorage.setItem('userID', data.user_id);
-            localStorage.setItem('accessToken', data.token);
-            console.log('accessToken:', data.token);
-            toast.success('Logged in successfully!', {
-              style: { background: 'green', color: 'white' },
+            console.log("User ID:", data.user_id);
+            localStorage.setItem("userID", data.user_id);
+            localStorage.setItem("accessToken", data.token);
+            console.log("accessToken:", data.token);
+            toast.success("Logged in successfully!", {
+              style: { background: "green", color: "white" },
               duration: 2000,
             });
             setTimeout(() => {
-              router.push(redirectTo || '/dashboard');// Redirect to dashboard
+              router.push(redirectTo || "/dashboard"); // Redirect to dashboard
             }, 1000);
           } else {
-            setError('Login failed');
+            setError("Login failed");
           }
         })
-        .catch(() => setError('An error occurred'));
+        .catch(() => setError("An error occurred"));
     }
   };
   
@@ -154,29 +161,33 @@ const LoginPage: React.FC = () => {
           const { accessToken, userID } = response.authResponse;
 
           // Send the accessToken and userID to your backend API
-          fetch('http://127.0.0.1:8000/accounts/facebook/', { // Your backend URL for Facebook login
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ accessToken, userID }),
-          })
+          fetch(
+            "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/accounts/facebook/",
+            {
+              // Your backend URL for Facebook login
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ accessToken, userID }),
+            }
+          )
             .then((res) => res.json())
             .then((data) => {
               if (data.access) {
-                localStorage.setItem('accessToken', data.access);
-                toast.success('Logged in with Facebook successfully!', {
-                  style: { background: 'blue', color: 'white' },
+                localStorage.setItem("accessToken", data.access);
+                toast.success("Logged in with Facebook successfully!", {
+                  style: { background: "blue", color: "white" },
                   duration: 2000,
                 });
                 setTimeout(() => {
-                  router.push(redirectTo || '/dashboard'); // Redirect to dashboard
+                  router.push(redirectTo || "/dashboard"); // Redirect to dashboard
                 }, 1000);
               } else {
-                setError('Facebook login failed');
+                setError("Facebook login failed");
               }
             })
-            .catch(() => setError('An error occurred'));
+            .catch(() => setError("An error occurred"));
         } else {
           console.log('User cancelled login or did not fully authorize.');
         }
@@ -196,80 +207,80 @@ const LoginPage: React.FC = () => {
 
   return (
     <>
-    
-    <div className={styles.container}>
-    <button onClick={handleBack} className={styles.back}>
-      Back
-    </button>
-      <Toaster position="top-center" reverseOrder={false} />
-      <div className={styles.formWrapper}>
-        <h2 className={styles.title}>Login</h2>
-        {error && <p className={styles.error}>{error}</p>}
-
-        {/* Use Phone or Email Button */}
-        <button className={styles.button} onClick={handleModalToggle}>
-          Use Phone or Email
+      <div className={styles.container}>
+        <button onClick={handleBack} className={styles.back}>
+          Back
         </button>
+        <Toaster position="top-center" reverseOrder={false} />
+        <div className={styles.formWrapper}>
+          <h2 className={styles.title}>Login</h2>
+          {error && <p className={styles.error}>{error}</p>}
 
-        {/* Facebook Login Button */}
-        <button onClick={loginWithFacebook} className={styles.facebookButton}>
-          Login with Facebook
-        </button>
+          {/* Use Phone or Email Button */}
+          <button className={styles.button} onClick={handleModalToggle}>
+            Use Phone or Email
+          </button>
 
-        {/* Google Login Button (outside the modal) */}
-        <div className="g_id_signin" style={{ marginTop: '10px' }}></div>
+          {/* Facebook Login Button */}
+          <button onClick={loginWithFacebook} className={styles.facebookButton}>
+            Login with Facebook
+          </button>
 
-        {/* Modal for Phone or Email Login */}
-        {showModal && (
-          <div className={styles.modal}>
-            <div className={styles.modalContent}>
-              <span className={styles.closeBtn} onClick={handleModalToggle}>
-                &times;
-              </span>
-              <h3>Login with Phone or Email</h3>
-              <form onSubmit={handleSubmit}>
-                <div className={styles.formElement}>
-                  <label htmlFor="identifier" className={styles.label}>
-                    Email or Phone Number
-                  </label>
-                  <input
-                    type="text"
-                    id="identifier"
-                    value={identifier}
-                    onChange={(e) => setIdentifier(e.target.value)}
-                    className={styles.input}
-                    required
-                  />
-                </div>
-                <div className={styles.formElement}>
-                  <label htmlFor="password" className={styles.label}>
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className={styles.input}
-                    required
-                  />
-                </div>
-                <button type="submit" className={styles.button}>
-                  Login
-                </button>
-              </form>
+          {/* Google Login Button (outside the modal) */}
+          <div className="g_id_signin" style={{ marginTop: "10px" }}></div>
+
+          {/* Modal for Phone or Email Login */}
+          {showModal && (
+            <div className={styles.modal}>
+              <div className={styles.modalContent}>
+                <span className={styles.closeBtn} onClick={handleModalToggle}>
+                  &times;
+                </span>
+                <h3>Login with Phone or Email</h3>
+                {error && <p className={styles.error}>{error}</p>}
+                <form onSubmit={handleSubmit}>
+                  <div className={styles.formElement}>
+                    <label htmlFor="identifier" className={styles.label}>
+                      Email or Phone Number
+                    </label>
+                    <input
+                      type="text"
+                      id="identifier"
+                      value={identifier}
+                      onChange={(e) => setIdentifier(e.target.value)}
+                      className={styles.input}
+                      required
+                    />
+                  </div>
+                  <div className={styles.formElement}>
+                    <label htmlFor="password" className={styles.label}>
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      id="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className={styles.input}
+                      required
+                    />
+                  </div>
+                  <button type="submit" className={styles.button}>
+                    Login
+                  </button>
+                </form>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <p className={styles.footerText}>
-          Do not have an account?
-          <a href="/register" className={styles.footerLink}>
-            Register
-          </a>
-        </p>
+          <p className={styles.footerText}>
+            Do not have an account?
+            <a href="/register" className={styles.footerLink}>
+              Register
+            </a>
+          </p>
+        </div>
       </div>
-    </div>
     </>
   );
 };

@@ -8,11 +8,11 @@ interface DeleteAdProps {
 }
 
 const categoryMap: { [key: number]: string } = {
-  5: 'jobs',
-  7: 'sports',
-  8: 'furniture',
-  9: 'realestate',
-  10: 'healthbeauty',
+  1: 'jobs',
+  2: 'sports',
+  3: 'furniture',
+  4: 'realestate',
+  5: 'healthbeauty',
 };
 
 const DeleteAd: React.FC<DeleteAdProps> = ({ postId, categoryId, onDeleteSuccess, onCancel }) => {
@@ -25,12 +25,15 @@ const DeleteAd: React.FC<DeleteAdProps> = ({ postId, categoryId, onDeleteSuccess
 
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await fetch(`http://127.0.0.1:8000/api/${category}/ads/${postId}/`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/${category}/ads/${postId}/`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.ok) {
         onDeleteSuccess(); // Call this function to refresh the list after deletion

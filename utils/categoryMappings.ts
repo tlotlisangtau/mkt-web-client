@@ -1,10 +1,10 @@
 // utils/categoryMappings.ts
 export const categoryMappings: { [key: number]: string } = {
-    5: 'jobs',
-    7: 'sports',
-    8: 'furniture',
+    1: 'jobs',
+    2: 'sports',
+    3: 'furniture',
     4: 'real_estate',
-    1: 'health_beauty',
+    5: 'health_beauty',
     // Add other categories here
   };
   

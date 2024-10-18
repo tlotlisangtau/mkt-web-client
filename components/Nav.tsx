@@ -12,16 +12,14 @@ const Nav: React.FC = () => {
     setIsLoggedIn(!!userToken);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    setIsLoggedIn(false);
-    setShowLogoutModal(false);
-    window.location.reload();
-  };
+
 
   const handleLoginLogout = () => {
     if (isLoggedIn) {
       window.location.href = "/dashboard";
+    }
+    else{
+      window.location.href = "/api/auth/login";
     }
   };
 
@@ -47,13 +45,25 @@ const Nav: React.FC = () => {
             <Link href="/" className="text-gray-800 hover:text-gray-600">
               Home
             </Link>
-            {/* Other links */}
+            <Link href="/" className="text-gray-800 hover:text-gray-600">
+              Categories
+            </Link>
+            <Link href="/" className="text-gray-800 hover:text-gray-600">
+              Latest Ads
+            </Link>
+            <Link href="/" className="text-gray-800 hover:text-gray-600">
+              Why Choose Us
+            </Link>
+            <Link href="/" className="text-gray-800 hover:text-gray-600">
+              Pricing
+            </Link>
+
             <Link
               href="/ChooseCategory"
               className="bg-blue-500 text-white py-2 px-2 mb-3 rounded hover:bg-blue-600"
             >
               <span
-                className="fa fa-paper-plane-o mr-2"
+                className="fa fa-paper-plane-o   mr-2"
                 aria-hidden="true"
               ></span>
               Post your Ad
@@ -75,7 +85,6 @@ const Nav: React.FC = () => {
         </div>
       </div>
 
-      {/* Logout Confirmation Modal */}
     </header>
   );
 };

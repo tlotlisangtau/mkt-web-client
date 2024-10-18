@@ -41,7 +41,9 @@ const BuyerInformation: React.FC = () => {
 
   const fetchProductDetails = async (id: number) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/${category}/${id}/`);
+      const response = await fetch(
+        `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/${category}/${id}/`
+      );
       if (response.ok) {
         const productData = await response.json();
         setSellerId(productData.user_id);
@@ -57,7 +59,9 @@ const BuyerInformation: React.FC = () => {
 
   const fetchSellerDetails = async (id: number) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/accounts/${id}/`);
+      const response = await fetch(
+        `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/accounts/${id}/`
+      );
       if (response.ok) {
         const sellerData = await response.json();
         setSellerName(sellerData.first_name);
@@ -99,13 +103,16 @@ const BuyerInformation: React.FC = () => {
     };
     console.log("Payload being sent:", messageData); // Log the payload
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/messages/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(messageData),
-      });
+      const response = await fetch(
+        "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/messages/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(messageData),
+        }
+      );
 
       if (response.ok) {
         setStatusMessage('Message sent successfully!');
