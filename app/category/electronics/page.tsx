@@ -62,10 +62,6 @@
     "Mafeteng",
   ];
   const conditions = ["Condition", "New", "Used"]; // "Condition" is the default value
-    const latestAdsRef = useRef<HTMLDivElement>(null);
-    const whyChooseUsRef = useRef<HTMLDivElement>(null);
-    const categoriesRef = useRef<HTMLDivElement>(null);
-
 
   const ProductList: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
@@ -83,6 +79,10 @@
     const [isConditionDropdownOpen, setIsConditionDropdownOpen] = useState<boolean>(false);
     const [sortOption, setSortOption] = useState<string>("date");
     const [searchQuery, setSearchQuery] = useState<string>('');
+
+        const latestAdsRef = useRef<HTMLDivElement>(null);
+        const whyChooseUsRef = useRef<HTMLDivElement>(null);
+        const categoriesRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
       const fetchProducts = async () => {

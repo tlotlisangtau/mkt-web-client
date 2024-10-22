@@ -72,10 +72,6 @@ const departments = [
     "Quthing",
     "Mafeteng",
   ];
-    const latestAdsRef = useRef<HTMLDivElement>(null);
-    const whyChooseUsRef = useRef<HTMLDivElement>(null);
-    const categoriesRef = useRef<HTMLDivElement>(null);
-
 
 const ProductList: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>("Location");
@@ -93,6 +89,10 @@ const ProductList: React.FC = () => {
   const [isLocationDropdownOpen, setIsLocationDropdownOpen] = useState<boolean>(false);
   const [selectedFilter, setSelectedFilter] = useState<string>('None'); // Default filter is 'None'
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+      const latestAdsRef = useRef<HTMLDivElement>(null);
+      const whyChooseUsRef = useRef<HTMLDivElement>(null);
+      const categoriesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {

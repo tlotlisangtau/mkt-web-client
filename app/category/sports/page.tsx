@@ -79,6 +79,9 @@
     const [isConditionDropdownOpen, setIsConditionDropdownOpen] = useState<boolean>(false);
     const [sortOption, setSortOption] = useState<string>("date");
     const [searchQuery, setSearchQuery] = useState<string>('');
+        const latestAdsRef = useRef<HTMLDivElement>(null);
+        const whyChooseUsRef = useRef<HTMLDivElement>(null);
+        const categoriesRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
       const fetchProducts = async () => {
@@ -209,9 +212,6 @@
     };
 
 
-  const latestAdsRef = useRef<HTMLDivElement>(null);
-  const whyChooseUsRef = useRef<HTMLDivElement>(null);
-  const categoriesRef = useRef<HTMLDivElement>(null);
 
     return (
       <>

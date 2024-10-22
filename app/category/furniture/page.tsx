@@ -78,6 +78,9 @@ const ProductList: React.FC = () => {
     const [isConditionDropdownOpen, setIsConditionDropdownOpen] = useState<boolean>(false);
     const [sortOption, setSortOption] = useState<string>("date");
     const [searchQuery, setSearchQuery] = useState<string>('');
+      const latestAdsRef = useRef<HTMLDivElement>(null);
+      const whyChooseUsRef = useRef<HTMLDivElement>(null);
+      const categoriesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -210,10 +213,6 @@ const ProductList: React.FC = () => {
       }
       return Array.isArray(urls) ? urls : [urls];
     };
-  const latestAdsRef = useRef<HTMLDivElement>(null);
-  const whyChooseUsRef = useRef<HTMLDivElement>(null);
-  const categoriesRef = useRef<HTMLDivElement>(null);
-
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

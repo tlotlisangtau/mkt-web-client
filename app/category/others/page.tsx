@@ -73,7 +73,7 @@ const ProductList: React.FC = () => {
   const [selectedType, setSelectedType] = useState<string>("Type"); // Default to "Type"
   const [selectedLocation, setSelectedLocation] = useState<string>("Location"); // Default to "Location"
   const [selectedCondition, setSelectedCondition] =
-    useState<string>("Condition"); // Default to "Condition"
+  useState<string>("Condition"); // Default to "Condition"
   const [minPrice, setMinPrice] = useState<number | "">("");
   const [maxPrice, setMaxPrice] = useState<number | "">("");
   const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState<boolean>(false);
@@ -83,6 +83,10 @@ const ProductList: React.FC = () => {
     useState<boolean>(false);
   const [sortOption, setSortOption] = useState<string>("date");
   const [searchQuery, setSearchQuery] = useState<string>("");
+
+      const latestAdsRef = useRef<HTMLDivElement>(null);
+      const whyChooseUsRef = useRef<HTMLDivElement>(null);
+      const categoriesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -238,9 +242,6 @@ const ProductList: React.FC = () => {
     }
     return Array.isArray(urls) ? urls : [urls];
   };
-    const latestAdsRef = useRef<HTMLDivElement>(null);
-    const whyChooseUsRef = useRef<HTMLDivElement>(null);
-    const categoriesRef = useRef<HTMLDivElement>(null);
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
