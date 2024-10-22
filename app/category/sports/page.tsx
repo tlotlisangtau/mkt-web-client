@@ -48,7 +48,19 @@
   };
 
   const types = ["Type", "Football", "Rugby", "Basketball", "Tennis", "Cricket"];
-  const locations = ["Location", "All", "Maseru", "Leribe", "Qacha"];
+  const locations = [
+    "Location",
+    "Maseru",
+    "Leribe",
+    "Qacha",
+    "Berea",
+    "Mafeteng",
+    "Mokhotlong",
+    "Thaba-Tseka",
+    "Botha-Buthe",
+    "Quthing",
+    "Mafeteng",
+  ];
   const conditions = ["Condition", "New", "Used"]; // "Condition" is the default value
 
   const ProductList: React.FC = () => {

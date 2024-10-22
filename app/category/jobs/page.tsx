@@ -59,7 +59,19 @@ const departments = [
     }
     return "Just now";
   };
-  const locations = ["Location", "All", "Maseru", "Leribe", "Qacha"];
+  const locations = [
+    "Location",
+    "Maseru",
+    "Leribe",
+    "Qacha",
+    "Berea",
+    "Mafeteng",
+    "Mokhotlong",
+    "Thaba-Tseka",
+    "Botha-Buthe",
+    "Quthing",
+    "Mafeteng",
+  ];
 
 const ProductList: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>("Location");

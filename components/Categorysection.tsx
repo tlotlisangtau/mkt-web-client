@@ -23,12 +23,12 @@ const Categorysection: React.FC = () => {
   }, []);
 
   const categoryIcons: { [key: string]: string } = {
-    'Furniture': 'fa fa-bed',
-    'Jobs': 'fa fa-briefcase',
-    'Sports': 'fa fa-futbol-o',
-    'Electronics': 'fa fa-laptop',
-    'Automotives': 'fa fa-car',
-    'Others': 'fa fa-house',
+    Furniture: "fa fa-bed",
+    Jobs: "fa fa-briefcase",
+    Sports: "fa fa-futbol-o",
+    Electronics: "fa fa-laptop",
+    Automotives: "fa fa-car",
+    Others: "fa fa-ellipsis-h",
   };
 
   const getAdsPostedText = (categoryName: string) => {

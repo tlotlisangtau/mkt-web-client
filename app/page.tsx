@@ -25,7 +25,6 @@ const HomePage: React.FC = () => {
       <Products4_block />
       <Specifications />
       <WhyChooseUs />
-      <Pricing />
       <Footer />
     </>
   );

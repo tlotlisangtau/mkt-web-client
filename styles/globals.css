@@ -10,6 +10,114 @@
   --background-end-rgb: 255, 255, 255;
 }
 
+
+.footer {
+  background-color: #282c34;
+  color: white;
+  padding: 40px 0;
+}
+
+.footer-top {
+  border-bottom: 1px solid #444;
+}
+
+.wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: white;
+}
+
+.footer-content h4{
+    color: white;   
+}
+
+.footer-content p{
+    color: white;   
+}
+.footer-columns {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  flex-wrap: wrap;
+    color: white;
+}
+
+.footer-column {
+  flex: 1;
+  margin: 10px;
+  min-width: 200px;
+  color: white;
+}
+
+.footer-column h6 {
+  margin-bottom: 10px;
+  font-size: 1.2em;
+  color: white;
+}
+
+.footer-column p, .footer-column div {
+  margin-bottom: 10px;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
+}
+
+.social-icons a {
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.copyright {
+  flex: 1;
+}
+
+.payment-logos {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.payment-logos img {
+  width: 50px;
+  margin-left: 10px;
+}
+
+.scroll-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #ff5722;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
 /* Add this CSS to your globals.css or inline style */
 .modal-overlay {
   position: fixed;

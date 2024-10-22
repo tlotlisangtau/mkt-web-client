@@ -48,7 +48,19 @@
   };
 
   const types = ["Type", "Football", "Rugby", "Basketball", "Tennis", "Cricket"];
-  const locations = ["Location", "All", "Maseru", "Leribe", "Qacha"];
+  const locations = [
+    "Location",
+    "Maseru",
+    "Leribe",
+    "Qacha",
+    "Berea",
+    "Mafeteng",
+    "Mokhotlong",
+    "Thaba-Tseka",
+    "Botha-Buthe",
+    "Quthing",
+    "Mafeteng",
+  ];
   const conditions = ["Condition", "New", "Used"]; // "Condition" is the default value
 
   const ProductList: React.FC = () => {
@@ -254,30 +266,7 @@
                       </button>
                     </form>
 
-                    {/* Type Filter */}
-                    <div className="filter-dropdown-container">
-                      <input
-                        type="text"
-                        placeholder="Filter by type..."
-                        className="filter-input"
-                        onClick={() => setIsTypeDropdownOpen((prev) => !prev)}
-                        value={selectedType}
-                        readOnly
-                      />
-                      {isTypeDropdownOpen && (
-                        <ul className="filter-dropdown-menu">
-                          {types.map((type, index) => (
-                            <li
-                              key={index}
-                              className="filter-dropdown-item"
-                              onClick={() => handleTypeSelect(type)}
-                            >
-                              {type}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
+
 
                     {/* Location Filter */}
                     <div className="filter-dropdown-container">
