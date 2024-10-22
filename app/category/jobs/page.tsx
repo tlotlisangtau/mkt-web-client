@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../../../styles/globals.css';
 import '../../../styles/style.css';
 import Nav from '@/components/Nav';
@@ -72,6 +72,10 @@ const departments = [
     "Quthing",
     "Mafeteng",
   ];
+    const latestAdsRef = useRef<HTMLDivElement>(null);
+    const whyChooseUsRef = useRef<HTMLDivElement>(null);
+    const categoriesRef = useRef<HTMLDivElement>(null);
+
 
 const ProductList: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>("Location");
@@ -211,13 +215,21 @@ const ProductList: React.FC = () => {
 
   return (
     <>
-      <Nav />
+      <Nav
+        latestAdsRef={latestAdsRef}
+        whyChooseUsRef={whyChooseUsRef}
+        categoriesRef={categoriesRef}
+      />
       <section className="w3l-inner-banner-main">
         <div className="about-inner inner2">
           <div className="wrapper seen-w3">
             <ul className="breadcrumbs-custom-path">
-              <li><a href="/">Home</a></li>
-              <li><span className="fa fa-angle-right" aria-hidden="true"></span></li>
+              <li>
+                <a href="/">Home</a>
+              </li>
+              <li>
+                <span className="fa fa-angle-right" aria-hidden="true"></span>
+              </li>
               <li className="active">All Ads</li>
             </ul>
           </div>
@@ -229,102 +241,127 @@ const ProductList: React.FC = () => {
           <div className="wrapper">
             <h3 className="title-main">Jobs Category</h3>
             <div className="d-grid grid-colunm-2 grid-colunm">
+              <div className="right-side-bar">
+                <aside>
+                  <h3 className="aside-title mb-3">Filter Ads</h3>
+                  <form
+                    className="form-inline search-form"
+                    action="#"
+                    method="post"
+                  >
+                    <input
+                      className="form-control"
+                      type="search"
+                      placeholder="Search here..."
+                      aria-label="search"
+                      value={searchQuery}
+                      onChange={handleSearchChange}
+                      required
+                    />
+                    <button className="btn search" type="submit">
+                      <span className="fa fa-search"></span>
+                    </button>
+                    <button
+                      className="btn reset"
+                      type="reset"
+                      title="Reset Search"
+                    >
+                      <span className="fa fa-repeat"></span>
+                    </button>
+                  </form>
+                  {/* Type Filter */}
+                  <div className="filter-dropdown-container">
+                    <input
+                      type="text"
+                      placeholder="Filter by type..."
+                      className="filter-input"
+                      onClick={() =>
+                        setIsDepartmentDropdownOpen((prev) => !prev)
+                      }
+                      value={selectedDepartment}
+                      readOnly
+                    />
+                    {isDepartmentDropdownOpen && (
+                      <ul className="filter-dropdown-menu">
+                        {departments.map((department, index) => (
+                          <li
+                            key={index}
+                            className="filter-dropdown-item"
+                            onClick={() => handleDepartmentSelect(department)}
+                          >
+                            {department}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                  {/* Location Filter */}
+                  <div className="filter-dropdown-container">
+                    <input
+                      type="text"
+                      placeholder="Filter by location..."
+                      className="filter-input"
+                      onClick={() => setIsLocationDropdownOpen((prev) => !prev)}
+                      value={selectedLocation}
+                      readOnly
+                    />
+                    {isLocationDropdownOpen && (
+                      <ul className="filter-dropdown-menu">
+                        {locations.map((job_location, index) => (
+                          <li
+                            key={index}
+                            className="filter-dropdown-item"
+                            onClick={() => handleLocationSelect(job_location)}
+                          >
+                            {job_location}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
 
-            <div className="right-side-bar">
-              <aside>
-                <h3 className="aside-title mb-3">Filter Ads</h3>
-                  <form className="form-inline search-form" action="#" method="post">
-                      <input 
-                        className="form-control" 
-                        type="search" 
-                        placeholder="Search here..." 
-                        aria-label="search" 
-                        value={searchQuery}
-                        onChange={handleSearchChange}
-                        required 
-                      />
-                      <button className="btn search" type="submit"><span className="fa fa-search"></span></button>
-                      <button className="btn reset" type="reset" title="Reset Search"><span className="fa fa-repeat"></span></button>
-                    </form>
-                {/* Type Filter */}
-                    <div className="filter-dropdown-container">
-                      <input
-                        type="text"
-                        placeholder="Filter by type..."
-                        className="filter-input"
-                        onClick={() => setIsDepartmentDropdownOpen(prev => !prev)}
-                        value={selectedDepartment}
-                        readOnly
-                      />
-                      {isDepartmentDropdownOpen && (
-                        <ul className="filter-dropdown-menu">
-                          {departments.map((department, index) => (
-                            <li
-                              key={index}
-                              className="filter-dropdown-item"
-                              onClick={() => handleDepartmentSelect(department)}
-                            >
-                              {department}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                    {/* Location Filter */}
-                      <div className="filter-dropdown-container">
-                        <input
-                          type="text"
-                          placeholder="Filter by location..."
-                          className="filter-input"
-                          onClick={() => setIsLocationDropdownOpen(prev => !prev)}
-                          value={selectedLocation}
-                          readOnly
-                        />
-                        {isLocationDropdownOpen && (
-                          <ul className="filter-dropdown-menu">
-                            {locations.map((job_location, index) => (
-                              <li
-                                key={index}
-                                className="filter-dropdown-item"
-                                onClick={() => handleLocationSelect(job_location)}
-                              >
-                                {job_location}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-
-                {/* Price Range Filter */}
-                    <div className="price-range-filter">
+                  {/* Price Range Filter */}
+                  <div className="price-range-filter">
                     <label>Price Range</label>
                     <input
-                        type="number"
-                        placeholder="Min Price"
-                        value={minPrice === '' ? '' : minPrice}
-                        onChange={handleMinPriceChange}
-                      />
-                      <input
-                        type="number"
-                        placeholder="Max Price"
-                        value={maxPrice === '' ? '' : maxPrice}
-                        onChange={handleMaxPriceChange}
-                      />
-                    </div>
-              </aside>
-            </div>
+                      type="number"
+                      placeholder="Min Price"
+                      value={minPrice === "" ? "" : minPrice}
+                      onChange={handleMinPriceChange}
+                    />
+                    <input
+                      type="number"
+                      placeholder="Max Price"
+                      value={maxPrice === "" ? "" : maxPrice}
+                      onChange={handleMaxPriceChange}
+                    />
+                  </div>
+                </aside>
+              </div>
 
               <div className="tab-content text-left">
                 <aside className="top-border d-flex">
-                  <h3 className="aside-title mb-3">Showing {filteredProducts.length === 0 ? 0 : startIndex + 1}–{Math.min(startIndex + itemsPerPage, filteredProducts.length)} of {filteredProducts.length} results</h3>
+                  <h3 className="aside-title mb-3">
+                    Showing {filteredProducts.length === 0 ? 0 : startIndex + 1}
+                    –
+                    {Math.min(
+                      startIndex + itemsPerPage,
+                      filteredProducts.length
+                    )}{" "}
+                    of {filteredProducts.length} results
+                  </h3>
                   <div className="input-group-btn">
                     <label htmlFor="Sort By :">Sort By :</label>
-                  <select id="sort" value={sortOption} onChange={handleSortChange}>
-                        <option value="date">Date</option>
-                        <option value="name">Name</option>
-                        <option value="price-asc">Price: Low to High</option>
-                        <option value="price-desc">Price: High to Low</option>
-                      </select>
+                    <select
+                      id="sort"
+                      value={sortOption}
+                      onChange={handleSortChange}
+                    >
+                      <option value="date">Date</option>
+                      <option value="name">Name</option>
+                      <option value="price-asc">Price: Low to High</option>
+                      <option value="price-desc">Price: High to Low</option>
+                    </select>
                   </div>
                 </aside>
                 <div className="d-grid grid-col-4">
@@ -332,21 +369,39 @@ const ProductList: React.FC = () => {
                   {error && <p>Error: {error}</p>}
                   {!loading && !error && (
                     <div className="d-grid grid-col-2">
-                      {currentProducts.map(product => (
+                      {currentProducts.map((product) => (
                         <div className="product" key={product.id}>
                           <Carousel showThumbs={false} infiniteLoop>
                             {product.image_urls.map((imageUrl, index) => (
                               <div key={index}>
-                                <img src={imageUrl} className="img-responsive" alt={`Image ${index + 1}`} />
+                                <img
+                                  src={imageUrl}
+                                  className="img-responsive"
+                                  alt={`Image ${index + 1}`}
+                                />
                               </div>
                             ))}
                           </Carousel>
                           <div className="info-bg">
-                            <h5><a href={`/Productdetail?productId=${product.id}&category=${categoryMappings[product.category_id]}`}>{product.name}</a></h5>
+                            <h5>
+                              <a
+                                href={`/Productdetail?productId=${
+                                  product.id
+                                }&category=${
+                                  categoryMappings[product.category_id]
+                                }`}
+                              >
+                                {product.name}
+                              </a>
+                            </h5>
                             <p>{product.description}</p>
                             <p>{product.job_location}</p>
                             <ul className="d-flex">
-                              <li>{new Date(product.created_at).toLocaleDateString()}</li>
+                              <li>
+                                {new Date(
+                                  product.created_at
+                                ).toLocaleDateString()}
+                              </li>
                               <li className="margin-effe">
                                 <a href="#fav" title="Add this to Favorite">
                                   <span className="fa fa-heart"></span>
@@ -366,7 +421,9 @@ const ProductList: React.FC = () => {
                       {[...Array(totalPages)].map((_, index) => (
                         <li key={index}>
                           <button
-                            className={currentPage === index + 1 ? 'active' : ''}
+                            className={
+                              currentPage === index + 1 ? "active" : ""
+                            }
                             onClick={() => handlePageChange(index + 1)}
                           >
                             {index + 1}
@@ -377,7 +434,6 @@ const ProductList: React.FC = () => {
                   </div>
                 )}
               </div>
-
             </div>
           </div>
         </div>

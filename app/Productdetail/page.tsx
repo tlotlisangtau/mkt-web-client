@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, Suspense } from "react";
+import React, { useEffect, useState, Suspense, useRef } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import '../../styles/globals.css';
 import '../../styles/style.css';
@@ -32,26 +32,31 @@ interface Product {
 
 const ProductDetail: React.FC = () => {
   const searchParams = useSearchParams();
-  const productId = searchParams.get('productId');
+  const productId = searchParams.get("productId");
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const category = searchParams.get('category');
+  const category = searchParams.get("category");
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
     return `${day}-${month}-${year}`;
   };
 
+  // Dummy refs
+  const latestAdsRef = useRef<HTMLDivElement>(null);
+  const whyChooseUsRef = useRef<HTMLDivElement>(null);
+  const categoriesRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const fetchProduct = async () => {
       if (!productId) {
-        setError('Product ID is missing');
+        setError("Product ID is missing");
         setLoading(false);
-        return; 
+        return;
       }
 
       try {
@@ -59,12 +64,12 @@ const ProductDetail: React.FC = () => {
           `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/${category}/${productId}/`
         );
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         const data: Product = await response.json();
         setProduct(data);
       } catch (error: any) {
-        console.error('Fetch error:', error);
+        console.error("Fetch error:", error);
         setError(error.message);
       } finally {
         setLoading(false);
@@ -76,7 +81,11 @@ const ProductDetail: React.FC = () => {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Nav />
+      <Nav
+        latestAdsRef={latestAdsRef}
+        whyChooseUsRef={whyChooseUsRef}
+        categoriesRef={categoriesRef}
+      />
       <section className="w3l-inner-banner-main">
         <div className="about-inner inner2">
           <div className="wrapper seen-w3">

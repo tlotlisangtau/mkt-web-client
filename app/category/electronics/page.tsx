@@ -1,6 +1,6 @@
   "use client";
 
-  import React, { useEffect, useState, Suspense } from "react";
+  import React, { useEffect, useState, useRef, Suspense } from "react";
   import "../../../styles/globals.css";
   import "../../../styles/style.css";
   import Nav from "@/components/Nav";
@@ -62,6 +62,10 @@
     "Mafeteng",
   ];
   const conditions = ["Condition", "New", "Used"]; // "Condition" is the default value
+    const latestAdsRef = useRef<HTMLDivElement>(null);
+    const whyChooseUsRef = useRef<HTMLDivElement>(null);
+    const categoriesRef = useRef<HTMLDivElement>(null);
+
 
   const ProductList: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
@@ -215,7 +219,11 @@
 
     return (
       <Suspense fallback={<div>Loading...</div>}>
-        <Nav />
+        <Nav
+          latestAdsRef={latestAdsRef}
+          whyChooseUsRef={whyChooseUsRef}
+          categoriesRef={categoriesRef}
+        />
         <section className="w3l-inner-banner-main">
           <div className="about-inner inner2">
             <div className="wrapper seen-w3">
@@ -265,8 +273,6 @@
                         <span className="fa fa-repeat"></span>
                       </button>
                     </form>
-
-
 
                     {/* Location Filter */}
                     <div className="filter-dropdown-container">

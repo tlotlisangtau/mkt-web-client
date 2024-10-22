@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, Suspense } from "react";
+import React, { useEffect, useState, Suspense, useRef } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { categoryMappings } from "@/utils/categoryMappings";
@@ -238,10 +238,17 @@ const ProductList: React.FC = () => {
     }
     return Array.isArray(urls) ? urls : [urls];
   };
+    const latestAdsRef = useRef<HTMLDivElement>(null);
+    const whyChooseUsRef = useRef<HTMLDivElement>(null);
+    const categoriesRef = useRef<HTMLDivElement>(null);
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Nav />
+      <Nav
+        latestAdsRef={latestAdsRef}
+        whyChooseUsRef={whyChooseUsRef}
+        categoriesRef={categoriesRef}
+      />
       <section className="w3l-inner-banner-main">
         <div className="about-inner inner2">
           <div className="wrapper seen-w3">
