@@ -1,9 +1,20 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import "../styles/globals.css";
 
-const Nav: React.FC = () => {
+interface NavProps {
+  latestAdsRef: React.RefObject<HTMLDivElement>;
+  whyChooseUsRef: React.RefObject<HTMLDivElement>; // Add ref for Why Choose Us
+  categoriesRef: React.RefObject<HTMLDivElement>; // Add ref for Categories
+}
+
+const Nav: React.FC<NavProps> = ({
+  latestAdsRef,
+  whyChooseUsRef,
+  categoriesRef,
+}) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State to control mobile menu visibility
 
@@ -22,6 +33,21 @@ const Nav: React.FC = () => {
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const scrollToLatestAds = (event: React.MouseEvent) => {
+    event.preventDefault();
+    latestAdsRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const scrollToWhyChooseUs = (event: React.MouseEvent) => {
+    event.preventDefault();
+    whyChooseUsRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const scrollToCategories = (event: React.MouseEvent) => {
+    event.preventDefault();
+    categoriesRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -44,22 +70,33 @@ const Nav: React.FC = () => {
           </div>
           {/* Desktop Menu */}
           <nav className="hidden lg:flex space-x-4 p-3">
-            <Link href="/" className="text-gray-800 hover:text-gray-600">
+            <Link
+              href="/"
+              className="text-lg font-semibold text-gray-800 hover:text-gray-600"
+            >
               Home
             </Link>
-            <Link href="/" className="text-gray-800 hover:text-gray-600">
+            <Link
+              href="#"
+              onClick={scrollToCategories}
+              className="text-lg font-semibold text-gray-800 hover:text-gray-600"
+            >
               Categories
             </Link>
-            <Link href="/" className="text-gray-800 hover:text-gray-600">
+            <Link
+              href="#"
+              onClick={scrollToLatestAds}
+              className="text-lg font-semibold text-gray-800 hover:text-gray-600"
+            >
               Latest Ads
             </Link>
-            <Link href="/" className="text-gray-800 hover:text-gray-600">
+            <Link
+              href="#"
+              onClick={scrollToWhyChooseUs}
+              className="text-lg font-semibold text-gray-800 hover:text-gray-600"
+            >
               Why Choose Us
             </Link>
-            <Link href="/" className="text-gray-800 hover:text-gray-600">
-              Pricing
-            </Link>
-
             <Link
               href="/ChooseCategory"
               className="bg-blue-500 text-white py-2 px-2 mb-3 rounded hover:bg-blue-600"
@@ -97,19 +134,27 @@ const Nav: React.FC = () => {
             <Link href="/" className="text-gray-800 hover:text-gray-600">
               Home
             </Link>
-            <Link href="/" className="text-gray-800 hover:text-gray-600">
+            <Link
+              href="#"
+              onClick={scrollToCategories}
+              className="text-gray-800 hover:text-gray-600"
+            >
               Categories
             </Link>
-            <Link href="/" className="text-gray-800 hover:text-gray-600">
+            <Link
+              href="#"
+              onClick={scrollToLatestAds}
+              className="text-gray-800 hover:text-gray-600"
+            >
               Latest Ads
             </Link>
-            <Link href="/" className="text-gray-800 hover:text-gray-600">
+            <Link
+              href="#"
+              onClick={scrollToWhyChooseUs}
+              className="text-lg text-gray-800 hover:text-gray-600"
+            >
               Why Choose Us
             </Link>
-            <Link href="/" className="text-gray-800 hover:text-gray-600">
-              Pricing
-            </Link>
-
             <Link
               href="/ChooseCategory"
               className="bg-blue-500 text-white py-2 px-2 rounded hover:bg-blue-600"

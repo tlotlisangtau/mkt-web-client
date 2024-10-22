@@ -37,7 +37,7 @@ const Categorysection: React.FC = () => {
   };
 
   return (
-    <section className="w3l-category-main">
+    <section id="categories" className="w3l-category-main">
       <div className="categories-sec">
         <div className="wrapper">
           <h3 className="title-main">Popular Categories</h3>
