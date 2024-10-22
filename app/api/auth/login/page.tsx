@@ -274,7 +274,7 @@ const LoginPage: React.FC = () => {
           )}
 
           <p className={styles.footerText}>
-            Do not have an account?
+            Do not have an account?{" "}
             <a href="/register" className={styles.footerLink}>
               Register
             </a>
