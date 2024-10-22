@@ -27,8 +27,8 @@ const Categorysection: React.FC = () => {
     'Jobs': 'fa fa-briefcase',
     'Sports': 'fa fa-futbol-o',
     'Electronics': 'fa fa-laptop',
-    'Health & Beauty': 'fa fa-heart',
-    'Real Estate': 'fa fa-house',
+    'Automotives': 'fa fa-car',
+    'Others': 'fa fa-house',
   };
 
   const getAdsPostedText = (categoryName: string) => {
@@ -44,12 +44,21 @@ const Categorysection: React.FC = () => {
           <div className="right-models text-center">
             <div className="d-grid grid-sec">
               {categories.map((category: any) => (
-                <a href={`/category/${category.name.toLowerCase().replace(/ & /g, '_').replace(/ /g, '_')}`} key={category.id}>
+                <a
+                  href={`/category/${category.name
+                    .toLowerCase()
+                    .replace(/[^a-zA-Z]/g, "")}`}
+                  key={category.id}
+                >
                   <div className="card">
                     <div className="card-body">
-                      <span className={categoryIcons[category.name] || 'fa fa-bed'}></span>
+                      <span
+                        className={categoryIcons[category.name] || "fa fa-bed"}
+                      ></span>
                       <h5 className="card-title mt-4">{category.name}</h5>
-                      <p className="para-design">{getAdsPostedText(category.name)}</p>
+                      <p className="para-design">
+                        {getAdsPostedText(category.name)}
+                      </p>
                     </div>
                   </div>
                 </a>

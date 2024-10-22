@@ -87,52 +87,45 @@ const Navbar = () => {
   };
 
   return (
-<nav className="navbar">
-  <div className="navbar-container">
-    {/* Logo and Links */}
-    <div className={`nav-links ${isOpen ? 'active' : ''} md-active`}>
-      <button
-        onClick={toStore}
-        className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
-        >
-              Return To Store
-            </button>
-    </div>
-
-    {/* Hamburger Menu Button (Mobile) */}
-    <div className="md:hidden">
-      <button
-        onClick={toggleMenu}
-        className="hamburger-btn"
-      >
-        {isOpen ? (
-          <XMarkIcon className="h" />
-        ) : (
-          <>
-          <Bars3Icon className="h" />
-          </>
-
-        )}
-      </button>
-    </div>  
-
-    {/* Profile section */}
-    <div className={'profile-container'}>
-      <img
-        src={userData?.image_url || '/Images/author/img-07.jpg'}
-        alt="Profile picture"
-        className="profile-pic"
-      />
-      {userData ? (
-        <div className="username">
-          <h3>Hi! {userData.username}</h3>
+    <nav className="navbar">
+      <div className="navbar-container">
+        {/* Logo and Links */}
+        <div className={`nav-links ${isOpen ? "active" : ""} md-active`}>
+          <button
+            onClick={toStore}
+            className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+          >
+            Return To Store
+          </button>
         </div>
-      ) : (
-        <p>Loading user data...</p>
-      )}
-    </div>
-  </div>
-</nav>
+
+        {/* Hamburger Menu Button (Mobile) */}
+        <div className="md:hidden">
+          <button
+            onClick={toStore}
+            className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+          >
+            Return To Store
+          </button>
+        </div>
+
+        {/* Profile section */}
+        <div className={"profile-container"}>
+          <img
+            src={userData?.image_url || "/Images/author/img-07.jpg"}
+            alt="Profile picture"
+            className="profile-pic"
+          />
+          {userData ? (
+            <div className="username">
+              <h3>Hi! {userData.username}</h3>
+            </div>
+          ) : (
+            <p>Loading user data...</p>
+          )}
+        </div>
+      </div>
+    </nav>
   );
 };
 

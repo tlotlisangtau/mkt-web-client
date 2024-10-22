@@ -8,11 +8,12 @@ interface DeleteAdProps {
 }
 
 const categoryMap: { [key: number]: string } = {
-  1: 'jobs',
-  2: 'sports',
-  3: 'furniture',
-  4: 'realestate',
-  5: 'healthbeauty',
+  1: "jobs",
+  2: "sports",
+  3: "furniture",
+  8: "automotives",
+  10: "electronics",
+  12: "others",
 };
 
 const DeleteAd: React.FC<DeleteAdProps> = ({ postId, categoryId, onDeleteSuccess, onCancel }) => {

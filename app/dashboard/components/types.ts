@@ -14,7 +14,6 @@ export interface Post {
     category_id: number;
     complete?: boolean;
     company?: string;
-    material?: string;
     ingredients?: string;
     property_type?: string;
     valid_until?: string;

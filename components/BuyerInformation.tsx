@@ -94,11 +94,12 @@ const BuyerInformation: React.FC = () => {
     const messageData = {
       buyer: buyerId,
       seller: sellerId,
-      job: category === 'jobs' ? productId : null,
-      sport: category === 'sports' ? productId : null,
-      furniture: category === 'furniture' ? productId : null,
-      real_estate: category === 'realestate' ? productId : null,
-      health_beauty: category === 'healthbeauty' ? productId : null,
+      job: category === "jobs" ? productId : null,
+      sport: category === "sports" ? productId : null,
+      furniture: category === "furniture" ? productId : null,
+      automotives: category === "automotives" ? productId : null,
+      electronics: category === "electronics" ? productId : null,
+      others: category === "others" ? productId : null,
       content: message,
     };
     console.log("Payload being sent:", messageData); // Log the payload

@@ -31,7 +31,7 @@ const Searchform: React.FC = () => {
                     <option value="Electronics">Electronics</option>
                     <option value="Furniture">Furniture</option>
                     <option value="Jobs">Jobs</option>
-                    <option value="Real Estate">Real Estate</option>
+                    <option value="Automotives">Automotives</option>
                     <option value="Sports">Sports</option>
                     <option value="Health & Beauty">Health & Beauty</option>
                     <option value="And more">And more</option>

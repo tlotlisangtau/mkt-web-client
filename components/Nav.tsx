@@ -5,22 +5,23 @@ import "../styles/globals.css";
 
 const Nav: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State to control mobile menu visibility
 
   useEffect(() => {
     const userToken = localStorage.getItem("accessToken");
     setIsLoggedIn(!!userToken);
   }, []);
 
-
-
   const handleLoginLogout = () => {
     if (isLoggedIn) {
       window.location.href = "/dashboard";
-    }
-    else{
+    } else {
       window.location.href = "/api/auth/login";
     }
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
@@ -41,6 +42,7 @@ const Nav: React.FC = () => {
               </Link>
             </h1>
           </div>
+          {/* Desktop Menu */}
           <nav className="hidden lg:flex space-x-4 p-3">
             <Link href="/" className="text-gray-800 hover:text-gray-600">
               Home
@@ -63,7 +65,7 @@ const Nav: React.FC = () => {
               className="bg-blue-500 text-white py-2 px-2 mb-3 rounded hover:bg-blue-600"
             >
               <span
-                className="fa fa-paper-plane-o   mr-2"
+                className="fa fa-paper-plane-o mr-2"
                 aria-hidden="true"
               ></span>
               Post your Ad
@@ -79,12 +81,58 @@ const Nav: React.FC = () => {
               {isLoggedIn ? "Dashboard" : "Login"}
             </button>
           </nav>
-          <button className="lg:hidden text-gray-800 hover:text-gray-600">
+
+          {/* Hamburger button for mobile */}
+          <button
+            onClick={toggleMobileMenu}
+            className="lg:hidden text-gray-800 hover:text-gray-600"
+          >
             <span className="fa fa-bars text-2xl"></span>
           </button>
         </div>
-      </div>
 
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <nav className="lg:hidden mt-4 flex flex-col space-y-2">
+            <Link href="/" className="text-gray-800 hover:text-gray-600">
+              Home
+            </Link>
+            <Link href="/" className="text-gray-800 hover:text-gray-600">
+              Categories
+            </Link>
+            <Link href="/" className="text-gray-800 hover:text-gray-600">
+              Latest Ads
+            </Link>
+            <Link href="/" className="text-gray-800 hover:text-gray-600">
+              Why Choose Us
+            </Link>
+            <Link href="/" className="text-gray-800 hover:text-gray-600">
+              Pricing
+            </Link>
+
+            <Link
+              href="/ChooseCategory"
+              className="bg-blue-500 text-white py-2 px-2 rounded hover:bg-blue-600"
+            >
+              <span
+                className="fa fa-paper-plane-o mr-2"
+                aria-hidden="true"
+              ></span>
+              Post your Ad
+            </Link>
+            <button
+              onClick={handleLoginLogout}
+              className="bg-blue-500 text-white py-2 px-2 rounded hover:bg-blue-600"
+            >
+              <span
+                className="fa fa-paper-plane-o mr-2"
+                aria-hidden="true"
+              ></span>
+              {isLoggedIn ? "Dashboard" : "Login"}
+            </button>
+          </nav>
+        )}
+      </div>
     </header>
   );
 };

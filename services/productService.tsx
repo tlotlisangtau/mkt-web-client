@@ -7,8 +7,9 @@ export const getCategoriesData = async () => {
       jobsResponse,
       furnitureResponse,
       sportsResponse,
-      realEstateResponse,
-      healthBeautyResponse,
+      electronicsResponse,
+      automotivesResponse,
+      othersResponse,
     ] = await Promise.all([
       axios.get("https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/jobs/"),
       axios.get(
@@ -18,10 +19,13 @@ export const getCategoriesData = async () => {
         "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/sports/"
       ),
       axios.get(
-        "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/realestate/"
+        "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/electronics/"
       ),
       axios.get(
-        "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/healthbeauty/"
+        "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/automotives/"
+      ),
+      axios.get(
+        "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/others/"
       ),
     ]);
 
@@ -29,8 +33,9 @@ export const getCategoriesData = async () => {
       jobs: jobsResponse.data,
       furniture: furnitureResponse.data,
       sports: sportsResponse.data,
-      realEstate: realEstateResponse.data,
-      healthBeauty: healthBeautyResponse.data
+      electronics: electronicsResponse.data,
+      automotives: automotivesResponse.data,
+      others: othersResponse.data,
     };
   } catch (error) {
     console.error('Error fetching category data:', error);
@@ -38,8 +43,9 @@ export const getCategoriesData = async () => {
       jobs: [],
       furniture: [],
       sports: [],
-      realEstate: [],
-      healthBeauty: []
+      electronics: [],
+      automotives: [],
+      others: [],
     };
   }
 };

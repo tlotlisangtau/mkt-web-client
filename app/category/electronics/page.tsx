@@ -73,7 +73,7 @@
         setLoading(true);
         try {
           const response = await fetch(
-            "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/sports"
+            "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/electronics"
           );
           if (!response.ok) {
             throw new Error("Network response was not ok");
@@ -223,7 +223,7 @@
         <section className="w3l-products-page w3l-blog-single w3l-products-4">
           <div className="single blog">
             <div className="wrapper">
-              <h3 className="title-main">Sports Category</h3>
+              <h3 className="title-main">Electronics Category</h3>
               <div className="d-grid grid-colunm-2 grid-colunm">
                 <div className="right-side-bar">
                   <aside>

@@ -27,9 +27,11 @@ interface Post {
   mobile_number?: string;
   brand?: string;
   size?: string;
-  material: string;
   department: string;
-  ingredients: string;
+  make: string;
+  mileage: string;
+  year: string;
+  model: string;
   property_type: string;
   color: string;
   dimensions: string;
@@ -53,12 +55,12 @@ interface ProductDetailsProps {
 }
 
 const categoryMap: { [key: number]: string } = {
-  5: 'jobs',
-  7: 'sports',
-  8: 'furniture',
-  9: 'realeystate',
-  10: 'healthbeauty',
-
+  1: "jobs",
+  2: "sports",
+  3: "furniture",
+  8: "automotives",
+  10: "electronics",
+  12: "others",
 };
 
 
@@ -129,96 +131,148 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ post, onBack, onDeleteS
 
 
   return (
-
     <>
-    <div className="btn-container">
-    <button onClick={onBack} className="btn-secondary">
-            Back
-    </button>
+      <div className="btn-container">
+        <button onClick={onBack} className="btn-secondary">
+          Back
+        </button>
+      </div>
 
-    </div>
-    
-    <section className="w3l-products-page w3l-blog-single w3l-products-4">
-      <Toaster position="top-center" reverseOrder={false} />
-      <div className="single blog">
-        <div className="wrapper">
-          <h3 className="title-main">Product Single Ad</h3>
-          <div className="grid-colunm-2 d-flex">
-            <div className="tab-content text-left single-left-content left-product-sing">
-              <h3 className="aside-title single-prt">{productDetails.name || 'Loading...'}</h3>
-              <br />
-              {Array.isArray(productDetails.image_urls) && productDetails.image_urls.length > 0 ? (
-                <Carousel showThumbs={false} infiniteLoop autoPlay>
-                  {productDetails.image_urls.map((url, index) => (
-                    <div key={index}>
-                      <img src={url} alt={`Image ${index + 1}`} className="carousel-image" />
-                    </div>
-                  ))}
-                </Carousel>
-              ) : (
-                <p>No images available.</p>
-              )}
+      <section className="w3l-products-page w3l-blog-single w3l-products-4">
+        <Toaster position="top-center" reverseOrder={false} />
+        <div className="single blog">
+          <div className="wrapper">
+            <h3 className="title-main">Product Single Ad</h3>
+            <div className="grid-colunm-2 d-flex">
+              <div className="tab-content text-left single-left-content left-product-sing">
+                <h3 className="aside-title single-prt">
+                  {productDetails.name || "Loading..."}
+                </h3>
+                <br />
+                {Array.isArray(productDetails.image_urls) &&
+                productDetails.image_urls.length > 0 ? (
+                  <Carousel showThumbs={false} infiniteLoop autoPlay>
+                    {productDetails.image_urls.map((url, index) => (
+                      <div key={index}>
+                        <img
+                          src={url}
+                          alt={`Image ${index + 1}`}
+                          className="carousel-image"
+                        />
+                      </div>
+                    ))}
+                  </Carousel>
+                ) : (
+                  <p>No images available.</p>
+                )}
 
-              <div className="top-sing-sec">
-                <h3 className="aside-title">Ad Details</h3>
-                <div>
-                  <p>{productDetails.description || 'No description available.'}</p>
-                  <ul className="d-flex">
-                    <li>Price: R{productDetails.price || productDetails.salary}</li><br />
-                  </ul>
-                  <ul>
-                  <li>
-                    Posted: {productDetails.valid_until ? formatDate(productDetails.valid_until) : formatDate(productDetails.created_at)}
-                  </li>
-                </ul>
+                <div className="top-sing-sec">
+                  <h3 className="aside-title">Ad Details</h3>
+                  <div>
+                    <p>
+                      {productDetails.description ||
+                        "No description available."}
+                    </p>
+                    <ul className="d-flex">
+                      <li>
+                        Price: R{productDetails.price || productDetails.salary}
+                      </li>
+                      <br />
+                    </ul>
+                    <ul>
+                      <li>
+                        Posted:{" "}
+                        {productDetails.valid_until
+                          ? formatDate(productDetails.valid_until)
+                          : formatDate(productDetails.created_at)}
+                      </li>
+                    </ul>
+                  </div>
 
-                </div>
-
-                <h3 className="aside-title top-sec-space">Features</h3>
-                <div className="d-grid list-styles">
-                  <ul className="ad-lists">
-                    <li><span className="fa fa-check-circle" aria-hidden="true"></span>{productDetails.job_location || productDetails.location }</li>
-                    <li><span className="fa fa-check-circle" aria-hidden="true"></span>{productDetails.company || 'Owner'}</li>
-                    <li><span className="fa fa-check-circle" aria-hidden="true"></span>{productDetails.material || productDetails.color || productDetails.department}</li>
-                    <li><span className="fa fa-check-circle" aria-hidden="true"></span>{productDetails.size || productDetails.dimensions || productDetails.salary}</li>
-                    <li><span className="fa fa-check-circle" aria-hidden="true"></span>{productDetails.condition || productDetails.valid_until}</li>
-                    <li><span className="fa fa-check-circle" aria-hidden="true"></span>{productDetails.complete || 'No salary'}</li>
-                  </ul>
+                  <h3 className="aside-title top-sec-space">Features</h3>
+                  <div className="d-grid list-styles">
+                    <ul className="ad-lists">
+                      <li>
+                        <span
+                          className="fa fa-check-circle"
+                          aria-hidden="true"
+                        ></span>
+                        {productDetails.job_location || productDetails.location}
+                      </li>
+                      <li>
+                        <span
+                          className="fa fa-check-circle"
+                          aria-hidden="true"
+                        ></span>
+                        {productDetails.company ||
+                          "Owner"}
+                      </li>
+                      <li>
+                        <span
+                          className="fa fa-check-circle"
+                          aria-hidden="true"
+                        ></span>
+                        {productDetails.color ||
+                          productDetails.department ||
+                          productDetails.type ||
+                          productDetails.mileage ||
+                          productDetails.model}
+                      </li>
+                      <li>
+                        <span
+                          className="fa fa-check-circle"
+                          aria-hidden="true"
+                        ></span>
+                        {productDetails.size ||
+                          productDetails.make ||
+                          productDetails.salary ||
+                          productDetails.brand}
+                      </li>
+                      <li>
+                        <span
+                          className="fa fa-check-circle"
+                          aria-hidden="true"
+                        ></span>
+                        {productDetails.condition || productDetails.valid_until}
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Add Edit and Delete buttons */}
-      <div className="btn-container">
-        <button onClick={handleEditClick} className="btn-primary">
+        {/* Add Edit and Delete buttons */}
+        <div className="btn-container">
+          <button onClick={handleEditClick} className="btn-primary">
             Edit
-        </button>
-        <button onClick={handleDeleteClick} className="btn-danger">
+          </button>
+          <button onClick={handleDeleteClick} className="btn-danger">
             Delete
-        </button>
-      </div>
-      
-      {showDeleteModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3>Are you sure you want to delete this ad?</h3>
-            <div className="modal-buttons">
-              <button className="btn btn-danger" onClick={handleDeleteAd}>
-                Yes, Delete
-              </button>
+          </button>
+        </div>
 
-              <button onClick={() => setShowDeleteModal(false)} className="btn-cancel">
-                Cancel
-              </button>
+        {showDeleteModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>Are you sure you want to delete this ad?</h3>
+              <div className="modal-buttons">
+                <button className="btn btn-danger" onClick={handleDeleteAd}>
+                  Yes, Delete
+                </button>
 
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className="btn-cancel"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </section>
+        )}
+      </section>
     </>
   );
 };

@@ -72,7 +72,7 @@ const ProductList: React.FC = () => {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/realestate/"
+          "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/automotives/"
         );
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -222,7 +222,7 @@ const ProductList: React.FC = () => {
         <section className="w3l-products-page w3l-blog-single w3l-products-4">
           <div className="single blog">
             <div className="wrapper">
-              <h3 className="title-main">Real Estate Category</h3>
+              <h3 className="title-main">Automotives Category</h3>
               <div className="d-grid grid-colunm-2 grid-colunm">
 
                 <div className="right-side-bar">

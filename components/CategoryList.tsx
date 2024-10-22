@@ -70,61 +70,73 @@ const CategoryForm: React.FC = () => {
     switch (selectedCategory) {
       case 1: // Assume 5 is the ID for Jobs
         setFormFields([
-          { name: 'Name', type: 'text' },
-          { name: 'Description', type: 'text' },
-          { name: 'Salary', type: 'number' },
-          { name: 'Job Location', type: 'text' },
-          { name: 'Mobile Number', type: 'text' },
-          { name: 'Company', type: 'text' },
-          { name: 'Valid Until', type: 'date' }
+          { name: "Name", type: "text" },
+          { name: "Description", type: "text" },
+          { name: "Salary", type: "number" },
+          { name: "Job Location", type: "text" },
+          { name: "Mobile Number", type: "text" },
+          { name: "Company", type: "text" },
+          { name: "Valid Until", type: "date" },
         ]);
         break;
       case 2: // Assume 7 is the ID for Sports
         setFormFields([
-          { name: 'Name', type: 'text' },
-          { name: 'Description', type: 'text' },
-          { name: 'Price', type: 'number' },
-          { name: 'Brand', type: 'text' },
-          { name: 'Size', type: 'text' },
-          { name: 'Location', type: 'text' },
-          { name: 'Mobile Number', type: 'text' },
-          { name: 'Condition', type: 'select' } // Added Condition field
+          { name: "Name", type: "text" },
+          { name: "Description", type: "text" },
+          { name: "Price", type: "number" },
+          { name: "Brand", type: "text" },
+          { name: "Size", type: "text" },
+          { name: "Location", type: "text" },
+          { name: "Mobile Number", type: "text" },
+          { name: "Condition", type: "select" }, // Added Condition field
         ]);
         break;
       case 3: // Assume 8 is the ID for Furniture
         setFormFields([
-          { name: 'Name', type: 'text' },
-          { name: 'Description', type: 'text' },
-          { name: 'Price', type: 'number' },
-          { name: 'Material', type: 'text' },
-          { name: 'Dimensions', type: 'text' },
-          { name: 'Color', type: 'text' },
-          { name: 'Mobile Number', type: 'text' },
-          { name: 'Condition', type: 'select' }
+          { name: "Name", type: "text" },
+          { name: "Description", type: "text" },
+          { name: "Price", type: "number" },
+          { name: "Color", type: "text" },
+          { name: "Mobile Number", type: "text" },
+          { name: "Condition", type: "select" },
         ]);
         break;
-      case 4: // Assume 9 is the ID for Real Estate
+      case 8: // Assume 9 is the ID for automotive
         setFormFields([
-          { name: 'Name', type: 'text' },
-          { name: 'Description', type: 'text' },
-          { name: 'Price', type: 'number' },
-          { name: 'Property Type', type: 'text' },
-          { name: 'Location', type: 'text' },
-          { name: 'Size', type: 'text' },
-          { name: 'Mobile Number', type: 'text' },
-          { name: 'Condition', type: 'select' }
+          { name: "Name", type: "text" },
+          { name: "Description", type: "text" },
+          { name: "Price", type: "number" },
+          { name: "Model", type: "text" },
+          { name: "Make", type: "text" },
+          { name: "Mileage", type: "text" },
+          { name: "Location", type: "text" },
+          { name: "Year", type: "text" },
+          { name: "Mobile Number", type: "text" },
+          { name: "Condition", type: "select" },
         ]);
         break;
-      case 5: // Assume 10 is the ID for Health & Beauty
+      case 10: // Assume 10 is the ID for Health & Beauty
         setFormFields([
-          { name: 'Name', type: 'text' },
-          { name: 'Description', type: 'text' },
-          { name: 'Price', type: 'number' },
-          { name: 'Brand', type: 'text' },
-          { name: 'Type', type: 'text' },
-          { name: 'Ingredients', type: 'text' },
-          { name: 'Mobile Number', type: 'text' },
-          { name: 'Condition', type: 'select' }
+          { name: "Name", type: "text" },
+          { name: "Description", type: "text" },
+          { name: "Price", type: "number" },
+          { name: "Location", type: "text" },
+          { name: "Brand", type: "text" },
+          { name: "Model", type: "text" },
+          { name: "Warranty", type: "text" },
+          { name: "Mobile Number", type: "text" },
+          { name: "Condition", type: "select" },
+        ]);
+        break;
+      case 12: // Assume 10 is the ID for Health & Beauty
+        setFormFields([
+          { name: "Name", type: "text" },
+          { name: "Description", type: "text" },
+          { name: "Price", type: "number" },
+          { name: "Location", type: "text" },
+          { name: "Type", type: "text" },
+          { name: "Mobile Number", type: "text" },
+          { name: "Condition", type: "select" },
         ]);
         break;
       default:
@@ -307,12 +319,20 @@ useEffect(() => {
 
   const getCategoryEndpoint = () => {
     switch (selectedCategory) {
-      case 1: return 'jobs';
-      case 2: return 'sports';
-      case 3: return 'furniture';
-      case 4: return 'realestate';
-      case 5: return 'healthbeauty';
-      default: return '';
+      case 1:
+        return "jobs";
+      case 2:
+        return "sports";
+      case 3:
+        return "furniture";
+      case 8:
+        return "automotives";
+      case 10:
+        return "electronics";
+      case 12:
+        return "others";
+      default:
+        return "";
     }
   };
 
@@ -364,7 +384,7 @@ useEffect(() => {
             </div>
           )}
 
-          {selectedCategory === 7 && (
+          {selectedCategory === 2 && (
             <div>
               <label htmlFor="Type" className="label1">Type</label>
               <select

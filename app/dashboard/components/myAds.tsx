@@ -22,6 +22,10 @@
     price: string;
     description: string;
     name?: string;
+    year: string;
+    model: string;
+    make: string;
+    mileage: string;
     salary?: string;
     job_location: string;
     location: string;
@@ -30,8 +34,6 @@
     category_id: number;
     complete?: boolean;
     company: string;
-    material: string;
-    ingredients: string;
     property_type: string;
     valid_until?: string;
     color: string;
@@ -68,8 +70,9 @@
             jobsResponse,
             sportsResponse,
             furnitureResponse,
-            realestateResponse,
-            healthbeautyResponse,
+            automotivesResponse,
+            electronicsResponse,
+            othersResponse,
           ] = await Promise.all([
             fetch(
               "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/jobs/ads/",
@@ -96,7 +99,7 @@
               }
             ),
             fetch(
-              "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/realestate/ads/",
+              "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/automotives/ads/",
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -104,7 +107,15 @@
               }
             ),
             fetch(
-              "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/healthbeauty/ads/",
+              "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/electronics/ads/",
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            ),
+            fetch(
+              "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/others/ads/",
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -113,12 +124,20 @@
             ),
           ]);
         
-          const [jobsData, sportsData, furnitureData, realestateData, healthbeautyData] = await Promise.all([
+          const [
+            jobsData,
+            sportsData,
+            furnitureData,
+            automotivesData,
+            electronicsData,
+            othersData,
+          ] = await Promise.all([
             jobsResponse.json(),
             sportsResponse.json(),
             furnitureResponse.json(),
-            realestateResponse.json(),
-            healthbeautyResponse.json(),
+            automotivesResponse.json(),
+            electronicsResponse.json(),
+            othersResponse.json(),
           ]);
         
           const categorizedJobs = jobsData.map((job: Post) => ({
@@ -133,21 +152,30 @@
             ...furniture,
             category: 'Furniture',
           }));
-          const categorizedRealEstate = realestateData.map((realestate: Post) => ({
-            ...realestate,
-            category: 'Real Estate',
-          }));
-          const categorizedHealthBeauty = healthbeautyData.map((healthbeauty: Post) => ({
-            ...healthbeauty,
-            category: 'Health & Beauty',
+          const categorizedAutomotives = automotivesData.map(
+            (automotives: Post) => ({
+              ...automotives,
+              category: "Automotives",
+            })
+          );
+          const categorizedElectronics = electronicsData.map(
+            (electronics: Post) => ({
+              ...electronics,
+              category: "Electronics",
+            })
+          );
+          const categorizedOthers = othersData.map((others: Post) => ({
+            ...others,
+            category: "Others",
           }));
         
           const combinedPosts = [
             ...categorizedJobs,
             ...categorizedSports,
             ...categorizedFurniture,
-            ...categorizedRealEstate,
-            ...categorizedHealthBeauty,
+            ...categorizedAutomotives,
+            ...categorizedElectronics,
+            ...categorizedOthers,
           ].filter((post: Post) => post.user_id === userId);
         
           setPosts(combinedPosts);

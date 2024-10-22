@@ -17,8 +17,10 @@ interface Product {
   price: string;
   condition?: string;
   image_urls: string[];
+  brand?: string;
   job_location: string;
   location: string;
+  make: string;
   company: string;
   created_at: string;
   salary: string;
@@ -104,7 +106,6 @@ const ProductDetail: React.FC = () => {
                 </h3>
 
                 <br />
-                {loading && <p>Loading...</p>}
                 {error && <p>Error: {error}</p>}
                 {!loading && !error && product?.image_urls && (
                   <Carousel showThumbs={false} infiniteLoop>
@@ -155,7 +156,10 @@ const ProductDetail: React.FC = () => {
                           className="fa fa-check-circle"
                           aria-hidden="true"
                         ></span>
-                        {product?.size || product?.company}
+                        {product?.size ||
+                          product?.company ||
+                          product?.make ||
+                          product?.brand}
                       </li>
                       <li>
                         <span

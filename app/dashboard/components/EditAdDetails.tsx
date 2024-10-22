@@ -6,6 +6,8 @@ interface Post {
   id: number;
   name?: string;
   price: string;
+  year: string;
+  model: string;
   location: string;
   company: string;
   job_location: string;
@@ -14,9 +16,9 @@ interface Post {
   brand?: string;
   size?: string;
   created_at: string;
-  material: string;
   department: string;
-  ingredients: string;
+  make: string;
+  mileage: string;
   property_type: string;
   color: string;
   dimensions: string;
@@ -40,8 +42,9 @@ const categoryMap: { [key: number]: string } = {
   1: 'jobs',
   2: 'sports',
   3: 'furniture',
-  4: 'realestate',  
-  5: 'healthbeauty',
+  8: "automotives",
+  10: "electronics",
+  12: "others",
 };
 
 function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
@@ -167,16 +170,16 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
   // Conditional rendering based on the category_id
   const renderCategorySpecificFields = () => {
     switch (adDetails.category_id) {
-      case 5: // Jobs category
+      case 1: // Jobs category
         return (
           <>
-              <div className="form-group">
+            <div className="form-group">
               <label>Description:</label>
               <input
                 type="text"
                 name="company"
                 className="form-control"
-                value={adDetails.description || ''}
+                value={adDetails.description || ""}
                 onChange={handleInputChange}
               />
             </div>
@@ -186,7 +189,7 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
                 type="text"
                 name="company"
                 className="form-control"
-                value={adDetails.company || ''}
+                value={adDetails.company || ""}
                 onChange={handleInputChange}
               />
             </div>
@@ -196,7 +199,7 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
                 type="text"
                 name="price"
                 className="form-control"
-                value={adDetails.salary || ''}
+                value={adDetails.salary || ""}
                 onChange={handleInputChange}
               />
             </div>
@@ -206,7 +209,7 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
                 type="text"
                 name="valid_until"
                 className="form-control"
-                value={adDetails.valid_until || ''}
+                value={adDetails.valid_until || ""}
                 onChange={handleInputChange}
               />
             </div>
@@ -231,7 +234,7 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
             </div>
           </>
         );
-      case 7: // Sports category
+      case 2: // Sports category
         return (
           <>
             <div className="form-group">
@@ -240,7 +243,7 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
                 type="text"
                 name="type"
                 className="form-control"
-                value={adDetails.type || ''}
+                value={adDetails.type || ""}
                 onChange={handleInputChange}
               />
             </div>
@@ -250,7 +253,7 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
                 type="text"
                 name="brand"
                 className="form-control"
-                value={adDetails.brand || ''}
+                value={adDetails.brand || ""}
                 onChange={handleInputChange}
               />
             </div>
@@ -260,7 +263,7 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
                 type="text"
                 name="size"
                 className="form-control"
-                value={adDetails.size || ''}
+                value={adDetails.size || ""}
                 onChange={handleInputChange}
               />
             </div>
@@ -269,7 +272,7 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
               <select
                 name="condition"
                 className="form-control"
-                value={adDetails.condition || 'New'} // Default to 'New' if undefined
+                value={adDetails.condition || "New"} // Default to 'New' if undefined
                 onChange={handleInputChange}
               >
                 <option value="New">New</option>
@@ -296,27 +299,17 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
               />
             </div>
           </>
-        ); 
-      case 8: // Furniture category
+        );
+      case 3: // Furniture category
         return (
           <>
-            <div className="form-group">
-              <label>Material:</label>
-              <input
-                type="text"
-                name="material"
-                className="form-control"
-                value={adDetails.material || ''}
-                onChange={handleInputChange}
-              />
-            </div>
             <div className="form-group">
               <label>Dimensions:</label>
               <input
                 type="text"
                 name="dimensions"
                 className="form-control"
-                value={adDetails.dimensions || ''}
+                value={adDetails.dimensions || ""}
                 onChange={handleInputChange}
               />
             </div>
@@ -325,7 +318,7 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
               <select
                 name="condition"
                 className="form-control"
-                value={adDetails.condition || 'New'}
+                value={adDetails.condition || "New"}
                 onChange={handleInputChange}
               >
                 <option value="New">New</option>
@@ -343,16 +336,46 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
             </div>
           </>
         );
-      case 9: // Real Estate category
+      case 8: // Automotives category
         return (
           <>
             <div className="form-group">
-              <label>Property Type:</label>
+              <label>Make:</label>
               <input
                 type="text"
                 name="property_type"
                 className="form-control"
-                value={adDetails.property_type || ''}
+                value={adDetails.make || ""}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Year:</label>
+              <input
+                type="text"
+                name="property_type"
+                className="form-control"
+                value={adDetails.year || ""}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Model:</label>
+              <input
+                type="text"
+                name="property_type"
+                className="form-control"
+                value={adDetails.model || ""}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Mileage :</label>
+              <input
+                type="text"
+                name="property_type"
+                className="form-control"
+                value={adDetails.mileage || ""}
                 onChange={handleInputChange}
               />
             </div>
@@ -362,7 +385,7 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
                 type="text"
                 name="location"
                 className="form-control"
-                value={adDetails.location || ''}
+                value={adDetails.location || ""}
                 onChange={handleInputChange}
               />
             </div>
@@ -372,9 +395,31 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
                 type="text"
                 name="price"
                 className="form-control"
-                value={adDetails.price || ''}
+                value={adDetails.price || ""}
                 onChange={handleInputChange}
               />
+            </div>
+            <div className="form-group">
+              <label>Publish:</label>
+              <input
+                type="checkbox"
+                name="complete"
+                className="form-control"
+                checked={adDetails.complete || false}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Condition:</label>
+              <select
+                name="condition"
+                className="form-control"
+                value={adDetails.condition || "New"} // Default to 'New' if undefined
+                onChange={handleInputChange}
+              >
+                <option value="New">New</option>
+                <option value="Used">Used</option>
+              </select>
             </div>
             <div className="form-group">
               <label>Upload Image:</label>
@@ -387,17 +432,16 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
             </div>
           </>
         );
-      case 10: // Health and Beauty category
+      case 10: //  electronics category
         return (
           <>
-
             <div className="form-group">
               <label>Color:</label>
               <input
                 type="text"
                 name="color"
                 className="form-control"
-                value={adDetails.color || ''}
+                value={adDetails.color || ""}
                 onChange={handleInputChange}
               />
             </div>
