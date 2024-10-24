@@ -258,8 +258,15 @@ const ProductList: React.FC = () => {
                       onChange={handleSearchChange}
                       required
                     />
-                    <button className="btn search" type="submit">
-                      <span className="fa fa-search"></span>
+                    <button
+                      className="btn search "
+                      style={{ marginTop: "3.7px" }}
+                      type="submit"
+                    >
+                      <span
+                        className="fa fa-search -mt-2"
+                        
+                      ></span>
                     </button>
                     <button
                       className="btn reset"
