@@ -93,7 +93,7 @@ const Navbar = () => {
         <div className={`nav-links ${isOpen ? "active" : ""} md-active`}>
           <button
             onClick={toStore}
-            className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+            className="bg-gray-300 toStore text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
           >
             Return To Store
           </button>
@@ -103,7 +103,7 @@ const Navbar = () => {
         <div className="md:hidden">
           <button
             onClick={toStore}
-            className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+            className="bg-gray-300 toStore text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
           >
             Return To Store
           </button>

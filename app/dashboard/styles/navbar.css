@@ -50,6 +50,8 @@
   .nav-link:hover {
     color: gray;
   }
+
+
   
   /* Display nav links in a row and profile on larger screens (tablet or desktop) */
   @media (min-width: 768px) {
@@ -59,6 +61,8 @@
       align-items: center;
       gap: 24px;
     }
+
+
   
     /* Hide hamburger button on larger screens */
     .hamburger-btn {
@@ -110,3 +114,13 @@
     display: block;
     gap: -10px;
   }
+
+
+  @media (min-width: 76px) and (max-width: 1024px) {
+
+    .toStore{
+      margin-left: 75px; 
+    }
+
+}
+

@@ -9,9 +9,35 @@
   .custom-dashboard-title h2 {
     font-size: 1.6rem;
     margin-bottom: 20px;
-    color: #2c3e50;
+    color: #2c3e50; 
+    position: relative;
+  }
+
+.link {
+    position: relative;
+    left: 1200px;
+    top: -48px;
+
   }
   
+@media (max-width: 768px) {
+  .link {
+    width: 100%; /* Full width on mobile */
+    position: relative;
+    left: 520px;
+    top: -48px; /* Remove any margins if needed */
+  }
+
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .link {
+    width: 100%; /* Full width on tablet */
+    position: relative;
+    left: 650px;
+    top: -48px; /* Remove margins if needed */
+  }
+}
   /* Table Styling */
   .custom-table {
     width: 100%;

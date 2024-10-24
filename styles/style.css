@@ -335,3 +335,19 @@
   margin-bottom: 10px;
   font-size: 16px;
 }
+
+/* Make sure this applies to mobile view */
+@media (max-width: 768px) {
+  .product {
+    width: 200%; /* Full width on mobile */
+    margin: 0; /* Remove any margins if needed */
+  }
+
+  .d-grid.grid-col-2 {
+    grid-template-columns: 1fr; /* One column layout on mobile */
+  }
+
+  .d-grid.grid-col-4 {
+    grid-template-columns: repeat(2, 1fr); /* Two columns layout for tablet */
+  }
+}

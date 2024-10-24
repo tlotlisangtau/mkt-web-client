@@ -2,6 +2,7 @@
   import { jwtDecode } from 'jwt-decode';
   import '../../../styles/table.css';
   import ProductDetails from '../components/ProductDetails';
+  import Link from "next/link";
   import DeleteAd from '../components/DeleteAd';
 
   const formatDate = (dateString: string) => {
@@ -227,6 +228,10 @@
       );
     }
 
+      const toStore = () => {
+        window.location.href = "/";
+      };
+
     return (
       <section className="custom-dashboard-section">
         <div className="row">
@@ -236,6 +241,12 @@
                 <div className="custom-dashboardbox">
                   <div className="custom-dashboard-title">
                     <h2>My Ads</h2>
+                    <Link
+                      href="/ChooseCategory"
+                      className="bg-blue-500 link text-white py-2 px-2 mb-3 rounded hover:bg-blue-600"
+                    >
+                      Post your Ad
+                    </Link>
                   </div>
                   <div className="custom-dashboardholder">
                     <table id="custom-adstype" className="custom-table">
@@ -251,53 +262,69 @@
                         </tr>
                       </thead>
                       <tbody>
-    {posts.map((post) => (
-      <tr
-        key={post.id}
-        data-category={post.status || 'unknown'}
-        onClick={() => handlePostClick(post)} // Use handlePostClick here
-        style={{ cursor: 'pointer' }} // Make the row look clickable
-      >
-        <td data-title="Photo">
-          {Array.isArray(post.image_urls) && post.image_urls.length > 0 ? (
-            post.image_urls.map((url, index) => (
-              <img
-                key={index}
-                src={url}
-                alt={`image-${index}`}
-                style={{ width: '200px', height: 'auto', marginRight: '10px' }}
-              />
-            ))
-          ) : (
-            <img src="default-image.jpg" alt="default" />
-          )}
-        </td>
-        <td data-title="Title">
-          <h3>{post.name || 'No Title'}</h3>
-          <span>Ad ID: {post.id}</span>
-        </td>
-        <td data-title="Category">
-          <span className="custom-adcategories">{post.category || 'Unknown'}</span>
-        </td>
-        <td data-title="Featured">{post.featured ? 'Yes' : 'No'}</td>
-        <td data-title="Ad Status">
-          <span className={`custom-adstatus custom-adstatus${post.complete ? 'published' : 'unpublished'}`}>
-            {post.complete ? 'Published' : 'Unpublished'}
-          </span>
-        </td>
-        <td data-title="Price &amp; Location">
-          <h3>{post.price || post.salary}</h3>
-          <address>{post.job_location || post.location}</address>
-        </td>
-        <td data-title="Date">
-          <time dateTime={post.created_at || ''}>
-            {post.created_at ? formatDate(post.created_at) : 'No Date'}
-          </time>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-
+                        {posts.map((post) => (
+                          <tr
+                            key={post.id}
+                            data-category={post.status || "unknown"}
+                            onClick={() => handlePostClick(post)} // Use handlePostClick here
+                            style={{ cursor: "pointer" }} // Make the row look clickable
+                          >
+                            <td data-title="Photo">
+                              {Array.isArray(post.image_urls) &&
+                              post.image_urls.length > 0 ? (
+                                post.image_urls.map((url, index) => (
+                                  <img
+                                    key={index}
+                                    src={url}
+                                    alt={`image-${index}`}
+                                    style={{
+                                      width: "200px",
+                                      height: "auto",
+                                      marginRight: "10px",
+                                    }}
+                                  />
+                                ))
+                              ) : (
+                                <img src="default-image.jpg" alt="default" />
+                              )}
+                            </td>
+                            <td data-title="Title">
+                              <h3>{post.name || "No Title"}</h3>
+                              <span>Ad ID: {post.id}</span>
+                            </td>
+                            <td data-title="Category">
+                              <span className="custom-adcategories">
+                                {post.category || "Unknown"}
+                              </span>
+                            </td>
+                            <td data-title="Featured">
+                              {post.featured ? "Yes" : "No"}
+                            </td>
+                            <td data-title="Ad Status">
+                              <span
+                                className={`custom-adstatus custom-adstatus${
+                                  post.complete ? "published" : "unpublished"
+                                }`}
+                              >
+                                {post.complete ? "Published" : "Unpublished"}
+                              </span>
+                            </td>
+                            <td data-title="Price &amp; Location">
+                              <h3>{post.price || post.salary}</h3>
+                              <address>
+                                {post.job_location || post.location}
+                              </address>
+                            </td>
+                            <td data-title="Date">
+                              <time dateTime={post.created_at || ""}>
+                                {post.created_at
+                                  ? formatDate(post.created_at)
+                                  : "No Date"}
+                              </time>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
                     </table>
                   </div>
                 </div>
@@ -305,7 +332,6 @@
             </fieldset>
           </form>
         </div>
-
       </section>
     );
   }
