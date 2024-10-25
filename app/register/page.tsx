@@ -174,6 +174,20 @@ const onSubmit = async (data: FormData) => {
               <p className={styles.error}>{errors.password.message}</p>
             )}
           </div>
+          <div className={styles.formElement}>
+            <label htmlFor="confirm_password" className={styles.label}>
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              id="confirm_password"
+              {...register("confirm_password")}
+              className={getInputClass("confirm_password")}
+            />
+            {errors.confirm_password && (
+              <p className={styles.error}>{errors.confirm_password.message}</p>
+            )}
+          </div>
           <button type="submit" className={styles.button} disabled={!isValid}>
             Register
           </button>

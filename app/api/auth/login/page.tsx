@@ -279,6 +279,11 @@ const LoginPage: React.FC = () => {
               Register
             </a>
           </p>
+          <p className={styles.footerText}>
+            <a href="/PasswordReset" className={styles.footerLink}>
+              Forgot Password?
+            </a>
+          </p>
         </div>
       </div>
     </>
