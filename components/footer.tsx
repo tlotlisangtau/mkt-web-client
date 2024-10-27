@@ -44,8 +44,52 @@ const Footer: React.FC = () => {
                        making it easy for anyone to navigate and find what they
                        need.
                      </p>
+                     <div className="columns-2">
+                       <ul className="social">
+                         <li>
+                           <a href="#facebook">
+                             <span
+                               className="fa fa-facebook"
+                               aria-hidden="true"
+                             ></span>
+                           </a>
+                         </li>
+                         <li>
+                           <a href="#linkedin">
+                             <span
+                               className="fa fa-linkedin"
+                               aria-hidden="true"
+                             ></span>
+                           </a>
+                         </li>
+                         <li>
+                           <a href="#twitter">
+                             <span
+                               className="fa fa-twitter"
+                               aria-hidden="true"
+                             ></span>
+                           </a>
+                         </li>
+                         <li>
+                           <a href="#google">
+                             <span
+                               className="fa fa-google-plus"
+                               aria-hidden="true"
+                             ></span>
+                           </a>
+                         </li>
+                         <li>
+                           <a href="#github">
+                             <span
+                               className="fa fa-github"
+                               aria-hidden="true"
+                             ></span>
+                           </a>
+                         </li>
+                       </ul>
+                     </div>
                    </div>
-                   
+
                    <div className="sub-two-right">
                      <h6>Quick links</h6>
                      <ul>
@@ -75,7 +119,7 @@ const Footer: React.FC = () => {
                        </li>
                      </ul>
                    </div>
-                   <div className="sub-one-left">
+                   <div className="sub-two-right">
                      <h6>Contact</h6>
                      <div className="column2">
                        <div className="href1">

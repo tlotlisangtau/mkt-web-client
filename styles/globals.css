@@ -5577,6 +5577,18 @@ h3.title-main:after {
   color: #cecece;
 }
 
+.w3l-footer-22 .sub-one-left {
+
+
+  width: 500px;
+}
+
+.w3l-footer-22 .sub-two-right {
+
+
+  width: 250px;
+}
+
 .w3l-footer-22 .sub-columns {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1.5fr;
