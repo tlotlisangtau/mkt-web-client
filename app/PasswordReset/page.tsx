@@ -43,12 +43,11 @@ const PasswordReset = () => {
 
     if (response.ok) {
       const responseData = await response.json();
-      console.log(responseData);
+      console.log(responseData); // Log the response data
       setMessage(responseData.detail);
-      
-      setTimeout(() => {
-        router.push("/api/auth/login"); 
-      }, 2000); 
+      setTimeout(async () => {
+        await router.push("/api/auth/login"); // Adjust the path if necessary
+      }, 2000);
     } else {
       const responseData = await response.json();
       setError(responseData.detail || "An error occurred.");
