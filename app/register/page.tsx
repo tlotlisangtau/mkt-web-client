@@ -120,7 +120,7 @@ const onSubmit = async (data: FormData) => {
           </div>
           <div className={styles.formElement}>
             <label htmlFor="phoneNumber" className={styles.label}>
-              Phone Number
+              Phone Number (include +266)
             </label>
             <input
               type="tel"

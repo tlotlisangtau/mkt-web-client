@@ -45,6 +45,41 @@ const Type = [
   { label: 'General', value: 'General'},
 ];
 
+  const carMakes = [
+    "Audi",
+    "BMW",
+    "Chevrolet",
+    "Dodge",
+    "Ford",
+    "Honda",
+    "Hyundai",
+    "Kia",
+    "Mazda",
+    "Mercedes-Benz",
+    "Nissan",
+    "Toyota",
+    "Volkswagen",
+    "Volvo",
+    "Others",
+  ]; 
+  
+  const brand = [
+    "Apple",
+    "Samsung",
+    "Sony",
+    "LG",
+    "Panasonic",
+    "Dell",
+    "HP",
+    "Lenovo",
+    "Microsoft",
+    "Asus",
+    "Acer",
+    "Toshiba",
+    "Huawei",
+    "Others",
+  ];
+
 const CategoryForm: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -57,6 +92,9 @@ const CategoryForm: React.FC = () => {
   const [username, setUsername] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
   const router = useRouter();
+
+
+
 
   useEffect(() => {
     fetch("https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/categories/")
@@ -106,8 +144,8 @@ const CategoryForm: React.FC = () => {
           { name: "Name", type: "text" },
           { name: "Description", type: "text" },
           { name: "Price", type: "number" },
+          { name: "Make", type: "select" },
           { name: "Model", type: "text" },
-          { name: "Make", type: "text" },
           { name: "Mileage", type: "text" },
           { name: "Location", type: "text" },
           { name: "Year", type: "text" },
@@ -121,7 +159,6 @@ const CategoryForm: React.FC = () => {
           { name: "Description", type: "text" },
           { name: "Price", type: "number" },
           { name: "Location", type: "text" },
-          { name: "Brand", type: "text" },
           { name: "Model", type: "text" },
           { name: "Warranty", type: "text" },
           { name: "Mobile Number", type: "text" },
@@ -340,19 +377,22 @@ useEffect(() => {
     <div className="container1">
       <Toaster />
       <div className="form-container1">
-        <h2 className="heading1">                
-        {username ? (
-                    <p className="user-greeting">Welcome, {username}!</p>
-                ) : (
-                    <p className="user-greeting">Welcome, Guest!</p>
-                )}</h2>
-        
+        <h2 className="heading1">
+          {username ? (
+            <p className="user-greeting">Welcome, {username}!</p>
+          ) : (
+            <p className="user-greeting">Welcome, Guest!</p>
+          )}
+        </h2>
+
         <div className="space-y-6">
           <div>
-            <label htmlFor="category" className="label1">Category</label>
+            <label htmlFor="category" className="label1">
+              Category
+            </label>
             <select
               id="category"
-              value={selectedCategory || ''}
+              value={selectedCategory || ""}
               onChange={(e) => setSelectedCategory(parseInt(e.target.value))}
               className="select1"
             >
@@ -367,15 +407,17 @@ useEffect(() => {
 
           {selectedCategory === 1 && (
             <div>
-              <label htmlFor="department" className="label1">Department</label>
+              <label htmlFor="department" className="label1">
+                Department
+              </label>
               <select
                 id="department"
-                value={selectedDepartment || ''}
+                value={selectedDepartment || ""}
                 onChange={handleDepartmentChange}
                 className="select1"
               >
                 <option value="">Select a department</option>
-                {departments.map(department => (
+                {departments.map((department) => (
                   <option key={department.value} value={department.value}>
                     {department.label}
                   </option>
@@ -386,15 +428,17 @@ useEffect(() => {
 
           {selectedCategory === 2 && (
             <div>
-              <label htmlFor="Type" className="label1">Type</label>
+              <label htmlFor="Type" className="label1">
+                Type
+              </label>
               <select
                 id="Type"
-                value={selectedType || ''}
+                value={selectedType || ""}
                 onChange={handleTypeChange}
                 className="select1"
               >
                 <option value="">Select a sport type</option>
-                {Type.map(Type => (
+                {Type.map((Type) => (
                   <option key={Type.value} value={Type.value}>
                     {Type.label}
                   </option>
@@ -403,17 +447,39 @@ useEffect(() => {
             </div>
           )}
 
+          {selectedCategory === 10 && ( 
+            <div>
+              <label htmlFor="brand" className="label1">
+                Brand
+              </label>
+              <select
+                id="brand"
+                className="select1"
+                onChange={handleChange}
+              >
+                <option value="">Select a brand</option>
+                {brand.map((make, index) => (
+                  <option key={index} value={make}>
+                    {make}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {formFields.length > 0 && (
             <form onSubmit={handleSubmit}>
               {formFields.map((field, index) => (
                 <div key={index}>
-                  <label htmlFor={field.name.toLowerCase().replace(/ /g, '_')} className="label1">
+                  <label
+                    htmlFor={field.name.toLowerCase().replace(/ /g, "_")}
+                    className="label1"
+                  >
                     {field.name}
                   </label>
-                  {field.type === 'select' ? (
+                  {field.type === "select" && field.name !== "Make" ? ( // Adjust condition here
                     <select
-                      id={field.name.toLowerCase().replace(/ /g, '_')}
+                      id={field.name.toLowerCase().replace(/ /g, "_")}
                       className="select1"
                       onChange={handleChange}
                     >
@@ -421,37 +487,59 @@ useEffect(() => {
                       <option value="New">New</option>
                       <option value="Used">Used</option>
                     </select>
+                  ) : field.type === "select" && field.name === "Make" ? (
+                    <select
+                      id={field.name.toLowerCase().replace(/ /g, "_")}
+                      className="select1"
+                      onChange={handleChange}
+                    >
+                      <option value="">Select Make</option>
+                      {carMakes.map((make, idx) => (
+                        <option key={idx} value={make}>
+                          {make}
+                        </option>
+                      ))}
+                    </select>
                   ) : (
                     <input
                       type={field.type}
-                      id={field.name.toLowerCase().replace(/ /g, '_')}
+                      id={field.name.toLowerCase().replace(/ /g, "_")}
                       className="input1"
                       onChange={handleChange}
                     />
                   )}
                 </div>
               ))}
-              
+
               {/* Complete Checkbox */}
               <div>
-                <label htmlFor="complete" className="label1">Complete</label>
+                <label htmlFor="complete" className="label1">
+                  Complete
+                </label>
                 <input
                   type="checkbox"
                   id="complete"
                   className="input1"
                   checked={formData.complete || false}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    complete: e.target.checked
-                  })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      complete: e.target.checked,
+                    })
+                  }
                 />
               </div>
-              
+
+              {/* Image Upload Section */}
               <div
                 className="dropzone"
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
-                style={{ border: '2px dashed #ccc', padding: '20px', textAlign: 'center' }}
+                style={{
+                  border: "2px dashed #ccc",
+                  padding: "20px",
+                  textAlign: "center",
+                }}
               >
                 <p>Drag and drop images here or click to select files</p>
                 <input
@@ -459,13 +547,13 @@ useEffect(() => {
                   id="images"
                   className="input1"
                   accept="image/*"
-                  multiple // Allow multiple image selection
+                  multiple
                   onChange={handleImageChange}
-                  style={{ display: 'none' }} // Hide the default file input
+                  style={{ display: "none" }}
                 />
                 <button
                   type="button"
-                  onClick={() => document.getElementById('images')?.click()}
+                  onClick={() => document.getElementById("images")?.click()}
                   className="button1"
                 >
                   Select Images
@@ -475,18 +563,11 @@ useEffect(() => {
               {imagePreviews.length > 0 && (
                 <div className="image-previews">
                   {imagePreviews.map((preview, index) => (
-                    <img
-                      key={index}
-                      src={preview}
-                      alt={`Preview ${index}`}
-                    />
+                    <img key={index} src={preview} alt={`Preview ${index}`} />
                   ))}
                 </div>
               )}
-              <button
-                type="submit"
-                className="button1"
-              >
+              <button type="submit" className="button1">
                 Submit
               </button>
             </form>
