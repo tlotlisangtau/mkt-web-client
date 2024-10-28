@@ -53,7 +53,7 @@ const Searchform: React.FC = () => {
     e.preventDefault(); // Prevent form submission
 
     if (!selectedCategory || !selectedCountry) {
-      setError("Please select a category and a country before searching.");
+      setError("Please select a category and a district before searching.");
       return;
     }
 
@@ -147,7 +147,7 @@ const Searchform: React.FC = () => {
                     required
                   >
                     <option value="" disabled>
-                      Select Country
+                      Select District
                     </option>
                     <option value="test">test</option>
                     <option value="maseru">Maseru</option>
