@@ -136,6 +136,7 @@ const CategoryForm: React.FC = () => {
           { name: "Price", type: "number" },
           { name: "Color", type: "text" },
           { name: "Mobile Number", type: "text" },
+          { name: "Location", type: "text" },
           { name: "Condition", type: "select" },
         ]);
         break;
@@ -165,7 +166,7 @@ const CategoryForm: React.FC = () => {
           { name: "Condition", type: "select" },
         ]);
         break;
-      case 12: // Assume 10 is the ID for Health & Beauty
+      case 12:
         setFormFields([
           { name: "Name", type: "text" },
           { name: "Description", type: "text" },

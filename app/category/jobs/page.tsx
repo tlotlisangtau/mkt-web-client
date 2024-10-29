@@ -263,10 +263,7 @@ const ProductList: React.FC = () => {
                       style={{ marginTop: "3.7px" }}
                       type="submit"
                     >
-                      <span
-                        className="fa fa-search -mt-2"
-                        
-                      ></span>
+                      <span className="fa fa-search -mt-2"></span>
                     </button>
                     <button
                       className="btn reset"
@@ -392,7 +389,7 @@ const ProductList: React.FC = () => {
                           <div className="info-bg">
                             <h5>
                               <a
-                                href={`/Productdetail?productId=${
+                                href={`/category/jobs/Productdetail?productId=${
                                   product.id
                                 }&category=${
                                   categoryMappings[product.category_id]

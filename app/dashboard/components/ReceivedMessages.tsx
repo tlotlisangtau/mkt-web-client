@@ -135,18 +135,20 @@ const handleReplySubmit = async (messageId: number) => {
     );
 
     // Send the reply to the backend
-    const response = await fetch(`http://127.0.0.1:8000/api/reply/`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        message: messageId,  
-        content: replyContentText,
-        
-      }),
-    });
+    const response = await fetch(
+      `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/reply/`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: messageId,
+          content: replyContentText,
+        }),
+      }
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -180,13 +182,16 @@ const handleReplySubmit = async (messageId: number) => {
   const token = localStorage.getItem("accessToken");
 
   try {
-    const response = await fetch(`http://127.0.0.1:8000/api/messages/${messageId}/`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/messages/${messageId}/`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       const errorData = await response.json();

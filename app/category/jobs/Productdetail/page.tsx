@@ -1,31 +1,26 @@
-'use client';
+"use client";
 
 import React, { useEffect, useState, Suspense, useRef } from "react";
-import { useRouter, useSearchParams } from 'next/navigation';
-import '../../styles/globals.css';
-import '../../styles/style.css';
-import Nav from '@/components/Nav';
-import Footer from '@/components/footer';
-import BuyerInformation from '@/components/BuyerInformation';
-import { Carousel } from 'react-responsive-carousel';
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { useRouter, useSearchParams } from "next/navigation";
+import "@/styles/globals.css";
+import "@/styles/style.css";
+import Nav from "@/components/Nav";
+import Footer from "@/components/footer";
+import BuyerInformation from "@/components/BuyerInformation";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 interface Product {
   id: number;
   name: string;
+  mobile_number: string;
   description: string;
-  price: string;
-  condition: string;
+  department: string;
   image_urls: string[];
-  brand?: string;
   job_location: string;
-  location: string;
-  make: string;
   company: string;
   created_at: string;
   salary: string;
-  size: string;
-  dimensions: string;
   valid_until: string;
   category: string;
 }
@@ -36,7 +31,6 @@ const ProductDetail: React.FC = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const category = searchParams.get("category");
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -61,7 +55,7 @@ const ProductDetail: React.FC = () => {
 
       try {
         const response = await fetch(
-          `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/${category}/${productId}/`
+          `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/jobs/${productId}/`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -107,7 +101,9 @@ const ProductDetail: React.FC = () => {
       <section className="w3l-products-page w3l-blog-single w3l-products-4">
         <div className="single blog">
           <div className="wrapper">
-            <h3 className="title-main">Product Single Ad</h3>
+            <h3 className="title-main">
+              {product ? product.name : "Loading..."}
+            </h3>
             <div className="grid-colunm-2 d-flex">
               <div className="tab-content text-left single-left-content left-product-sing">
                 <h3 className="aside-title single-prt">
@@ -136,48 +132,77 @@ const ProductDetail: React.FC = () => {
                     <div>
                       <p>{product.description}</p>
                       <ul className="d-flex">
-                        <li>Price: R{product.price || product?.salary}</li>
+                        <li>Salary: R{product?.salary}</li>
                         <br />
                       </ul>
                       <ul>
-                        <li>
-                          Posted:{" "}
-                          {formatDate(
-                            product.valid_until || product.created_at
-                          )}
-                        </li>
+                        <li>Phone Number: {product.mobile_number}</li>
                       </ul>
                     </div>
                   )}
 
                   <h3 className="aside-title top-sec-space">Features</h3>
-                  <div className="d-grid list-styles">
-                    <ul className="ad-lists">
-                      <li>
-                        <span
-                          className="fa fa-check-circle"
-                          aria-hidden="true"
-                        ></span>
-                        {product?.job_location || product?.location}
-                      </li>
-                      <li>
-                        <span
-                          className="fa fa-check-circle"
-                          aria-hidden="true"
-                        ></span>
-                        {product?.size ||
-                          product?.company ||
-                          product?.make ||
-                          product?.brand}
-                      </li>
-                      <li>
-                        <span
-                          className="fa fa-check-circle"
-                          aria-hidden="true"
-                        ></span>
-                        {product?.salary || product?.condition}
-                      </li>
-                    </ul>
+                  <div className="map-single product-details-top">
+                    <div className="d-grid some-text-spe">
+                      <div className="left-cont">
+                        {product && (
+                          <>
+                            <h4>
+                              <span className="w3layouts-agileinfo">
+                                Salary{" "}
+                              </span>{" "}
+                              : <p>{product.salary}</p>
+                            </h4>
+
+                            <h4>
+                              <span className="w3layouts-agileinfo">
+                                Department{" "}
+                              </span>{" "}
+                              : <p>{product.department} </p>
+                            </h4>
+                            <h4>
+                              <span className="w3layouts-agileinfo">
+                                Location{" "}
+                              </span>{" "}
+                              : <p>{product.job_location}</p>
+                            </h4>
+                            <h4>
+                              <span className="w3layouts-agileinfo">
+                                Company{" "}
+                              </span>{" "}
+                              :{" "}
+                              <p>
+                                <a href="#single">{product.company} </a>
+                              </p>
+                            </h4>
+                            <h4>
+                              <span className="w3layouts-agileinfo">
+                                Posted on{" "}
+                              </span>{" "}
+                              :{" "}
+                              <p>
+                                <strong>
+                                  {" "}
+                                  {formatDate(product.created_at)}
+                                </strong>
+                              </p>
+                            </h4>
+                            <h4>
+                              <span className="w3layouts-agileinfo">
+                                Valid until
+                              </span>{" "}
+                              :{" "}
+                              <p>
+                                <strong>
+                                  {" "}
+                                  {formatDate(product.valid_until)}
+                                </strong>
+                              </p>
+                            </h4>
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -385,7 +385,7 @@ const ProductList: React.FC = () => {
                           <div className="info-bg">
                             <h5>
                               <a
-                                href={`/Productdetail?productId=${
+                                href={`/category/automotives/Productdetail?productId=${
                                   product.id
                                 }&category=${
                                   categoryMappings[product.category_id]
