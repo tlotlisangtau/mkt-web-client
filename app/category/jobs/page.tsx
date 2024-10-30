@@ -213,6 +213,13 @@ const ProductList: React.FC = () => {
       return Array.isArray(urls) ? urls : [urls];
     };
 
+      const truncateDescription = (description: string, maxLength: number) => {
+        if (description.length > maxLength) {
+          return description.substring(0, maxLength) + "...";
+        }
+        return description;
+      };
+
   return (
     <>
       <Nav
@@ -399,7 +406,9 @@ const ProductList: React.FC = () => {
                                 {product.name}
                               </a>
                             </h5>
-                            <p>{product.description}</p>
+                            <p>
+                              {truncateDescription(product.description, 35)}
+                            </p>
                             <p>{product.job_location}</p>
                             <ul className="d-flex">
                               <li>

@@ -53,25 +53,28 @@
 
 
 const ProductList: React.FC = () => {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const itemsPerPage = 4;
-    const [selectedType, setSelectedType] = useState<string>("Type"); // Default to "Type"
-    const [selectedLocation, setSelectedLocation] = useState<string>("Location"); // Default to "Location"
-    const [selectedCondition, setSelectedCondition] = useState<string>("Condition");   // Default to "Condition"
-    const [minPrice, setMinPrice] = useState<number | ''>('');
-    const [maxPrice, setMaxPrice] = useState<number | ''>('');
-    const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState<boolean>(false);
-    const [isLocationDropdownOpen, setIsLocationDropdownOpen] = useState<boolean>(false);
-    const [isConditionDropdownOpen, setIsConditionDropdownOpen] = useState<boolean>(false);
-    const [sortOption, setSortOption] = useState<string>("date");
-    const [searchQuery, setSearchQuery] = useState<string>('');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 4;
+  const [selectedType, setSelectedType] = useState<string>("Type"); // Default to "Type"
+  const [selectedLocation, setSelectedLocation] = useState<string>("Location"); // Default to "Location"
+  const [selectedCondition, setSelectedCondition] =
+    useState<string>("Condition"); // Default to "Condition"
+  const [minPrice, setMinPrice] = useState<number | "">("");
+  const [maxPrice, setMaxPrice] = useState<number | "">("");
+  const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState<boolean>(false);
+  const [isLocationDropdownOpen, setIsLocationDropdownOpen] =
+    useState<boolean>(false);
+  const [isConditionDropdownOpen, setIsConditionDropdownOpen] =
+    useState<boolean>(false);
+  const [sortOption, setSortOption] = useState<string>("date");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-    const latestAdsRef = useRef<HTMLDivElement>(null);
-    const whyChooseUsRef = useRef<HTMLDivElement>(null);
-    const categoriesRef = useRef<HTMLDivElement>(null);
+  const latestAdsRef = useRef<HTMLDivElement>(null);
+  const whyChooseUsRef = useRef<HTMLDivElement>(null);
+  const categoriesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -80,18 +83,18 @@ const ProductList: React.FC = () => {
           "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/automotives/"
         );
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        console.log('Fetched data:', data);
+        console.log("Fetched data:", data);
 
         if (Array.isArray(data)) {
           setProducts(data);
         } else {
-          setError('Data format is incorrect');
+          setError("Data format is incorrect");
         }
       } catch (error: any) {
-        console.error('Fetch error:', error);
+        console.error("Fetch error:", error);
         setError(error.message);
       } finally {
         setLoading(false);
@@ -101,113 +104,140 @@ const ProductList: React.FC = () => {
     fetchProducts();
   }, []);
 
-      useEffect(() => {
-      // Update URL parameters based on state
-      const params = new URLSearchParams();
-      if (selectedType !== "Type") params.set('type', selectedType);
-      if (selectedLocation !== "Location") params.set('location', selectedLocation);
-      if (selectedCondition !== "Condition") params.set('condition', selectedCondition);
-      if (minPrice !== '') params.set('min_price', minPrice.toString());
-      if (maxPrice !== '') params.set('max_price', maxPrice.toString());
-      if (searchQuery !== '') params.set('search', searchQuery);
-      params.set('sort', sortOption);
-      params.set('page', currentPage.toString());
+  useEffect(() => {
+    // Update URL parameters based on state
+    const params = new URLSearchParams();
+    if (selectedType !== "Type") params.set("type", selectedType);
+    if (selectedLocation !== "Location")
+      params.set("location", selectedLocation);
+    if (selectedCondition !== "Condition")
+      params.set("condition", selectedCondition);
+    if (minPrice !== "") params.set("min_price", minPrice.toString());
+    if (maxPrice !== "") params.set("max_price", maxPrice.toString());
+    if (searchQuery !== "") params.set("search", searchQuery);
+    params.set("sort", sortOption);
+    params.set("page", currentPage.toString());
 
-      window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
-    }, [selectedType, selectedLocation, selectedCondition, minPrice, maxPrice, searchQuery, sortOption, currentPage]);
+    window.history.replaceState(
+      {},
+      "",
+      `${window.location.pathname}?${params.toString()}`
+    );
+  }, [
+    selectedType,
+    selectedLocation,
+    selectedCondition,
+    minPrice,
+    maxPrice,
+    searchQuery,
+    sortOption,
+    currentPage,
+  ]);
 
+  const filteredProducts = products.filter((product) => {
+    return (
+      (selectedType === "Type" || product.type === selectedType) &&
+      (selectedLocation === "Location" ||
+        product.location === selectedLocation) &&
+      (selectedCondition === "Condition" ||
+        product.condition === selectedCondition) &&
+      (minPrice === "" || product.price >= minPrice) &&
+      (maxPrice === "" || product.price <= maxPrice) &&
+      (searchQuery === "" ||
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  });
 
-    const filteredProducts = products.filter((product) => {
-      return (
-        (selectedType === "Type" || product.type === selectedType) &&
-        (selectedLocation === "Location" || product.location === selectedLocation) &&
-        (selectedCondition === "Condition" || product.condition === selectedCondition) &&
-        (minPrice === '' || product.price >= minPrice) &&
-        (maxPrice === '' || product.price <= maxPrice) &&
-        (searchQuery === '' || product.name.toLowerCase().includes(searchQuery.toLowerCase()) || product.description.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
-    });
+  const sortedProducts = filteredProducts.sort((a, b) => {
+    switch (sortOption) {
+      case "name":
+        return a.name.localeCompare(b.name);
+      case "price-asc":
+        return a.price - b.price;
+      case "price-desc":
+        return b.price - a.price;
+      case "date":
+      default:
+        return (
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+    }
+  });
 
-    const sortedProducts = filteredProducts.sort((a, b) => {
-      switch (sortOption) {
-        case "name":
-          return a.name.localeCompare(b.name);
-        case "price-asc":
-          return a.price - b.price;
-        case "price-desc":
-          return b.price - a.price;
-        case "date":
-        default:
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      }
-    });
+  const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentProducts = sortedProducts.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
-     const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const currentProducts = sortedProducts.slice(startIndex, startIndex + itemsPerPage);
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
+  const handleTypeSelect = (type: string) => {
+    setSelectedType(type);
+    setIsTypeDropdownOpen(false);
+    setCurrentPage(1);
+  };
 
-    const handlePageChange = (pageNumber: number) => {
-      setCurrentPage(pageNumber);
-    };
+  const handleLocationSelect = (location: string) => {
+    setSelectedLocation(location);
+    setIsLocationDropdownOpen(false);
+    setCurrentPage(1);
+  };
 
-    const handleTypeSelect = (type: string) => {
-      setSelectedType(type);
-      setIsTypeDropdownOpen(false);
-      setCurrentPage(1);
-    };
+  const handleConditionSelect = (condition: string) => {
+    setSelectedCondition(condition);
+    setCurrentPage(1);
+    setIsConditionDropdownOpen(false);
+    setCurrentPage(1);
+  };
+  const handleTypeDropdownToggle = () => {
+    setIsTypeDropdownOpen((prev) => !prev);
+  };
 
-    const handleLocationSelect = (location: string) => {
-      setSelectedLocation(location);
-      setIsLocationDropdownOpen(false);
-      setCurrentPage(1);
-    };
+  const handleLocationDropdownToggle = () => {
+    setIsLocationDropdownOpen((prev) => !prev);
+  };
 
-     const handleConditionSelect = (condition: string) => {
-      setSelectedCondition(condition);
-      setCurrentPage(1);
-      setIsConditionDropdownOpen(false);
-      setCurrentPage(1);
-    };
-    const handleTypeDropdownToggle = () => {
-      setIsTypeDropdownOpen((prev) => !prev);
-    };
+  const handleConditionDropdownToggle = () => {
+    setIsConditionDropdownOpen((prev) => !prev);
+  };
 
-    const handleLocationDropdownToggle = () => {
-      setIsLocationDropdownOpen((prev) => !prev);
-    };
+  const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMinPrice(event.target.value === "" ? "" : Number(event.target.value));
+  };
 
-    const handleConditionDropdownToggle = () => {
-      setIsConditionDropdownOpen((prev) => !prev);
-    };
+  const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMaxPrice(event.target.value === "" ? "" : Number(event.target.value));
+  };
 
-    const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setMinPrice(event.target.value === '' ? '' : Number(event.target.value));
-    };
+  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortOption(event.target.value);
+    setCurrentPage(1);
+  };
 
-    const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setMaxPrice(event.target.value === '' ? '' : Number(event.target.value));
-    };
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+    setCurrentPage(1);
+  };
 
+  const getImageUrlsArray = (urls: any): string[] => {
+    if (!urls || (typeof urls === "string" && urls.trim() === "")) {
+      return [];
+    }
+    return Array.isArray(urls) ? urls : [urls];
+  };
 
-     const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-      setSortOption(event.target.value);
-      setCurrentPage(1);
-    };
-
-    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(event.target.value);
-      setCurrentPage(1);
-    };
-
-    const getImageUrlsArray = (urls: any): string[] => {
-      if (!urls || typeof urls === 'string' && urls.trim() === '') {
-        return [];
-      }
-      return Array.isArray(urls) ? urls : [urls];
-    };
-
-
+  // Utility function to truncate strings
+  const truncateDescription = (description: string, maxLength: number) => {
+    if (description.length > maxLength) {
+      return description.substring(0, maxLength) + "...";
+    }
+    return description;
+  };
 
   return (
     <>
@@ -395,7 +425,9 @@ const ProductList: React.FC = () => {
                                 {product.name}
                               </a>
                             </h5>
-                            <p>{product.description}</p>
+                            <p>
+                              {truncateDescription(product.description, 35)}
+                            </p>
                             <p>{product.location}</p>
                             <p>Condition: {product.condition}</p>
                             <p>Price: R{product.price}</p>
@@ -440,6 +472,6 @@ const ProductList: React.FC = () => {
       <Footer />
     </>
   );
-  };
+};
 
   export default ProductList;

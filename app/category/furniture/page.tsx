@@ -214,6 +214,13 @@ const ProductList: React.FC = () => {
       return Array.isArray(urls) ? urls : [urls];
     };
 
+      const truncateDescription = (description: string, maxLength: number) => {
+        if (description.length > maxLength) {
+          return description.substring(0, maxLength) + "...";
+        }
+        return description;
+      };
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Nav
@@ -400,7 +407,9 @@ const ProductList: React.FC = () => {
                                 {product.name}
                               </a>
                             </h5>
-                            <p>{product.description}</p>
+                            <p>
+                              {truncateDescription(product.description, 35)}
+                            </p>
                             <p>{product.location}</p>
                             <p>Condition: {product.condition}</p>
                             <p>Price: R{product.price}</p>

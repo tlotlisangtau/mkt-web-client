@@ -97,6 +97,14 @@ const Products4Block: React.FC = () => {
     return Array.isArray(urls) ? urls : [urls];
   };
 
+  // Utility function to truncate strings
+  const truncateDescription = (description: string, maxLength: number) => {
+    if (description.length > maxLength) {
+      return description.substring(0, maxLength) + "...";
+    }
+    return description;
+  };
+
   return (
     <div className="w3l-products-4">
       <div id="products4-block" className="text-center">
@@ -175,7 +183,9 @@ const Products4Block: React.FC = () => {
                                 {product.name}
                               </a>
                             </h5>
-                            <p>{product.description}</p>
+                            <p>
+                              {truncateDescription(product.description, 35)}
+                            </p>
                             <ul className="d-flex">
                               <li>
                                 <span className="fa fa"></span>R{" "}
