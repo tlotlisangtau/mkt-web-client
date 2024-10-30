@@ -363,6 +363,7 @@ const ProductList: React.FC = () => {
                       id="sort"
                       value={sortOption}
                       onChange={handleSortChange}
+                      className="sort"
                     >
                       <option value="date">Date</option>
                       <option value="name">Name</option>
@@ -393,7 +394,7 @@ const ProductList: React.FC = () => {
                                 href={`/category/furniture/Productdetail?productId=${
                                   product.id
                                 }&category=${
-                                  categoryMappings[product.category_id] 
+                                  categoryMappings[product.category_id]
                                 }`}
                               >
                                 {product.name}

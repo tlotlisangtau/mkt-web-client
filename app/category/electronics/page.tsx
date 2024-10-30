@@ -368,6 +368,7 @@
                         id="sort"
                         value={sortOption}
                         onChange={handleSortChange}
+                        className="sort"
                       >
                         <option value="date">Date</option>
                         <option value="name">Name</option>

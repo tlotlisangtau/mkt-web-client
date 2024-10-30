@@ -351,3 +351,7 @@
     grid-template-columns: repeat(2, 1fr); /* Two columns layout for tablet */
   }
 }
+
+.sort{
+  text-align: center;
+}
