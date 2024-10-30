@@ -5574,7 +5574,21 @@ h3.title-main:after {
   font-weight: normal;
   font-size: 14px;
   line-height: 24px;
-  color: #cecece;
+  color: #f00606;
+}
+
+@media (max-width: 568px) {
+.w3l-footer-22 .sub-one-left p,
+.w3l-footer-22 .sub-two-right p {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 24px;
+  color: #a19e9e;
+  width: 360px;
+}
+
+
 }
 
 .w3l-footer-22 .sub-one-left {
@@ -5702,6 +5716,11 @@ h3.title-main:after {
   color: #a0a0a0;
   font-size: 16px;
 }
+
+.sub-one-left para{
+  color: #f00505;
+}
+
 
 .w3l-footer-22 p.para-sep a {
   color: #eee;

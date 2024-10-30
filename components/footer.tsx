@@ -37,7 +37,7 @@ const Footer: React.FC = () => {
                  <div className="sub-columns">
                    <div className="sub-one-left">
                      <h6>About</h6>
-                     <p>
+                     <p className="para">
                        At our marketplace, we strive to provide an exceptional
                        and seamless experience for both buyers and sellers. Our
                        platform is designed with user-friendliness in mind,

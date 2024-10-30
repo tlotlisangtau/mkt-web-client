@@ -255,7 +255,7 @@ const Ssidebar = () => {
           <div className="stats-container">
             <div className="stat-box">
               <figure>
-                <img src="/Images/icons/img-32.png" alt="Total Ad Posted" />
+               
               </figure>
               <div className="stat-info">
                 <h2>{totalAds !== null ? totalAds : "Loading..."}</h2>
@@ -272,7 +272,7 @@ const Ssidebar = () => {
 
             <div className="stat-box">
               <figure>
-                <img src="/Images/icons/img-33.png" alt="Featured Ads" />
+                
               </figure>
               <div className="stat-info">
                 <h2>0</h2>
@@ -289,7 +289,7 @@ const Ssidebar = () => {
 
             <div className="stat-box">
               <figure>
-                <img src="/Images/icons/img-35.png" alt="Offers / Messages" />
+               
               </figure>
               <div className="stat-info">
                 <h2>{totalMessages !== null ? totalMessages : "Loading..."}</h2>
