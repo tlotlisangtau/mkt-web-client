@@ -213,7 +213,12 @@
       return Array.isArray(urls) ? urls : [urls];
     };
 
-
+      const truncateDescription = (description: string, maxLength: number) => {
+        if (description.length > maxLength) {
+          return description.substring(0, maxLength) + "...";
+        }
+        return description;
+      };
 
     return (
       <>
@@ -263,7 +268,7 @@
                       <button
                         className="btn search"
                         style={{ marginTop: "3.7px" }}
-                         type="submit"
+                        type="submit"
                       >
                         <span className="fa fa-search"></span>
                       </button>
@@ -428,7 +433,9 @@
                                   {product.name}
                                 </a>
                               </h5>
-                              <p>{product.description}</p>
+                              <p>
+                                {truncateDescription(product.description, 35)}
+                              </p>
                               <p>{product.location}</p>
                               <p>Condition: {product.condition}</p>
                               <p>Price: R{product.price}</p>
@@ -449,7 +456,7 @@
 
                   {!loading && !error && filteredProducts.length > 0 && (
                     <div className="pagination">
-                      <ul>
+                      <ul className="num">
                         {[...Array(totalPages)].map((_, index) => (
                           <li key={index}>
                             <button

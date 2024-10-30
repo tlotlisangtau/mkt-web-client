@@ -228,12 +228,17 @@
   display: flex;
   justify-content: center;
   margin-top: 20px;
+  padding: 5px;
 }
 
-.pagination-list {
-  list-style: none;
-  padding: 0;
-  display: flex;
+.num li{
+  padding: 5px;
+
+}
+
+.active{
+  font-size: large;
+  font-weight: bold;
 }
 
 .page-item {

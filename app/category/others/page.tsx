@@ -460,7 +460,7 @@ const ProductList: React.FC = () => {
 
                 {!loading && !error && filteredProducts.length > 0 && (
                   <div className="pagination">
-                    <ul>
+                    <ul className="num">
                       {[...Array(totalPages)].map((_, index) => (
                         <li key={index}>
                           <button
