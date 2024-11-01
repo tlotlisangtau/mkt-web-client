@@ -133,19 +133,7 @@ const ProductDetail: React.FC = () => {
                   <h3 className="aside-title">Ad Details</h3>
                   {product && (
                     <div>
-                      <p>{product.description}</p>
-                      <ul className="d-flex">
-                        <li>Phone Number: {product?.mobile_number}</li>
-                        <br />
-                      </ul>
-                      <ul>
-                        <li>
-                          Posted:{" "}
-                          {formatDate(
-                            product.valid_until || product.created_at
-                          )}
-                        </li>
-                      </ul>
+                      <p>{product.description}</p>  
                     </div>
                   )}
 

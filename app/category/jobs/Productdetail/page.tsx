@@ -129,16 +129,7 @@ const ProductDetail: React.FC = () => {
                 <div className="top-sing-sec">
                   <h3 className="aside-title">Ad Details</h3>
                   {product && (
-                    <div>
                       <p>{product.description}</p>
-                      <ul className="d-flex">
-                        <li>Salary: R{product?.salary}</li>
-                        <br />
-                      </ul>
-                      <ul>
-                        <li>Phone Number: {product.mobile_number}</li>
-                      </ul>
-                    </div>
                   )}
 
                   <h3 className="aside-title top-sec-space">Features</h3>

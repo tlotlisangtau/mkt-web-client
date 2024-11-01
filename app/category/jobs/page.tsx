@@ -267,10 +267,10 @@ const ProductList: React.FC = () => {
                     />
                     <button
                       className="btn search "
-                      style={{ marginTop: "3.7px" }}
+                      style={{ marginTop: "3.7px", marginLeft: "15px" }}  
                       type="submit"
                     >
-                      <span className="fa fa-search -mt-2"></span>
+                      <span className="fa fa-search -mt-5"></span>
                     </button>
                     <button
                       className="btn reset"

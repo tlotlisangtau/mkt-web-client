@@ -241,7 +241,7 @@ const LoginPage: React.FC = () => {
                 <form onSubmit={handleSubmit}>
                   <div className={styles.formElement}>
                     <label htmlFor="identifier" className={styles.label}>
-                      Email or Phone Number
+                      Email or Phone Number(+266)
                     </label>
                     <input
                       type="text"

@@ -94,7 +94,7 @@ const Footer: React.FC = () => {
                      <h6>Quick links</h6>
                      <ul>
                        <li>
-                         <a href="index.html">
+                         <a href="/">
                            <span className="fa fa-angle-double-right mr-2"></span>
                            Home
                          </a>
@@ -112,7 +112,7 @@ const Footer: React.FC = () => {
                          </a>
                        </li>
                        <li>
-                         <a href="contact.html">
+                         <a href="/ContactUs">
                            <span className="fa fa-angle-double-right mr-2"></span>
                            Contact
                          </a>

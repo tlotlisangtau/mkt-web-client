@@ -20,6 +20,7 @@ const BuyerInformation: React.FC = () => {
   const [sellerLocation, setSellerLocation] = useState<string | null>(null);
   const [sellerPhone, setSellerPhone] = useState<string | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   interface DecodedToken {
     user_id: number;
@@ -134,6 +135,25 @@ const BuyerInformation: React.FC = () => {
     setShowLoginModal(false);
   };
 
+    const handleShareClick = () => {
+      setShowShareModal(true);
+    };
+
+    const handleCopyToClipboard = () => {
+      navigator.clipboard
+        .writeText(window.location.href)
+        .then(() => {
+          alert("URL copied to clipboard!"); // Notify the user
+        })
+        .catch((err) => {
+          console.error("Failed to copy: ", err);
+        });
+    };
+
+    const handleCloseShareModal = () => {
+      setShowShareModal(false);
+    };
+
   return (
     <div className="right-side-bar single-right-content product-right-sin">
       <aside className="bg-effe">
@@ -146,7 +166,8 @@ const BuyerInformation: React.FC = () => {
         <h3 className="aside-title">Seller Information</h3>
         <ul className="category product-page">
           <li className="user-text">
-            <span className="fa fa-user yelp"></span>{sellerName}
+            <span className="fa fa-user yelp"></span>
+            {sellerName}
           </li>
           <li>
             <a href="product-1.html" className="colors">
@@ -191,8 +212,12 @@ const BuyerInformation: React.FC = () => {
             ></textarea>
           </div>
           <div className="submit">
-            <button type="submit" className="btn button-eff" disabled={isSubmitting}>
-              {isSubmitting ? 'Sending...' : 'Send'}
+            <button
+              type="submit"
+              className="btn button-eff"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Sending..." : "Send"}
             </button>
           </div>
           {statusMessage && <p>{statusMessage}</p>}
@@ -202,19 +227,56 @@ const BuyerInformation: React.FC = () => {
       <aside className="posts p-4 border actions">
         <h3 className="aside-title">Ad Action</h3>
         <ul className="links-single">
-          <li><a href="#share"><span className="fa fa-share-alt"></span>Share</a></li>
-          <li><a href="#print"><span className="fa fa-print"></span>Print</a></li>
-          <li><a href="#favorite"><span className="fa fa-heart-o"></span>Favorite</a></li>
-          <li><a href="#report"><span className="fa fa-flag-o"></span>Report</a></li>
+          <li>
+            <a href="#share" onClick={handleShareClick}>
+              <span className="fa fa-share-alt"></span>Share
+            </a>
+          </li>
+          <li>
+            <a href="#print">
+              <span className="fa fa-print"></span>Print
+            </a>
+          </li>
+          <li>
+            <a href="#favorite">
+              <span className="fa fa-heart-o"></span>Favorite
+            </a>
+          </li>
+          <li>
+            <a href="/Report">
+              <span className="fa fa-flag-o"></span>Report
+            </a>
+          </li>
         </ul>
       </aside>
+
+      {/* Share Modal */}
+      {showShareModal && (
+        <div className="modal-overlayyy">
+          <div className="modalll">
+            <h5>Share this URL:</h5>
+            <p>{window.location.href}</p>
+            <button onClick={handleCopyToClipboard}>Copy </button>
+            <button onClick={handleCloseShareModal}>Close</button>
+          </div>
+        </div>
+      )}
 
       {showLoginModal && (
         <div className="modal-overlayyy">
           <div className="modalll">
             <h5>You need to be logged in to send a message</h5>
-            <button onClick={() => window.location.href = `/api/auth/login?redirect=${encodeURIComponent(window.location.href)}`}>Login</button>
-            <button onClick={handleCloseModal}>Close</button> {/* Close button */}
+            <button
+              onClick={() =>
+                (window.location.href = `/api/auth/login?redirect=${encodeURIComponent(
+                  window.location.href
+                )}`)
+              }
+            >
+              Login
+            </button>
+            <button onClick={handleCloseModal}>Close</button>{" "}
+            {/* Close button */}
           </div>
         </div>
       )}

@@ -3,9 +3,9 @@
 import Nav from "@/components/Nav";
 import Footer from "@/components/footer";
 import React, { useState, useRef } from "react";
-import { toast, Toaster } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast"; // Import toast and Toaster
 
-function ContactUs() {
+function Report() {
   const latestAdsRef = useRef<HTMLDivElement>(null);
   const whyChooseUsRef = useRef<HTMLDivElement>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
@@ -43,21 +43,21 @@ function ContactUs() {
       );
 
       if (response.ok) {
-        toast.success("Your message has been submitted successfully!"); 
-        setFormData({ name: "", email: "", subject: "", message: "" }); 
+        toast.success("Your report has been submitted successfully!"); // Show success message
+        setFormData({ name: "", email: "", subject: "", message: "" }); // Reset form
       } else {
-        toast.error("Failed to submit your message. Please try again."); 
+        toast.error("Failed to submit your report. Please try again."); // Show error message
       }
     } catch (error) {
       toast.error(
-        "Error occurred while submitting the message. Please try again later."
+        "Error occurred while submitting the report. Please try again later."
       ); // Show error message
     }
   };
 
   return (
     <div>
-      <Toaster />
+      <Toaster /> {/* Include Toaster component here */}
       <Nav
         latestAdsRef={latestAdsRef}
         whyChooseUsRef={whyChooseUsRef}
@@ -73,7 +73,7 @@ function ContactUs() {
               <li>
                 <span className="fa fa-angle-right" aria-hidden="true"></span>
               </li>
-              <li className="active">Contact Us</li>
+              <li className="active">Report to us</li>
             </ul>
           </div>
         </div>
@@ -81,7 +81,7 @@ function ContactUs() {
       <div className="w3l-contact-main">
         <div className="contact sec-padding">
           <div className="wrapper">
-            <h3 className="title-main">Contact Us</h3>
+            <h3 className="title-main">Report to us</h3>
             <div className="contact-form mx-auto pt-sm-4">
               <form onSubmit={handleSubmit}>
                 <div className="d-grid content-grids-cont">
@@ -186,4 +186,4 @@ function ContactUs() {
   );
 }
 
-export default ContactUs;
+export default Report;
