@@ -137,8 +137,6 @@ const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
                     </option>
                     {loading ? (
                       <option>Loading categories...</option>
-                    ) : error ? (
-                      <option>{error}</option>
                     ) : (
                       categories.map((category) => (
                         <option key={category.id} value={category.name}>
