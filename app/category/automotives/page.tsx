@@ -435,7 +435,9 @@ const ProductList: React.FC = () => {
                               <li>{timeAgo(product.created_at)}</li>
                               <li className="margin-effe">
                                 <a href="#fav" title="Add this to Favorite">
+                                  {/* 
                                   <span className="fa fa-heart"></span>
+                                  */}
                                 </a>
                               </li>
                             </ul>

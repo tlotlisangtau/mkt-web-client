@@ -6,6 +6,7 @@ import { getCategoriesData } from "../services/productService";
 import { getPromotions } from "../services/promotionService";
 import { getCategoryCounts } from "../services/categoryService";
 import { categoryMappings } from "@/utils/categoryMappings";
+import '../styles/modal.css';
 import "../styles/style.css";
 
 // Type definitions
@@ -50,6 +51,7 @@ const Products4Block: React.FC = () => {
     useState<ProductsByCategory>({});
   const [promotions, setPromotions] = useState<any[]>([]);
   const [categoryCounts, setCategoryCounts] = useState<CategoryCounts>({});
+    const [showShareModal, setShowShareModal] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -105,6 +107,25 @@ const Products4Block: React.FC = () => {
     return description;
   };
 
+      const handleShareClick = () => {
+        setShowShareModal(true);
+      };
+
+      const handleCopyToClipboard = () => {
+        navigator.clipboard
+          .writeText(window.location.href)
+          .then(() => {
+            alert("URL copied to clipboard!"); // Notify the user
+          })
+          .catch((err) => {
+            console.error("Failed to copy: ", err);
+          });
+      };
+
+      const handleCloseShareModal = () => {
+        setShowShareModal(false);
+      };
+
   return (
     <div className="w3l-products-4">
       <div id="products4-block" className="text-center">
@@ -156,7 +177,7 @@ const Products4Block: React.FC = () => {
                     </h3>
                     <div className="d-grid grid-col-3">
                       {lastProducts.map((product) => (
-                        <div className="product" key={product.id}>
+                        <div className="  " key={product.id}>
                           <Carousel showThumbs={false} infiniteLoop>
                             {getImageUrlsArray(product.image_urls).map(
                               (imageUrl, index) => (
@@ -193,14 +214,12 @@ const Products4Block: React.FC = () => {
                               </li>
                               <li className="margin-effe">
                                 <a href="#fav" title="Add this to Favorite">
-                                  <span className="fa fa-heart-o"></span>
+                                  {/* 
+                                  <span className="fa fa-heart"></span>
+                                  */}
                                 </a>
                               </li>
-                              <li>
-                                <a href="#share" title="Share">
-                                  <span className="fa fa-share"></span>
-                                </a>
-                              </li>
+                              
                             </ul>
                           </div>
                         </div>
@@ -296,6 +315,8 @@ const Products4Block: React.FC = () => {
           </section>
         </div>
       </div>
+      {/* Share Modal */}
+
     </div>
   );
 };

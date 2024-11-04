@@ -266,11 +266,14 @@ const ProductList: React.FC = () => {
                       required
                     />
                     <button
-                      className="btn search "
-                      style={{ marginTop: "3.7px", marginLeft: "15px" }}  
+                      className="btn search"
+                      style={{ marginTop: "3.7px" }}
                       type="submit"
                     >
-                      <span className="fa fa-search -mt-5"></span>
+                      <span
+                        className="fa fa-search"
+                        style={{ margin: "auto" }}
+                      ></span>
                     </button>
                     <button
                       className="btn reset"
@@ -280,6 +283,7 @@ const ProductList: React.FC = () => {
                       <span className="fa fa-repeat"></span>
                     </button>
                   </form>
+                  <br />
                   {/* Type Filter */}
                   <div className="filter-dropdown-container">
                     <input
@@ -418,7 +422,9 @@ const ProductList: React.FC = () => {
                               </li>
                               <li className="margin-effe">
                                 <a href="#fav" title="Add this to Favorite">
+                                  {/* 
                                   <span className="fa fa-heart"></span>
+                                  */}
                                 </a>
                               </li>
                             </ul>

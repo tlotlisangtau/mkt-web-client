@@ -8,7 +8,7 @@ const WhyChooseUs: React.FC = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
 
   return (
-    <section className="w3l-content-11-main">
+    <section id='why' className="w3l-content-11-main">
     <div className="content-design-11">
         <div className="wrapper">
             <h3 className="title-main">Why Choose Us?</h3>
