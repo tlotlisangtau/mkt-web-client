@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"; // Import useRouter
 import { getCategories } from "../services/categoryService"; // Import the category service
 import axiosInstance from "../utils/axiosInstance"; // Import your axios instance
 import "../styles/globals.css";
+import "../styles/style.css";
 import { StringValidation } from "zod";
 
 interface Category {
@@ -32,6 +33,7 @@ const Searchform: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [searchKeyword, setSearchKeyword] = useState<string>("");
+   const [searchLoading, setSearchLoading] = useState<boolean>(false); 
   const router = useRouter(); // Initialize useRouter
 
   useEffect(() => {
@@ -49,50 +51,60 @@ const Searchform: React.FC = () => {
     fetchCategories();
   }, []);
 
-  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent form submission
+const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault(); // Prevent form submission
 
-    if (!selectedCategory || !selectedCountry) {
-      setError("Please select a category and a district before searching.");
-      return;
-    }
+  if (!selectedCategory || !selectedCountry) {
+    setError("Please select a category and a district before searching.");
+    return;
+  }
 
-    try {
-      const categoryToSearch = selectedCategory.toLowerCase();
+  setSearchLoading(true);
 
-      // Fetch all products for the selected category
-      const response = await axiosInstance.get(`/${categoryToSearch}`);
-      const allProducts: Product[] = response.data;
+  try {
+    const categoryToSearch = selectedCategory.toLowerCase();
 
-      // Filter products based on country and keyword
-      const filteredProducts = allProducts.filter(
-        (product) =>
-          product.job_location.toLowerCase() ||
-          (product.location.toLowerCase() ===
-            selectedCountry.toLowerCase() &&
-            product.name.toLowerCase().includes(searchKeyword.toLowerCase()))
+    // Fetch all products for the selected category
+    const response = await axiosInstance.get(`/${categoryToSearch}`);
+    const allProducts: Product[] = response.data;
+
+    // Filter products based on country and keyword
+    const filteredProducts = allProducts.filter((product) => {
+      const jobLocationMatch =
+        product.job_location &&
+        product.job_location.toLowerCase() === selectedCountry.toLowerCase();
+
+      const locationMatch =
+        product.location &&
+        product.location.toLowerCase() === selectedCountry.toLowerCase();
+
+      return (
+        (jobLocationMatch || locationMatch) &&
+        product.name.toLowerCase().includes(searchKeyword.toLowerCase())
       );
+    });
 
-      if (filteredProducts.length === 0) {
-        setError("No products found matching your criteria.");
-      } else {
-        setError(null); // Reset error if products are found
+    if (filteredProducts.length === 0) {
+      setError("No products found matching your criteria.");
+    } else {
+      setError(null); // Reset error if products are found
 
-        // Navigate to search page with productId and category as query params
+      // Navigate to search page with productId and category as query params
       const productsJson = JSON.stringify(filteredProducts);
-
-      // Update the query parameters with your custom ones
-  router.push(
-    `/search?category=${encodeURIComponent(
-      categoryToSearch
-    )}&products=${encodeURIComponent(productsJson)}`
-  );
-      } 
-    } catch (err) {
-      console.error("Error fetching products:", err); // Log the error
-      setError("Failed to fetch products for the selected category.");
+      router.push(
+        `/search?category=${encodeURIComponent(
+          categoryToSearch
+        )}&products=${encodeURIComponent(productsJson)}`
+      );
     }
-  };
+  } catch (err) {
+    console.error("Error fetching products:", err); // Log the error
+    setError("Failed to fetch products for the selected category.");
+  } finally {
+    setSearchLoading(false); // Reset search loading state
+  }
+};
+
 
   return (
     <section className="w3l-search-form-3-main">
@@ -149,7 +161,6 @@ const Searchform: React.FC = () => {
                     <option value="" disabled>
                       Select District
                     </option>
-                    <option value="test">test</option>
                     <option value="maseru">Maseru</option>
                     <option value="mafeteng">Mafeteng</option>
                     <option value="leribe">Leribe</option>
@@ -171,7 +182,8 @@ const Searchform: React.FC = () => {
                 <span className="fa fa-search" aria-hidden="true"></span>Search
               </button>
             </form>
-
+            {searchLoading && <div className="loading-spinner"></div>}
+            {/* Loading spinner */}
             {error && <p className="error">{error}</p>}
           </div>
         </div>

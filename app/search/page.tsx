@@ -206,29 +206,6 @@ const [isConditionDropdownOpen, setIsConditionDropdownOpen] =
                     action="#"
                     method="post"
                   >
-                    <input
-                      className="form-control"
-                      type="search"
-                      placeholder="Search here..."
-                      aria-label="search"
-                      value={searchQuery}
-                      onChange={handleSearchChange}
-                      required
-                    />
-                    <button
-                      className="btn search"
-                      style={{ marginTop: "3.7px" }}
-                      type="submit"
-                    >
-                      <span className="fa fa-search -mt-9"></span>
-                    </button>
-                    <button
-                      className="btn reset"
-                      type="reset"
-                      title="Reset Search"
-                    >
-                      <span className="fa fa-repeat"></span>
-                    </button>
                   </form>
 
                   {/* Condition Filter */}
