@@ -76,6 +76,34 @@ const ProductList: React.FC = () => {
   const whyChooseUsRef = useRef<HTMLDivElement>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
 
+const locationDropdownRef = useRef<HTMLUListElement>(null);
+const conditionDropdownRef = useRef<HTMLUListElement>(null);
+
+
+
+          useEffect(() => {
+            const handleClickOutside = (event: MouseEvent) => {
+              if (
+                locationDropdownRef.current &&
+                !locationDropdownRef.current.contains(event.target as Node)
+              ) {
+                setIsLocationDropdownOpen(false);
+              }
+              if (
+                conditionDropdownRef.current &&
+                !conditionDropdownRef.current.contains(event.target as Node)
+              ) {
+                setIsConditionDropdownOpen(false);
+              }
+            };
+
+            document.addEventListener("mousedown", handleClickOutside);
+
+            return () => {
+              document.removeEventListener("mousedown", handleClickOutside);
+            };
+          }, []);
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -300,8 +328,10 @@ const ProductList: React.FC = () => {
                     </button>
                   </form>
 
-                  {/* Location Filter */}
-                  <div className="filter-dropdown-container">
+                  <div
+                    className="filter-dropdown-container"
+                    ref={locationDropdownRef}
+                  >
                     <input
                       type="text"
                       placeholder="Filter by location..."
@@ -325,8 +355,10 @@ const ProductList: React.FC = () => {
                     )}
                   </div>
 
-                  {/* Condition Filter */}
-                  <div className="filter-dropdown-container">
+                  <div
+                    className="filter-dropdown-container"
+                    ref={conditionDropdownRef}
+                  >
                     <input
                       type="text"
                       placeholder="Filter by condition..."

@@ -82,6 +82,39 @@
         const latestAdsRef = useRef<HTMLDivElement>(null);
         const whyChooseUsRef = useRef<HTMLDivElement>(null);
         const categoriesRef = useRef<HTMLDivElement>(null);
+        const typeDropdownRef = useRef<HTMLDivElement>(null);
+        const locationDropdownRef = useRef<HTMLDivElement>(null);
+        const conditionDropdownRef = useRef<HTMLDivElement>(null);
+
+        useEffect(() => {
+          const handleClickOutside = (event: MouseEvent) => {
+            if (
+              typeDropdownRef.current &&
+              !typeDropdownRef.current.contains(event.target as Node)
+            ) {
+              setIsTypeDropdownOpen(false);
+            }
+            if (
+              locationDropdownRef.current &&
+              !locationDropdownRef.current.contains(event.target as Node)
+            ) {
+              setIsLocationDropdownOpen(false);
+            }
+            if (
+              conditionDropdownRef.current &&
+              !conditionDropdownRef.current.contains(event.target as Node)
+            ) {
+              setIsConditionDropdownOpen(false);
+            }
+          };
+
+          document.addEventListener("mousedown", handleClickOutside);
+
+          return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+          };
+        }, []);
+
 
     useEffect(() => {
       const fetchProducts = async () => {
@@ -282,7 +315,11 @@
                     </form>
 
                     {/* Type Filter */}
-                    <div className="filter-dropdown-container">
+                    {/* Type Filter */}
+                    <div
+                      className="filter-dropdown-container"
+                      ref={typeDropdownRef}
+                    >
                       <input
                         type="text"
                         placeholder="Filter by type..."
@@ -307,7 +344,10 @@
                     </div>
 
                     {/* Location Filter */}
-                    <div className="filter-dropdown-container">
+                    <div
+                      className="filter-dropdown-container"
+                      ref={locationDropdownRef}
+                    >
                       <input
                         type="text"
                         placeholder="Filter by location..."
@@ -334,7 +374,10 @@
                     </div>
 
                     {/* Condition Filter */}
-                    <div className="filter-dropdown-container">
+                    <div
+                      className="filter-dropdown-container"
+                      ref={conditionDropdownRef}
+                    >
                       <input
                         type="text"
                         placeholder="Filter by condition..."

@@ -75,24 +75,51 @@ const departments = [
 
 const ProductList: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>("Location");
-  const [selectedDepartment, setSelectedDepartment] = useState<string>("Department");
+  const [selectedDepartment, setSelectedDepartment] =
+    useState<string>("Department");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
   const [sortOption, setSortOption] = useState<string>("date");
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [minPrice, setMinPrice] = useState<number | ''>('');
-  const [maxPrice, setMaxPrice] = useState<number | ''>('');
-  const [isDepartmentDropdownOpen, setIsDepartmentDropdownOpen] = useState<boolean>(false);
-  const [isLocationDropdownOpen, setIsLocationDropdownOpen] = useState<boolean>(false);
-  const [selectedFilter, setSelectedFilter] = useState<string>('None'); // Default filter is 'None'
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [minPrice, setMinPrice] = useState<number | "">("");
+  const [maxPrice, setMaxPrice] = useState<number | "">("");
+  const [isDepartmentDropdownOpen, setIsDepartmentDropdownOpen] =
+    useState<boolean>(false);
+  const [isLocationDropdownOpen, setIsLocationDropdownOpen] =
+    useState<boolean>(false);
+  const [selectedFilter, setSelectedFilter] = useState<string>("None"); // Default filter is 'None'
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const departmentDropdownRef = useRef<HTMLDivElement>(null);
+    const locationDropdownRef = useRef<HTMLDivElement>(null);
 
-      const latestAdsRef = useRef<HTMLDivElement>(null);
-      const whyChooseUsRef = useRef<HTMLDivElement>(null);
-      const categoriesRef = useRef<HTMLDivElement>(null);
+  const latestAdsRef = useRef<HTMLDivElement>(null);
+  const whyChooseUsRef = useRef<HTMLDivElement>(null);
+  const categoriesRef = useRef<HTMLDivElement>(null);
+  // Handle click outside dropdown to close it
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        departmentDropdownRef.current &&
+        !departmentDropdownRef.current.contains(event.target as Node) &&
+        locationDropdownRef.current &&
+        !locationDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDepartmentDropdownOpen(false);
+        setIsLocationDropdownOpen(false);
+      }
+    };
+
+    // Add event listener for clicks outside
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -101,13 +128,13 @@ const ProductList: React.FC = () => {
           "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/jobs/"
         );
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         const data = await response.json();
         if (Array.isArray(data)) {
           setProducts(data);
         } else {
-          setError('Data format is incorrect');
+          setError("Data format is incorrect");
         }
       } catch (error: any) {
         setError(error.message);
@@ -119,106 +146,126 @@ const ProductList: React.FC = () => {
     fetchProducts();
   }, []);
 
-      useEffect(() => {
-      // Update URL parameters based on state
-      const params = new URLSearchParams();
-      if (selectedDepartment!== "Department") params.set('department', selectedDepartment);
-      if (selectedLocation !== "Location") params.set('location', selectedLocation);
-      if (minPrice !== '') params.set('min_price', minPrice.toString());
-      if (maxPrice !== '') params.set('max_price', maxPrice.toString());
-      if (searchQuery !== '') params.set('search', searchQuery);
-      params.set('sort', sortOption);
-      params.set('page', currentPage.toString());
+  useEffect(() => {
+    // Update URL parameters based on state
+    const params = new URLSearchParams();
+    if (selectedDepartment !== "Department")
+      params.set("department", selectedDepartment);
+    if (selectedLocation !== "Location")
+      params.set("location", selectedLocation);
+    if (minPrice !== "") params.set("min_price", minPrice.toString());
+    if (maxPrice !== "") params.set("max_price", maxPrice.toString());
+    if (searchQuery !== "") params.set("search", searchQuery);
+    params.set("sort", sortOption);
+    params.set("page", currentPage.toString());
 
-      window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
-    }, [selectedDepartment, selectedLocation, minPrice, maxPrice, searchQuery, sortOption, currentPage]);
+    window.history.replaceState(
+      {},
+      "",
+      `${window.location.pathname}?${params.toString()}`
+    );
+  }, [
+    selectedDepartment,
+    selectedLocation,
+    minPrice,
+    maxPrice,
+    searchQuery,
+    sortOption,
+    currentPage,
+  ]);
 
-    const filteredProducts = products.filter((product) => {
-      return (
-        (selectedDepartment === "Department" || product.department === selectedDepartment) &&
-        (selectedLocation === "Location" || product.job_location === selectedLocation) &&
-        (minPrice === '' || product.price >= minPrice) &&
-        (maxPrice === '' || product.price <= maxPrice) &&
-        (searchQuery === '' || product.name.toLowerCase().includes(searchQuery.toLowerCase()) || product.description.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
-    });
+  const filteredProducts = products.filter((product) => {
+    return (
+      (selectedDepartment === "Department" ||
+        product.department === selectedDepartment) &&
+      (selectedLocation === "Location" ||
+        product.job_location === selectedLocation) &&
+      (minPrice === "" || product.price >= minPrice) &&
+      (maxPrice === "" || product.price <= maxPrice) &&
+      (searchQuery === "" ||
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  });
 
-    const sortedProducts = filteredProducts.sort((a, b) => {
-      switch (sortOption) {
-        case "name":
-          return a.name.localeCompare(b.name);
-        case "price-asc":
-          return a.price - b.price;
-        case "price-desc":
-          return b.price - a.price;
-        case "date":
-        default:
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      }
-    });
+  const sortedProducts = filteredProducts.sort((a, b) => {
+    switch (sortOption) {
+      case "name":
+        return a.name.localeCompare(b.name);
+      case "price-asc":
+        return a.price - b.price;
+      case "price-desc":
+        return b.price - a.price;
+      case "date":
+      default:
+        return (
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+    }
+  });
 
-    const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const currentProducts = sortedProducts.slice(startIndex, startIndex + itemsPerPage);
+  const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentProducts = sortedProducts.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
-    const handlePageChange = (pageNumber: number) => {
-      setCurrentPage(pageNumber);
-    };
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
-    const handleDepartmentSelect = (department: string) => {
-      setSelectedDepartment(department);
-      setIsDepartmentDropdownOpen(false);
-      setCurrentPage(1);
-    };
+  const handleDepartmentSelect = (department: string) => {
+    setSelectedDepartment(department);
+    setIsDepartmentDropdownOpen(false);
+    setCurrentPage(1);
+  };
 
-    const handleLocationSelect = (job_location: string) => {
-      setSelectedLocation(job_location);
-      setIsLocationDropdownOpen(false);
-      setCurrentPage(1);
-    };
+  const handleLocationSelect = (job_location: string) => {
+    setSelectedLocation(job_location);
+    setIsLocationDropdownOpen(false);
+    setCurrentPage(1);
+  };
 
-    const handleDepartmentDropdownToggle = () => {
-      setIsDepartmentDropdownOpen((prev) => !prev);
-    };
+  const handleDepartmentDropdownToggle = () => {
+    setIsDepartmentDropdownOpen((prev) => !prev);
+  };
 
-    const handleLocationDropdownToggle = () => {
-      setIsLocationDropdownOpen((prev) => !prev);
-    };
+  const handleLocationDropdownToggle = () => {
+    setIsLocationDropdownOpen((prev) => !prev);
+  };
 
+  const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMinPrice(event.target.value === "" ? "" : Number(event.target.value));
+  };
 
-    const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setMinPrice(event.target.value === '' ? '' : Number(event.target.value));
-    };
+  const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMaxPrice(event.target.value === "" ? "" : Number(event.target.value));
+  };
 
-    const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setMaxPrice(event.target.value === '' ? '' : Number(event.target.value));
-    };
+  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortOption(event.target.value);
+    setCurrentPage(1);
+  };
 
-    const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-      setSortOption(event.target.value);
-      setCurrentPage(1);
-    };
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+    setCurrentPage(1);
+  };
 
-    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(event.target.value);
-      setCurrentPage(1);
-    };
+  const getImageUrlsArray = (urls: any): string[] => {
+    if (!urls || (typeof urls === "string" && urls.trim() === "")) {
+      return [];
+    }
+    return Array.isArray(urls) ? urls : [urls];
+  };
 
-
-
-    const getImageUrlsArray = (urls: any): string[] => {
-      if (!urls || typeof urls === 'string' && urls.trim() === '') {
-        return [];
-      }
-      return Array.isArray(urls) ? urls : [urls];
-    };
-
-      const truncateDescription = (description: string, maxLength: number) => {
-        if (description.length > maxLength) {
-          return description.substring(0, maxLength) + "...";
-        }
-        return description;
-      };
+  const truncateDescription = (description: string, maxLength: number) => {
+    if (description.length > maxLength) {
+      return description.substring(0, maxLength) + "...";
+    }
+    return description;
+  };
 
   return (
     <>
@@ -284,15 +331,17 @@ const ProductList: React.FC = () => {
                     </button>
                   </form>
                   <br />
-                  {/* Type Filter */}
-                  <div className="filter-dropdown-container">
+
+                  {/* Department Dropdown */}
+                  <div
+                    className="filter-dropdown-container"
+                    ref={departmentDropdownRef}
+                  >
                     <input
                       type="text"
-                      placeholder="Filter by type..."
+                      placeholder="Filter by department..."
                       className="filter-input"
-                      onClick={() =>
-                        setIsDepartmentDropdownOpen((prev) => !prev)
-                      }
+                      onClick={handleDepartmentDropdownToggle}
                       value={selectedDepartment}
                       readOnly
                     />
@@ -311,12 +360,15 @@ const ProductList: React.FC = () => {
                     )}
                   </div>
                   {/* Location Filter */}
-                  <div className="filter-dropdown-container">
+                  <div
+                    className="filter-dropdown-container"
+                    ref={locationDropdownRef}
+                  >
                     <input
                       type="text"
                       placeholder="Filter by location..."
                       className="filter-input"
-                      onClick={() => setIsLocationDropdownOpen((prev) => !prev)}
+                      onClick={handleLocationDropdownToggle}
                       value={selectedLocation}
                       readOnly
                     />
