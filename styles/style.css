@@ -389,3 +389,22 @@
     transform: rotate(360deg); 
   }
 }
+
+
+.aside-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.warning-icon {
+  color: #5ec64d; /* Yellow color for the warning icon */
+  margin-right: 10px; /* Space between the icon and the text */
+  font-size: 1.5rem; /* Icon size */
+}
+
+
+.sefetyList li {
+ padding: 5px;
+}

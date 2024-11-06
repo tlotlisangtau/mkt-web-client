@@ -9,6 +9,7 @@ import Footer from "@/components/footer";
 import BuyerInformation from "@/components/BuyerInformation";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import SafetyTips from "@/components/SafetyTips";
 
 interface Product {
   id: number;
@@ -191,6 +192,8 @@ const ProductDetail: React.FC = () => {
                       </div>
                     </div>
                   </div>
+                  <SafetyTips />
+
                 </div>
               </div>
               <BuyerInformation />
