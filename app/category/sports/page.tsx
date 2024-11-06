@@ -464,17 +464,17 @@
                                 )
                               )}
                             </Carousel>
-                            <div className="info-bg">
-                              <h5>
-                                <a
-                                  href={`/category/sports/Productdetail?productId=${
+                            <a
+                              href={`/category/sports/Productdetail?productId=${
                                     product.id
                                   }&category=${
                                     categoryMappings[product.category_id]
                                   }`}
                                 >
+                            <div className="info-bg">
+                              <h5> <b>
                                   {product.name}
-                                </a>
+                                  </b>
                               </h5>
                               <p>
                                 {truncateDescription(product.description, 35)}
@@ -491,6 +491,7 @@
                                 </li>
                               </ul>
                             </div>
+                            </a>
                           </div>
                         ))}
                       </div>

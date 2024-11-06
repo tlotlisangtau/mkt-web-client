@@ -330,7 +330,6 @@ const ProductList: React.FC = () => {
                       <span className="fa fa-repeat"></span>
                     </button>
                   </form>
-                  <br />
 
                   {/* Department Dropdown */}
                   <div
@@ -450,17 +449,16 @@ const ProductList: React.FC = () => {
                               </div>
                             ))}
                           </Carousel>
+                          <a
+                            href={`/category/jobs/Productdetail?productId=${product.id
+                            }&category=${
+                              categoryMappings[product.category_id]
+                            }`}
+                          >
                           <div className="info-bg">
-                            <h5>
-                              <a
-                                href={`/category/jobs/Productdetail?productId=${
-                                  product.id
-                                }&category=${
-                                  categoryMappings[product.category_id]
-                                }`}
-                              >
+                            <h5><b>
                                 {product.name}
-                              </a>
+                                </b>
                             </h5>
                             <p>
                               {truncateDescription(product.description, 35)}
@@ -481,6 +479,7 @@ const ProductList: React.FC = () => {
                               </li>
                             </ul>
                           </div>
+                          </a>
                         </div>
                       ))}
                     </div>

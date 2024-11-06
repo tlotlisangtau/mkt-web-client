@@ -6638,6 +6638,7 @@ h3.title-main:after {
 .w3l-blog-single .form-inline.search-form {
   position: relative;
   top: 20px;
+  padding-bottom: 6px;
 }
 
 .w3l-blog-single .search-form button.btn.search {

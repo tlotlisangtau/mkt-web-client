@@ -83,10 +83,38 @@ const ProductList: React.FC = () => {
     useState<boolean>(false);
   const [sortOption, setSortOption] = useState<string>("date");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  
 
       const latestAdsRef = useRef<HTMLDivElement>(null);
       const whyChooseUsRef = useRef<HTMLDivElement>(null);
       const categoriesRef = useRef<HTMLDivElement>(null);
+
+      const locationDropdownRef = useRef<HTMLDivElement>(null);
+      const conditionDropdownRef = useRef<HTMLDivElement>(null);
+
+      useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+          if (
+            locationDropdownRef.current &&
+            !locationDropdownRef.current.contains(event.target as Node)
+          ) {
+            setIsLocationDropdownOpen(false);
+          }
+          if (
+            conditionDropdownRef.current &&
+            !conditionDropdownRef.current.contains(event.target as Node)
+          ) {
+            setIsConditionDropdownOpen(false);
+          }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }, []);
+
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -312,57 +340,65 @@ const ProductList: React.FC = () => {
                     </button>
                   </form>
 
-                  {/* Location Filter */}
-                  <div className="filter-dropdown-container">
-                    <input
-                      type="text"
-                      placeholder="Filter by location..."
-                      className="filter-input"
-                      onClick={() => setIsLocationDropdownOpen((prev) => !prev)}
-                      value={selectedLocation}
-                      readOnly
-                    />
-                    {isLocationDropdownOpen && (
-                      <ul className="filter-dropdown-menu">
-                        {locations.map((location, index) => (
-                          <li
-                            key={index}
-                            className="filter-dropdown-item"
-                            onClick={() => handleLocationSelect(location)}
-                          >
-                            {location}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
+                    {/* Location Filter */}
+                    <div
+                      className="filter-dropdown-container"
+                      ref={locationDropdownRef}
+                    >
+                      <input
+                        type="text"
+                        placeholder="Filter by location..."
+                        className="filter-input"
+                        onClick={() =>
+                          setIsLocationDropdownOpen((prev) => !prev)
+                        }
+                        value={selectedLocation}
+                        readOnly
+                      />
+                      {isLocationDropdownOpen && (
+                        <ul className="filter-dropdown-menu">
+                          {locations.map((location, index) => (
+                            <li
+                              key={index}
+                              className="filter-dropdown-item"
+                              onClick={() => handleLocationSelect(location)}
+                            >
+                              {location}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
 
-                  {/* Condition Filter */}
-                  <div className="filter-dropdown-container">
-                    <input
-                      type="text"
-                      placeholder="Filter by condition..."
-                      className="filter-input"
-                      onClick={() =>
-                        setIsConditionDropdownOpen((prev) => !prev)
-                      }
-                      value={selectedCondition}
-                      readOnly
-                    />
-                    {isConditionDropdownOpen && (
-                      <ul className="filter-dropdown-menu">
-                        {conditions.map((condition, index) => (
-                          <li
-                            key={index}
-                            className="filter-dropdown-item"
-                            onClick={() => handleConditionSelect(condition)}
-                          >
-                            {condition}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
+                    {/* Condition Filter */}
+                    <div
+                      className="filter-dropdown-container"
+                      ref={conditionDropdownRef}
+                    >
+                      <input
+                        type="text"
+                        placeholder="Filter by condition..."
+                        className="filter-input"
+                        onClick={() =>
+                          setIsConditionDropdownOpen((prev) => !prev)
+                        }
+                        value={selectedCondition}
+                        readOnly
+                      />
+                      {isConditionDropdownOpen && (
+                        <ul className="filter-dropdown-menu">
+                          {conditions.map((condition, index) => (
+                            <li
+                              key={index}
+                              className="filter-dropdown-item"
+                              onClick={() => handleConditionSelect(condition)}
+                            >
+                              {condition}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
 
                   {/* Price Range Filter */}
                   <div className="price-range-filter">
@@ -425,18 +461,18 @@ const ProductList: React.FC = () => {
                               )
                             )}
                           </Carousel>
-                          <div className="info-bg">
-                            <h5>
-                              <a
+                          <a
                                 href={`/category/others/Productdetail?productId=${
                                   product.id
                                 }&category=${
                                   categoryMappings[product.category_id]
                                 }`}
                               >
-                                {product.name}
-                              </a>
-                            </h5>
+                          <div className="info-bg">
+                          <h5> <b>
+                                  {product.name}
+                                  </b>
+                              </h5>
                             <p>
                               {truncateDescription(product.description, 35)}
                             </p>
@@ -454,6 +490,7 @@ const ProductList: React.FC = () => {
                               </li>
                             </ul>
                           </div>
+                          </a>
                         </div>
                       ))}
                     </div>

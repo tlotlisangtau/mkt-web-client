@@ -445,18 +445,18 @@ const conditionDropdownRef = useRef<HTMLUListElement>(null);
                               )
                             )}
                           </Carousel>
-                          <div className="info-bg">
-                            <h5>
-                              <a
+                          <a
                                 href={`/category/automotives/Productdetail?productId=${
                                   product.id
                                 }&category=${
                                   categoryMappings[product.category_id]
                                 }`}
                               >
-                                {product.name}
-                              </a>
-                            </h5>
+                          <div className="info-bg">
+                          <h5> <b>
+                                  {product.name}
+                                  </b>
+                              </h5>
                             <p>
                               {truncateDescription(product.description, 35)}
                             </p>
@@ -474,6 +474,7 @@ const conditionDropdownRef = useRef<HTMLUListElement>(null);
                               </li>
                             </ul>
                           </div>
+                          </a>
                         </div>
                       ))}
                     </div>
