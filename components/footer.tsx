@@ -152,9 +152,9 @@ const Footer: React.FC = () => {
         <div className="below-section">
           <div className="wrapper">
             <div className="copyright-footer">
-              <div className="columns text-left">
-                <p>@2019 Classify. All rights reserved.</p>
-              </div>
+            <div className="columns text-left">
+              <p>@{new Date().getFullYear()} Classify. All rights reserved.</p>
+            </div>
             </div>
           </div>
         </div>
