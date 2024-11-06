@@ -142,7 +142,7 @@ const ProductDetail: React.FC = () => {
                               <span className="w3layouts-agileinfo">
                                 Salary{" "}
                               </span>{" "}
-                              : <p>{product.salary}</p>
+                              : <p>M {product.salary}</p>
                             </h4>
 
                             <h4>
@@ -163,7 +163,7 @@ const ProductDetail: React.FC = () => {
                               </span>{" "}
                               :{" "}
                               <p>
-                                <a href="#single">{product.company} </a>
+                               {product.company}
                               </p>
                             </h4>
                             <h4>
@@ -172,10 +172,8 @@ const ProductDetail: React.FC = () => {
                               </span>{" "}
                               :{" "}
                               <p>
-                                <strong>
                                   {" "}
                                   {formatDate(product.created_at)}
-                                </strong>
                               </p>
                             </h4>
                             <h4>
@@ -184,10 +182,8 @@ const ProductDetail: React.FC = () => {
                               </span>{" "}
                               :{" "}
                               <p>
-                                <strong>
                                   {" "}
                                   {formatDate(product.valid_until)}
-                                </strong>
                               </p>
                             </h4>
                           </>

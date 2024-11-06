@@ -76,33 +76,31 @@ const ProductList: React.FC = () => {
   const whyChooseUsRef = useRef<HTMLDivElement>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
 
-const locationDropdownRef = useRef<HTMLUListElement>(null);
-const conditionDropdownRef = useRef<HTMLUListElement>(null);
+  const locationDropdownRef = useRef<HTMLDivElement>(null);
+  const conditionDropdownRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        locationDropdownRef.current &&
+        !locationDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsLocationDropdownOpen(false);
+      }
+      if (
+        conditionDropdownRef.current &&
+        !conditionDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsConditionDropdownOpen(false);
+      }
+    };
 
+    document.addEventListener("mousedown", handleClickOutside);
 
-          useEffect(() => {
-            const handleClickOutside = (event: MouseEvent) => {
-              if (
-                locationDropdownRef.current &&
-                !locationDropdownRef.current.contains(event.target as Node)
-              ) {
-                setIsLocationDropdownOpen(false);
-              }
-              if (
-                conditionDropdownRef.current &&
-                !conditionDropdownRef.current.contains(event.target as Node)
-              ) {
-                setIsConditionDropdownOpen(false);
-              }
-            };
-
-            document.addEventListener("mousedown", handleClickOutside);
-
-            return () => {
-              document.removeEventListener("mousedown", handleClickOutside);
-            };
-          }, []);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchProducts = async () => {

@@ -131,18 +131,6 @@ const ProductDetail: React.FC = () => {
                   {product && (
                     <div>
                       <p>{product.description}</p>
-                      <ul className="d-flex">
-                        <li>Phone Number: {product?.mobile_number}</li>
-                        <br />
-                      </ul>
-                      <ul>
-                        <li>
-                          Posted:{" "}
-                          {formatDate(
-                            product.valid_until || product.created_at
-                          )}
-                        </li>
-                      </ul>
                     </div>
                   )}
 
@@ -156,7 +144,7 @@ const ProductDetail: React.FC = () => {
                               <span className="w3layouts-agileinfo">
                                 Price{" "}
                               </span>{" "}
-                              : <p>{product.price}</p>
+                              : <p>M {product.price}</p>
                             </h4>
 
                             <h4>
@@ -175,7 +163,7 @@ const ProductDetail: React.FC = () => {
                               </span>{" "}
                               :{" "}
                               <p>
-                                <a href="#single">{product.condition} </a>
+                                {product.condition}
                               </p>
                             </h4>
                             <h4>
@@ -184,10 +172,8 @@ const ProductDetail: React.FC = () => {
                               </span>{" "}
                               :{" "}
                               <p>
-                                <strong>
                                   {" "}
                                   {formatDate(product.created_at)}
-                                </strong>
                               </p>
                             </h4>
                           </>

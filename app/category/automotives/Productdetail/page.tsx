@@ -147,7 +147,7 @@ const ProductDetail: React.FC = () => {
                               <span className="w3layouts-agileinfo">
                                 Price{" "}
                               </span>{" "}
-                              : <p>{product.price}</p>
+                              : <p>M {product.price}</p>
                             </h4>
 
                             <h4>
@@ -174,7 +174,7 @@ const ProductDetail: React.FC = () => {
                               </span>{" "}
                               :{" "}
                               <p>
-                                <a href="#single">{product.condition} </a>
+                                {product.condition}
                               </p>
                             </h4>
                             <h4>
@@ -183,10 +183,8 @@ const ProductDetail: React.FC = () => {
                               </span>{" "}
                               :{" "}
                               <p>
-                                <strong>
                                   {" "}
                                   {formatDate(product.created_at)}
-                                </strong>
                               </p>
                             </h4>
                           </>
