@@ -92,6 +92,15 @@ const ProductList: React.FC = () => {
       const locationDropdownRef = useRef<HTMLDivElement>(null);
       const conditionDropdownRef = useRef<HTMLDivElement>(null);
 
+      const tabContentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (tabContentRef.current) {
+      tabContentRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [currentPage]);
+  
+
       useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
           if (
@@ -305,7 +314,7 @@ const ProductList: React.FC = () => {
       <section className="w3l-products-page w3l-blog-single w3l-products-4">
         <div className="single blog">
           <div className="wrapper">
-            <h3 className="title-main">All Other Products</h3>
+            <h3 className="title-main" ref={tabContentRef}>All Other Products</h3>
             <div className="d-grid grid-colunm-2 grid-colunm">
               <div className="right-side-bar">
                 <aside>

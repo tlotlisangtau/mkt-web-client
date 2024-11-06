@@ -98,6 +98,17 @@ const ProductList: React.FC = () => {
   const latestAdsRef = useRef<HTMLDivElement>(null);
   const whyChooseUsRef = useRef<HTMLDivElement>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
+
+  const tabContentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (tabContentRef.current) {
+      tabContentRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [currentPage]);
+  
+
+
   // Handle click outside dropdown to close it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -293,7 +304,7 @@ const ProductList: React.FC = () => {
       <section className="w3l-products-page w3l-blog-single w3l-products-4">
         <div className="single blog">
           <div className="wrapper">
-            <h3 className="title-main">Jobs</h3>
+            <h3 className="title-main" ref={tabContentRef}>Jobs</h3>
             <div className="d-grid grid-colunm-2 grid-colunm">
               <div className="right-side-bar">
                 <aside>
@@ -405,7 +416,7 @@ const ProductList: React.FC = () => {
                 </aside>
               </div>
 
-              <div className="tab-content text-left">
+              <div className="tab-content text-left" >
                 <aside className="top-border d-flex">
                   <h3 className="aside-title mb-3">
                     Showing {filteredProducts.length === 0 ? 0 : startIndex + 1}
