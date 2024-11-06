@@ -108,6 +108,19 @@
     cursor: pointer;
     text-align: center;
     width: 100%;
+    position: relative;
+  }
+
+  .facebookButton:hover {
+
+    border: #d0def5 solid 1px;
+  }
+
+  .facebookIcon {
+    position: relative;
+    left: -120px;
+    width: 30px;
+    height: 20px;
   }
 
   /* Modal Styles */

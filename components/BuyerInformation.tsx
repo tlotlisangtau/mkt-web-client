@@ -170,7 +170,7 @@ const BuyerInformation: React.FC = () => {
             {sellerName}
           </li>
           <li>
-            <a href="product-1.html" className="colors">
+            <a href="/store" className="colors">
               <span className="fa fa-shopping-basket"></span>
               View Store
             </a>

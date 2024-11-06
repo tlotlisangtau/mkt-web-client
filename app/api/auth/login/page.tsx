@@ -5,6 +5,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { toast, Toaster } from 'react-hot-toast';
 import { signIn } from 'next-auth/react'; 
 import styles from './LoginPage.module.css'; 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFacebook } from '@fortawesome/free-brands-svg-icons';
+
 
 const LoginPage: React.FC = () => {
   const [identifier, setIdentifier] = useState(''); // This will handle both email and phone number
@@ -223,6 +226,7 @@ const LoginPage: React.FC = () => {
 
           {/* Facebook Login Button */}
           <button onClick={loginWithFacebook} className={styles.facebookButton}>
+          <FontAwesomeIcon icon={faFacebook}  className={styles.facebookIcon} />
             Login with Facebook
           </button>
 
