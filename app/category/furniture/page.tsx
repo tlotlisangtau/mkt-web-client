@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState, Suspense, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import "../../../styles/globals.css";
+import "../../../styles/style.css";
+import Nav from "@/components/Nav";
+import Footer from "@/components/footer";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { categoryMappings } from "@/utils/categoryMappings";
-  import "../../../styles/globals.css";
-  import "../../../styles/style.css";
-import Nav from '@/components/Nav';
-import Footer from '@/components/footer';
 
 interface Product {
   id: number;
@@ -19,68 +19,70 @@ interface Product {
   created_at: string;
   location: string;
   condition: string;
-  type: string;
+  furniture_types: string;
 }
 
-  const timeAgo = (dateString: string) => {
-    const now = new Date();
-    const createdTime = new Date(dateString);
-    const diffInSeconds = Math.floor((now.getTime() - createdTime.getTime()) / 1000);
+// Function to calculate relative time
+const timeAgo = (dateString: string) => {
+  const now = new Date();
+  const createdTime = new Date(dateString);
+  const diffInSeconds = Math.floor((now.getTime() - createdTime.getTime()) / 1000);
 
-    const intervals: { [key: string]: number } = {
-      year: 31536000,
-      month: 2592000,
-      week: 604800,
-      day: 86400,
-      hour: 3600,
-      minute: 60,
-    };
-
-    for (let key in intervals) {
-      const interval = intervals[key];
-      const timePassed = Math.floor(diffInSeconds / interval);
-      if (timePassed >= 1) {
-        return `${timePassed} ${key}${timePassed > 1 ? "s" : ""} ago`;
-      }
-    }
-    return "Just now";
+  const intervals: { [key: string]: number } = {
+    year: 31536000,
+    month: 2592000,
+    week: 604800,
+    day: 86400,
+    hour: 3600,
+    minute: 60,
   };
 
-  const types = ["Type", "Football", "Rugby", "Basketball", "Tennis", "Cricket"];
-  const locations = [
-    "Location",
-    "Maseru",
-    "Leribe",
-    "Qacha",
-    "Berea",
-    "Mafeteng",
-    "Mokhotlong",
-    "Thaba-Tseka",
-    "Botha-Buthe",
-    "Quthing",
-    "Mafeteng",
-  ];
-  const conditions = ["Condition", "New", "Used"];
+  for (let key in intervals) {
+    const interval = intervals[key];
+    const timePassed = Math.floor(diffInSeconds / interval);
+    if (timePassed >= 1) {
+      return `${timePassed} ${key}${timePassed > 1 ? "s" : ""} ago`;
+    }
+  }
+  return "Just now";
+};
+
+const types = ["Type", "Living Room", "Bedroom", "Office", "Outdoor", "Other Furniture"];
+const locations = [
+  "Location",
+  "Maseru",
+  "Leribe",
+  "Qacha",
+  "Berea",
+  "Mafeteng",
+  "Mokhotlong",
+  "Thaba-Tseka",
+  "Botha-Buthe",
+  "Quthing",
+  "Mafeteng",
+];
+const conditions = ["Condition", "New", "Used"]; // "Condition" is the default value
 
 const ProductList: React.FC = () => {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const itemsPerPage = 4;
-    const [selectedType, setSelectedType] = useState<string>("Type"); // Default to "Type"
-    const [selectedLocation, setSelectedLocation] = useState<string>("Location"); // Default to "Location"
-    const [selectedCondition, setSelectedCondition] = useState<string>("Condition");   // Default to "Condition"
-    const [minPrice, setMinPrice] = useState<number | ''>('');
-    const [maxPrice, setMaxPrice] = useState<number | ''>('');
-    const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState<boolean>(false);
-    const [isLocationDropdownOpen, setIsLocationDropdownOpen] = useState<boolean>(false);
-    const [isConditionDropdownOpen, setIsConditionDropdownOpen] = useState<boolean>(false);
-    const [sortOption, setSortOption] = useState<string>("date");
-    const [searchQuery, setSearchQuery] = useState<string>('');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 4;
+  const [selectedType, setSelectedType] = useState<string>("Type"); // Default to "Type"
+  const [selectedLocation, setSelectedLocation] = useState<string>("Location"); // Default to "Location"
+  const [selectedCondition, setSelectedCondition] = useState<string>("Condition");   // Default to "Condition"
+  const [minPrice, setMinPrice] = useState<number | ''>('');
+  const [maxPrice, setMaxPrice] = useState<number | ''>('');
+  const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState<boolean>(false);
+  const [isLocationDropdownOpen, setIsLocationDropdownOpen] = useState<boolean>(false);
+  const [isConditionDropdownOpen, setIsConditionDropdownOpen] = useState<boolean>(false);
+  const [sortOption, setSortOption] = useState<string>("date");
+  const [searchQuery, setSearchQuery] = useState<string>('');
       const latestAdsRef = useRef<HTMLDivElement>(null);
       const whyChooseUsRef = useRef<HTMLDivElement>(null);
       const categoriesRef = useRef<HTMLDivElement>(null);
+      const typeDropdownRef = useRef<HTMLDivElement>(null);
       const locationDropdownRef = useRef<HTMLDivElement>(null);
       const conditionDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -95,6 +97,12 @@ const ProductList: React.FC = () => {
 
       useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
+          if (
+            typeDropdownRef.current &&
+            !typeDropdownRef.current.contains(event.target as Node)
+          ) {
+            setIsTypeDropdownOpen(false);
+          }
           if (
             locationDropdownRef.current &&
             !locationDropdownRef.current.contains(event.target as Node)
@@ -116,25 +124,24 @@ const ProductList: React.FC = () => {
         };
       }, []);
 
+
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
       try {
         const response = await fetch(
           "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/furniture"
         );
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        console.log('Fetched data:', data);
-
         if (Array.isArray(data)) {
           setProducts(data);
         } else {
-          setError('Data format is incorrect');
+          setError("Data format is incorrect");
         }
       } catch (error: any) {
-        console.error('Fetch error:', error);
         setError(error.message);
       } finally {
         setLoading(false);
@@ -144,119 +151,119 @@ const ProductList: React.FC = () => {
     fetchProducts();
   }, []);
 
-      useEffect(() => {
-      // Update URL parameters based on state
-      const params = new URLSearchParams();
-      if (selectedType !== "Type") params.set('type', selectedType);
-      if (selectedLocation !== "Location") params.set('location', selectedLocation);
-      if (selectedCondition !== "Condition") params.set('condition', selectedCondition);
-      if (minPrice !== '') params.set('min_price', minPrice.toString());
-      if (maxPrice !== '') params.set('max_price', maxPrice.toString());
-      if (searchQuery !== '') params.set('search', searchQuery);
-      params.set('sort', sortOption);
-      params.set('page', currentPage.toString());
+  useEffect(() => {
+    // Update URL parameters based on state
+    const params = new URLSearchParams();
+    if (selectedType !== "Type") params.set('type', selectedType);
+    if (selectedLocation !== "Location") params.set('location', selectedLocation);
+    if (selectedCondition !== "Condition") params.set('condition', selectedCondition);
+    if (minPrice !== '') params.set('min_price', minPrice.toString());
+    if (maxPrice !== '') params.set('max_price', maxPrice.toString());
+    if (searchQuery !== '') params.set('search', searchQuery);
+    params.set('sort', sortOption);
+    params.set('page', currentPage.toString());
 
-      window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
-    }, [selectedType, selectedLocation, selectedCondition, minPrice, maxPrice, searchQuery, sortOption, currentPage]);
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+  }, [selectedType, selectedLocation, selectedCondition, minPrice, maxPrice, searchQuery, sortOption, currentPage]);
+
+  const filteredProducts = products.filter((product) => {
+    return (
+      (selectedType === "Type" || product.furniture_types === selectedType) &&
+      (selectedLocation === "Location" || product.location === selectedLocation) &&
+      (selectedCondition === "Condition" || product.condition === selectedCondition) &&
+      (minPrice === '' || product.price >= minPrice) &&
+      (maxPrice === '' || product.price <= maxPrice) &&
+      (searchQuery === '' || product.name.toLowerCase().includes(searchQuery.toLowerCase()) || product.description.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  });
+
+  const sortedProducts = filteredProducts.sort((a, b) => {
+    switch (sortOption) {
+      case "name":
+        return a.name.localeCompare(b.name);
+      case "price-asc":
+        return a.price - b.price;
+      case "price-desc":
+        return b.price - a.price;
+      case "date":
+      default:
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    }
+  });
+
+  const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentProducts = sortedProducts.slice(startIndex, startIndex + itemsPerPage);
 
 
-    const filteredProducts = products.filter((product) => {
-      return (
-        (selectedType === "Type" || product.type === selectedType) &&
-        (selectedLocation === "Location" || product.location === selectedLocation) &&
-        (selectedCondition === "Condition" || product.condition === selectedCondition) &&
-        (minPrice === '' || product.price >= minPrice) &&
-        (maxPrice === '' || product.price <= maxPrice) &&
-        (searchQuery === '' || product.name.toLowerCase().includes(searchQuery.toLowerCase()) || product.description.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
-    });
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
-    const sortedProducts = filteredProducts.sort((a, b) => {
-      switch (sortOption) {
-        case "name":
-          return a.name.localeCompare(b.name);
-        case "price-asc":
-          return a.price - b.price;
-        case "price-desc":
-          return b.price - a.price;
-        case "date":
-        default:
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  const handleTypeSelect = (type: string) => {
+    setSelectedType(type);
+    setIsTypeDropdownOpen(false);
+    setCurrentPage(1);
+  };
+
+  const handleLocationSelect = (location: string) => {
+    setSelectedLocation(location);
+    setIsLocationDropdownOpen(false);
+    setCurrentPage(1);
+  };
+
+  const handleConditionSelect = (condition: string) => {
+    setSelectedCondition(condition);
+    setCurrentPage(1);
+    setIsConditionDropdownOpen(false);
+    setCurrentPage(1);
+  };
+  const handleTypeDropdownToggle = () => {
+    setIsTypeDropdownOpen((prev) => !prev);
+  };
+
+  const handleLocationDropdownToggle = () => {
+    setIsLocationDropdownOpen((prev) => !prev);
+  };
+
+  const handleConditionDropdownToggle = () => {
+    setIsConditionDropdownOpen((prev) => !prev);
+  };
+
+  const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMinPrice(event.target.value === '' ? '' : Number(event.target.value));
+  };
+
+  const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMaxPrice(event.target.value === '' ? '' : Number(event.target.value));
+  };
+
+  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortOption(event.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+    setCurrentPage(1);
+  };
+
+  const getImageUrlsArray = (urls: any): string[] => {
+    if (!urls || typeof urls === 'string' && urls.trim() === '') {
+      return [];
+    }
+    return Array.isArray(urls) ? urls : [urls];
+  };
+
+    const truncateDescription = (description: string, maxLength: number) => {
+      if (description.length > maxLength) {
+        return description.substring(0, maxLength) + "...";
       }
-    });
-
-    const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const currentProducts = sortedProducts.slice(startIndex, startIndex + itemsPerPage);
-
-      const handlePageChange = (pageNumber: number) => {
-      setCurrentPage(pageNumber);
+      return description;
     };
-
-    const handleTypeSelect = (type: string) => {
-      setSelectedType(type);
-      setIsTypeDropdownOpen(false);
-      setCurrentPage(1);
-    };
-
-    const handleLocationSelect = (location: string) => {
-      setSelectedLocation(location);
-      setIsLocationDropdownOpen(false);
-      setCurrentPage(1);
-    };
-
-    const handleConditionSelect = (condition: string) => {
-      setSelectedCondition(condition);
-      setCurrentPage(1);
-      setIsConditionDropdownOpen(false);
-      setCurrentPage(1);
-    };
-    const handleTypeDropdownToggle = () => {
-      setIsTypeDropdownOpen((prev) => !prev);
-    };
-
-    const handleLocationDropdownToggle = () => {
-      setIsLocationDropdownOpen((prev) => !prev);
-    };
-
-    const handleConditionDropdownToggle = () => {
-      setIsConditionDropdownOpen((prev) => !prev);
-    };
-
-    const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setMinPrice(event.target.value === '' ? '' : Number(event.target.value));
-    };
-
-    const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setMaxPrice(event.target.value === '' ? '' : Number(event.target.value));
-    };
-
-    const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-      setSortOption(event.target.value);
-      setCurrentPage(1);
-    };
-
-    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(event.target.value);
-      setCurrentPage(1);
-    };
-
-    const getImageUrlsArray = (urls: any): string[] => {
-      if (!urls || typeof urls === 'string' && urls.trim() === '') {
-        return [];
-      }
-      return Array.isArray(urls) ? urls : [urls];
-    };
-
-      const truncateDescription = (description: string, maxLength: number) => {
-        if (description.length > maxLength) {
-          return description.substring(0, maxLength) + "...";
-        }
-        return description;
-      };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <>
       <Nav
         latestAdsRef={latestAdsRef}
         whyChooseUsRef={whyChooseUsRef}
@@ -272,7 +279,7 @@ const ProductList: React.FC = () => {
               <li>
                 <span className="fa fa-angle-right" aria-hidden="true"></span>
               </li>
-              <li className="active">All Ads</li>
+              <li className="active">Furniture Ads</li>
             </ul>
           </div>
         </div>
@@ -316,65 +323,94 @@ const ProductList: React.FC = () => {
                     </button>
                   </form>
 
-                    {/* Location Filter */}
-                    <div
-                      className="filter-dropdown-container"
-                      ref={locationDropdownRef}
-                    >
-                      <input
-                        type="text"
-                        placeholder="Filter by location..."
-                        className="filter-input"
-                        onClick={() =>
-                          setIsLocationDropdownOpen((prev) => !prev)
-                        }
-                        value={selectedLocation}
-                        readOnly
-                      />
-                      {isLocationDropdownOpen && (
-                        <ul className="filter-dropdown-menu">
-                          {locations.map((location, index) => (
-                            <li
-                              key={index}
-                              className="filter-dropdown-item"
-                              onClick={() => handleLocationSelect(location)}
-                            >
-                              {location}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
+                  {/* Type Filter */}
+                  {/* Type Filter */}
+                  <div
+                    className="filter-dropdown-container"
+                    ref={typeDropdownRef}
+                  >
+                    <input
+                      type="text"
+                      placeholder="Filter by type..."
+                      className="filter-input"
+                      onClick={() => setIsTypeDropdownOpen((prev) => !prev)}
+                      value={selectedType}
+                      readOnly
+                    />
+                    {isTypeDropdownOpen && (
+                      <ul className="filter-dropdown-menu">
+                        {types.map((type, index) => (
+                          <li
+                            key={index}
+                            className="filter-dropdown-item"
+                            onClick={() => handleTypeSelect(type)}
+                          >
+                            {type}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
 
-                    {/* Condition Filter */}
-                    <div
-                      className="filter-dropdown-container"
-                      ref={conditionDropdownRef}
-                    >
-                      <input
-                        type="text"
-                        placeholder="Filter by condition..."
-                        className="filter-input"
-                        onClick={() =>
-                          setIsConditionDropdownOpen((prev) => !prev)
-                        }
-                        value={selectedCondition}
-                        readOnly
-                      />
-                      {isConditionDropdownOpen && (
-                        <ul className="filter-dropdown-menu">
-                          {conditions.map((condition, index) => (
-                            <li
-                              key={index}
-                              className="filter-dropdown-item"
-                              onClick={() => handleConditionSelect(condition)}
-                            >
-                              {condition}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
+                  {/* Location Filter */}
+                  <div
+                    className="filter-dropdown-container"
+                    ref={locationDropdownRef}
+                  >
+                    <input
+                      type="text"
+                      placeholder="Filter by location..."
+                      className="filter-input"
+                      onClick={() =>
+                        setIsLocationDropdownOpen((prev) => !prev)
+                      }
+                      value={selectedLocation}
+                      readOnly
+                    />
+                    {isLocationDropdownOpen && (
+                      <ul className="filter-dropdown-menu">
+                        {locations.map((location, index) => (
+                          <li
+                            key={index}
+                            className="filter-dropdown-item"
+                            onClick={() => handleLocationSelect(location)}
+                          >
+                            {location}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+
+                  {/* Condition Filter */}
+                  <div
+                    className="filter-dropdown-container"
+                    ref={conditionDropdownRef}
+                  >
+                    <input
+                      type="text"
+                      placeholder="Filter by condition..."
+                      className="filter-input"
+                      onClick={() =>
+                        setIsConditionDropdownOpen((prev) => !prev)
+                      }
+                      value={selectedCondition}
+                      readOnly
+                    />
+                    {isConditionDropdownOpen && (
+                      <ul className="filter-dropdown-menu">
+                        {conditions.map((condition, index) => (
+                          <li
+                            key={index}
+                            className="filter-dropdown-item"
+                            onClick={() => handleConditionSelect(condition)}
+                          >
+                            {condition}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
 
                   {/* Price Range Filter */}
                   <div className="price-range-filter">
@@ -398,8 +434,8 @@ const ProductList: React.FC = () => {
               <div className="tab-content text-left">
                 <aside className="top-border d-flex">
                   <h3 className="aside-title mb-3">
-                    Showing {filteredProducts.length === 0 ? 0 : startIndex + 1}
-                    –
+                    Showing{" "}
+                    {filteredProducts.length === 0 ? 0 : startIndex + 1}–
                     {Math.min(
                       startIndex + itemsPerPage,
                       filteredProducts.length
@@ -438,17 +474,17 @@ const ProductList: React.FC = () => {
                             )}
                           </Carousel>
                           <a
-                             href={`/category/furniture/Productdetail?productId=${
+                            href={`/category/furniture/Productdetail?productId=${
                                   product.id
                                 }&category=${
                                   categoryMappings[product.category_id]
                                 }`}
                               >
                           <div className="info-bg">
-                          <h5> <b>
-                                  {product.name}
-                                  </b>
-                              </h5>
+                            <h5> <b>
+                                {product.name}
+                                </b>
+                            </h5>
                             <p>
                               {truncateDescription(product.description, 35)}
                             </p>
@@ -458,11 +494,11 @@ const ProductList: React.FC = () => {
                             <ul className="d-flex">
                               <li>{timeAgo(product.created_at)}</li>
                               <li className="margin-effe">
+                                {/*
                                 <a href="#fav" title="Add this to Favorite">
-                                  {/* 
                                   <span className="fa fa-heart"></span>
-                                  */}
                                 </a>
+                                 */}
                               </li>
                             </ul>
                           </div>
@@ -497,8 +533,8 @@ const ProductList: React.FC = () => {
         </div>
       </section>
       <Footer />
-    </Suspense>
+    </>
   );
-  };
+};
 
-  export default ProductList;
+export default ProductList;

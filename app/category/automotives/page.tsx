@@ -1,56 +1,67 @@
-'use client';
+"use client";
 
-  import React, { useEffect, useRef, useState } from "react";
-  import "../../../styles/globals.css";
-  import "../../../styles/style.css";
-  import Nav from "@/components/Nav";
-  import Footer from "@/components/footer";
-  import { Carousel } from "react-responsive-carousel";
-  import "react-responsive-carousel/lib/styles/carousel.min.css";
-  import { categoryMappings } from "@/utils/categoryMappings";
+import React, { useEffect, useRef, useState } from "react";
+import "../../../styles/globals.css";
+import "../../../styles/style.css";
+import Nav from "@/components/Nav";
+import Footer from "@/components/footer";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { categoryMappings } from "@/utils/categoryMappings";
 
-  interface Product {
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-    image_urls: string[];
-    category_id: number;
-    created_at: string;
-    location: string;
-    condition: string;
-    type: string;
-  }
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  image_urls: string[];
+  category_id: number;
+  created_at: string;
+  location: string;
+  condition: string;
+  automotives_types: string;
+}
 
-    // Function to calculate relative time
-  const timeAgo = (dateString: string) => {
-    const now = new Date();
-    const createdTime = new Date(dateString);
-    const diffInSeconds = Math.floor((now.getTime() - createdTime.getTime()) / 1000);
+// Function to calculate relative time
+const timeAgo = (dateString: string) => {
+  const now = new Date();
+  const createdTime = new Date(dateString);
+  const diffInSeconds = Math.floor((now.getTime() - createdTime.getTime()) / 1000);
 
-    const intervals: { [key: string]: number } = {
-      year: 31536000,
-      month: 2592000,
-      week: 604800,
-      day: 86400,
-      hour: 3600,
-      minute: 60,
-    };
-
-    for (let key in intervals) {
-      const interval = intervals[key];
-      const timePassed = Math.floor(diffInSeconds / interval);
-      if (timePassed >= 1) {
-        return `${timePassed} ${key}${timePassed > 1 ? "s" : ""} ago`;
-      }
-    }
-    return "Just now";
+  const intervals: { [key: string]: number } = {
+    year: 31536000,
+    month: 2592000,
+    week: 604800,
+    day: 86400,
+    hour: 3600,
+    minute: 60,
   };
 
-  const types = ["Type", "Football", "Rugby", "Basketball", "Tennis", "Cricket"];
-  const locations = ["Location", "Maseru", "Leribe", "Qacha",'Berea','Mafeteng','Mokhotlong','Thaba-Tseka','Botha-Buthe','Quthing','Mafeteng'];
-  const conditions = ["Condition", "New", "Used"]; // "Condition" is the default value
+  for (let key in intervals) {
+    const interval = intervals[key];
+    const timePassed = Math.floor(diffInSeconds / interval);
+    if (timePassed >= 1) {
+      return `${timePassed} ${key}${timePassed > 1 ? "s" : ""} ago`;
+    }
+  }
+  return "Just now";
+};
 
+const types = ["Type", "Cars", "Motorcycles", "Trucks", "Bicycles", "Parts",'Other Vehicles'];
+const locations = [
+  "Location",
+  "Maseru",
+  "Leribe",
+  "Qacha",
+  "Berea",
+  "Mafeteng",
+  "Mokhotlong",
+  "Thaba-Tseka",
+  "Botha-Buthe",
+  "Quthing",
+  "Mafeteng",
+];
+const conditions = ["Condition", "New", "Used"]; // "Condition" is the default value
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -60,76 +71,77 @@ const ProductList: React.FC = () => {
   const itemsPerPage = 4;
   const [selectedType, setSelectedType] = useState<string>("Type"); // Default to "Type"
   const [selectedLocation, setSelectedLocation] = useState<string>("Location"); // Default to "Location"
-  const [selectedCondition, setSelectedCondition] =
-    useState<string>("Condition"); // Default to "Condition"
-  const [minPrice, setMinPrice] = useState<number | "">("");
-  const [maxPrice, setMaxPrice] = useState<number | "">("");
+  const [selectedCondition, setSelectedCondition] = useState<string>("Condition");   // Default to "Condition"
+  const [minPrice, setMinPrice] = useState<number | ''>('');
+  const [maxPrice, setMaxPrice] = useState<number | ''>('');
   const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState<boolean>(false);
-  const [isLocationDropdownOpen, setIsLocationDropdownOpen] =
-    useState<boolean>(false);
-  const [isConditionDropdownOpen, setIsConditionDropdownOpen] =
-    useState<boolean>(false);
+  const [isLocationDropdownOpen, setIsLocationDropdownOpen] = useState<boolean>(false);
+  const [isConditionDropdownOpen, setIsConditionDropdownOpen] = useState<boolean>(false);
   const [sortOption, setSortOption] = useState<string>("date");
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>('');
+      const latestAdsRef = useRef<HTMLDivElement>(null);
+      const whyChooseUsRef = useRef<HTMLDivElement>(null);
+      const categoriesRef = useRef<HTMLDivElement>(null);
+      const typeDropdownRef = useRef<HTMLDivElement>(null);
+      const locationDropdownRef = useRef<HTMLDivElement>(null);
+      const conditionDropdownRef = useRef<HTMLDivElement>(null);
 
-  const latestAdsRef = useRef<HTMLDivElement>(null);
-  const whyChooseUsRef = useRef<HTMLDivElement>(null);
-  const categoriesRef = useRef<HTMLDivElement>(null);
+      const tabContentRef = useRef<HTMLDivElement>(null);
 
-  const locationDropdownRef = useRef<HTMLDivElement>(null);
-  const conditionDropdownRef = useRef<HTMLDivElement>(null);
+      useEffect(() => {
+        if (tabContentRef.current) {
+          tabContentRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+      }, [currentPage]);
+      
 
-  const tabContentRef = useRef<HTMLDivElement>(null);
+      useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+          if (
+            typeDropdownRef.current &&
+            !typeDropdownRef.current.contains(event.target as Node)
+          ) {
+            setIsTypeDropdownOpen(false);
+          }
+          if (
+            locationDropdownRef.current &&
+            !locationDropdownRef.current.contains(event.target as Node)
+          ) {
+            setIsLocationDropdownOpen(false);
+          }
+          if (
+            conditionDropdownRef.current &&
+            !conditionDropdownRef.current.contains(event.target as Node)
+          ) {
+            setIsConditionDropdownOpen(false);
+          }
+        };
 
-  useEffect(() => {
-    if (tabContentRef.current) {
-      tabContentRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [currentPage]);
-  
+        document.addEventListener("mousedown", handleClickOutside);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        locationDropdownRef.current &&
-        !locationDropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsLocationDropdownOpen(false);
-      }
-      if (
-        conditionDropdownRef.current &&
-        !conditionDropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsConditionDropdownOpen(false);
-      }
-    };
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }, []);
 
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
       try {
         const response = await fetch(
-          "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/automotives/"
+          "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/automotives"
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        console.log("Fetched data:", data);
-
         if (Array.isArray(data)) {
           setProducts(data);
         } else {
           setError("Data format is incorrect");
         }
       } catch (error: any) {
-        console.error("Fetch error:", error);
         setError(error.message);
       } finally {
         setLoading(false);
@@ -142,47 +154,26 @@ const ProductList: React.FC = () => {
   useEffect(() => {
     // Update URL parameters based on state
     const params = new URLSearchParams();
-    if (selectedType !== "Type") params.set("type", selectedType);
-    if (selectedLocation !== "Location")
-      params.set("location", selectedLocation);
-    if (selectedCondition !== "Condition")
-      params.set("condition", selectedCondition);
-    if (minPrice !== "") params.set("min_price", minPrice.toString());
-    if (maxPrice !== "") params.set("max_price", maxPrice.toString());
-    if (searchQuery !== "") params.set("search", searchQuery);
-    params.set("sort", sortOption);
-    params.set("page", currentPage.toString());
+    if (selectedType !== "Type") params.set('type', selectedType);
+    if (selectedLocation !== "Location") params.set('location', selectedLocation);
+    if (selectedCondition !== "Condition") params.set('condition', selectedCondition);
+    if (minPrice !== '') params.set('min_price', minPrice.toString());
+    if (maxPrice !== '') params.set('max_price', maxPrice.toString());
+    if (searchQuery !== '') params.set('search', searchQuery);
+    params.set('sort', sortOption);
+    params.set('page', currentPage.toString());
 
-    window.history.replaceState(
-      {},
-      "",
-      `${window.location.pathname}?${params.toString()}`
-    );
-  }, [
-    selectedType,
-    selectedLocation,
-    selectedCondition,
-    minPrice,
-    maxPrice,
-    searchQuery,
-    sortOption,
-    currentPage,
-  ]);
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+  }, [selectedType, selectedLocation, selectedCondition, minPrice, maxPrice, searchQuery, sortOption, currentPage]);
 
-
-  
   const filteredProducts = products.filter((product) => {
     return (
-      (selectedType === "Type" || product.type === selectedType) &&
-      (selectedLocation === "Location" ||
-        product.location === selectedLocation) &&
-      (selectedCondition === "Condition" ||
-        product.condition === selectedCondition) &&
-      (minPrice === "" || product.price >= minPrice) &&
-      (maxPrice === "" || product.price <= maxPrice) &&
-      (searchQuery === "" ||
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchQuery.toLowerCase()))
+      (selectedType === "Type" || product.automotives_types === selectedType) &&
+      (selectedLocation === "Location" || product.location === selectedLocation) &&
+      (selectedCondition === "Condition" || product.condition === selectedCondition) &&
+      (minPrice === '' || product.price >= minPrice) &&
+      (maxPrice === '' || product.price <= maxPrice) &&
+      (searchQuery === '' || product.name.toLowerCase().includes(searchQuery.toLowerCase()) || product.description.toLowerCase().includes(searchQuery.toLowerCase()))
     );
   });
 
@@ -196,18 +187,14 @@ const ProductList: React.FC = () => {
         return b.price - a.price;
       case "date":
       default:
-        return (
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     }
   });
 
   const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentProducts = sortedProducts.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
+  const currentProducts = sortedProducts.slice(startIndex, startIndex + itemsPerPage);
+
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -244,11 +231,11 @@ const ProductList: React.FC = () => {
   };
 
   const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMinPrice(event.target.value === "" ? "" : Number(event.target.value));
+    setMinPrice(event.target.value === '' ? '' : Number(event.target.value));
   };
 
   const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMaxPrice(event.target.value === "" ? "" : Number(event.target.value));
+    setMaxPrice(event.target.value === '' ? '' : Number(event.target.value));
   };
 
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -262,19 +249,18 @@ const ProductList: React.FC = () => {
   };
 
   const getImageUrlsArray = (urls: any): string[] => {
-    if (!urls || (typeof urls === "string" && urls.trim() === "")) {
+    if (!urls || typeof urls === 'string' && urls.trim() === '') {
       return [];
     }
     return Array.isArray(urls) ? urls : [urls];
   };
 
-  // Utility function to truncate strings
-  const truncateDescription = (description: string, maxLength: number) => {
-    if (description.length > maxLength) {
-      return description.substring(0, maxLength) + "...";
-    }
-    return description;
-  };
+    const truncateDescription = (description: string, maxLength: number) => {
+      if (description.length > maxLength) {
+        return description.substring(0, maxLength) + "...";
+      }
+      return description;
+    };
 
   return (
     <>
@@ -293,7 +279,7 @@ const ProductList: React.FC = () => {
               <li>
                 <span className="fa fa-angle-right" aria-hidden="true"></span>
               </li>
-              <li className="active">All Ads</li>
+              <li className="active">Automotives Ads</li>
             </ul>
           </div>
         </div>
@@ -337,6 +323,36 @@ const ProductList: React.FC = () => {
                     </button>
                   </form>
 
+                  {/* Type Filter */}
+                  {/* Type Filter */}
+                  <div
+                    className="filter-dropdown-container"
+                    ref={typeDropdownRef}
+                  >
+                    <input
+                      type="text"
+                      placeholder="Filter by type..."
+                      className="filter-input"
+                      onClick={() => setIsTypeDropdownOpen((prev) => !prev)}
+                      value={selectedType}
+                      readOnly
+                    />
+                    {isTypeDropdownOpen && (
+                      <ul className="filter-dropdown-menu">
+                        {types.map((type, index) => (
+                          <li
+                            key={index}
+                            className="filter-dropdown-item"
+                            onClick={() => handleTypeSelect(type)}
+                          >
+                            {type}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+
+                  {/* Location Filter */}
                   <div
                     className="filter-dropdown-container"
                     ref={locationDropdownRef}
@@ -345,7 +361,9 @@ const ProductList: React.FC = () => {
                       type="text"
                       placeholder="Filter by location..."
                       className="filter-input"
-                      onClick={() => setIsLocationDropdownOpen((prev) => !prev)}
+                      onClick={() =>
+                        setIsLocationDropdownOpen((prev) => !prev)
+                      }
                       value={selectedLocation}
                       readOnly
                     />
@@ -364,6 +382,7 @@ const ProductList: React.FC = () => {
                     )}
                   </div>
 
+                  {/* Condition Filter */}
                   <div
                     className="filter-dropdown-container"
                     ref={conditionDropdownRef}
@@ -415,8 +434,8 @@ const ProductList: React.FC = () => {
               <div className="tab-content text-left">
                 <aside className="top-border d-flex">
                   <h3 className="aside-title mb-3">
-                    Showing {filteredProducts.length === 0 ? 0 : startIndex + 1}
-                    –
+                    Showing{" "}
+                    {filteredProducts.length === 0 ? 0 : startIndex + 1}–
                     {Math.min(
                       startIndex + itemsPerPage,
                       filteredProducts.length
@@ -455,17 +474,17 @@ const ProductList: React.FC = () => {
                             )}
                           </Carousel>
                           <a
-                                href={`/category/automotives/Productdetail?productId=${
+                            href={`/category/automotives/Productdetail?productId=${
                                   product.id
                                 }&category=${
                                   categoryMappings[product.category_id]
                                 }`}
                               >
                           <div className="info-bg">
-                          <h5> <b>
-                                  {product.name}
-                                  </b>
-                              </h5>
+                            <h5> <b>
+                                {product.name}
+                                </b>
+                            </h5>
                             <p>
                               {truncateDescription(product.description, 35)}
                             </p>
@@ -475,11 +494,11 @@ const ProductList: React.FC = () => {
                             <ul className="d-flex">
                               <li>{timeAgo(product.created_at)}</li>
                               <li className="margin-effe">
+                                {/*
                                 <a href="#fav" title="Add this to Favorite">
-                                  {/* 
                                   <span className="fa fa-heart"></span>
-                                  */}
                                 </a>
+                                 */}
                               </li>
                             </ul>
                           </div>
@@ -518,4 +537,4 @@ const ProductList: React.FC = () => {
   );
 };
 
-  export default ProductList;
+export default ProductList;

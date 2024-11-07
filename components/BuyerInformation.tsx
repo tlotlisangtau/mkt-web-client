@@ -154,6 +154,29 @@ const BuyerInformation: React.FC = () => {
       setShowShareModal(false);
     };
 
+  // Format the phone number (country code first, then phone number)
+ // Format phone number to match +266 58974305 format
+const formatPhoneNumber = (phone: string | null) => {
+  if (!phone) return '';
+
+  // Remove any non-numeric characters except '+'
+  const cleanedPhone = phone.replace(/[^\d+]/g, '');
+
+  // Check if phone starts with a '+' sign
+  if (cleanedPhone.startsWith('+')) {
+    // If it contains '+', we assume it's already properly formatted
+    const countryCodeEnd = cleanedPhone.indexOf(' ') !== -1 ? cleanedPhone.indexOf(' ') : cleanedPhone.length;
+    const countryCode = cleanedPhone.slice(0, countryCodeEnd);
+    const phoneNumber = cleanedPhone.slice(countryCodeEnd).trim();
+    return `${countryCode} ${phoneNumber}`;
+  } else {
+    // If there's no '+', assume it needs the default country code (+266)
+    const defaultCountryCode = '+266';
+    return `${defaultCountryCode} ${cleanedPhone.trim()}`;
+  }
+};
+
+
   return (
     <div className="right-side-bar single-right-content product-right-sin">
       <aside className="bg-effe">
@@ -178,8 +201,8 @@ const BuyerInformation: React.FC = () => {
         </ul>
       </aside>
       <aside className="bg-effe bg-effe-2">
-        <h3 className="aside-title margin-b-3">
-          <a href={`tel:${sellerPhone}`}>{sellerPhone}</a>
+      <h3 className="aside-title margin-b-3">
+          <a href={`tel:${sellerPhone}`}>{formatPhoneNumber(sellerPhone)}</a>
         </h3>
         <p className="para-calls">Contact the seller for more information</p>
         <span className="pos-icon pos-icon-2">
@@ -233,17 +256,12 @@ const BuyerInformation: React.FC = () => {
             </a>
           </li>
           <li>
-            <a href="#print">
-              <span className="fa fa-print"></span>Print
-            </a>
-          </li>
-          <li>
             <a href="#favorite">
               <span className="fa fa-heart-o"></span>Favorite
             </a>
           </li>
           <li>
-            <a href="/Report">
+            <a href="/ContactUs">
               <span className="fa fa-flag-o"></span>Report
             </a>
           </li>

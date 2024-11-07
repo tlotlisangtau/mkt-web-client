@@ -158,9 +158,9 @@ function ContactUs() {
                 </div>
                 <div className="text-left">
                   <h6>Email</h6>
-                  <a href="mailto:info@example.com">mail@example.com</a>
+                  <a href="mailto:info@example.com">support@ikahe.com</a>
                   <br />
-                  <a href="mailto:info@example.com">mail2@example.com</a>
+                  <a href="mailto:info@example.com">info@ikahe.com</a>
                 </div>
               </div>
               <div className="d-grid adress-info">
@@ -170,10 +170,10 @@ function ContactUs() {
                 <div className="text-left">
                   <h6>Phone Number</h6>
                   <p>
-                    <a href="tel:+1-234-567-0890">+1-234-567-0890</a>
+                    <a href="tel:+1-234-567-0890">+266-5897-4305</a>
                   </p>
                   <p>
-                    <a href="tel:+44-000-888-999">+44-000-888-999</a>
+                    <a href="tel:+44-000-888-999">+266-5897-4305</a>
                   </p>
                 </div>
               </div>

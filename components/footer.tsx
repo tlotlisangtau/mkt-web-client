@@ -127,11 +127,11 @@ const Footer: React.FC = () => {
                           className="fa fa-envelope-o"
                           aria-hidden="true"
                         ></span>
-                        <a href="mailto:info@example.com">ikahe@gmail.com</a>
+                        <a href="mailto:info@example.com">support@ikahe.com</a>
                       </div>
                       <div className="href2">
                         <span className="fa fa-phone" aria-hidden="true"></span>
-                        <a href="tel:+44-000-888-999">+266-6868-8598</a>
+                        <a href="tel:+44-000-888-999">+266-5897-4305</a>
                       </div>
                       <div>
                         <p className="contact-para">
