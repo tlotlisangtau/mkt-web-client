@@ -62,6 +62,14 @@ const electronic_types = [
   { label: 'Other Equipment', value: 'Other Equipment'},
 ];
 
+const furniture_types = [
+  { label: 'Living Room', value: 'Living Room' },
+  { label: 'Bedroom', value: 'Bedroom' },
+  { label: 'Office', value: 'Office' },
+  { label: 'Outdoor', value: 'Outdoor'},
+  { label: 'Other Furniture', value: 'Other Furniture'},
+];
+
 const carMakes = [
   "Audi",
   "BMW",
@@ -108,6 +116,7 @@ const CategoryForm: React.FC = () => {
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [selectedAutomotivesTypes, setSelectedAutomotivesTypes] = useState<string | null>(null);
   const [selectedElectronicsTypes, setSelectedElectronicsTypes] = useState<string | null>(null);
+  const [selectedFurnitureTypes, setSelectedFurnitureTypes] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
   const router = useRouter();
@@ -245,6 +254,16 @@ const CategoryForm: React.FC = () => {
     });
   };
 
+  const handleFurnitureTypesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    console.log("Selected Furniture Type:", value); // Debugging log
+    setSelectedFurnitureTypes(value);
+    setFormData({
+      ...formData,
+      furniture_types: value
+    });
+  };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
@@ -362,6 +381,10 @@ const CategoryForm: React.FC = () => {
         image_urls: imageUrls,
         user_id: userId,
       };
+
+      if (selectedCategory === 3) {
+        dataToSubmit.furniture_types = formData.furniture_types;
+      }
 
       if (selectedCategory === 8) {
         dataToSubmit.automotives_types = formData.automotives_types;
@@ -517,6 +540,27 @@ const CategoryForm: React.FC = () => {
                     {automotives_types.map((automotive) => (
                       <option key={automotive.value} value={automotive.value}>
                         {automotive.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {selectedCategory === 3 && (
+                <div>
+                  <label htmlFor="furniture_types" className="label1">
+                  Furniture Type
+                  </label>
+                  <select
+                    id="furniture_types"
+                    value={selectedFurnitureTypes || ""}
+                    onChange={handleFurnitureTypesChange}
+                    className="select1"
+                  >
+                    <option value="">Select furniture type</option>
+                    {furniture_types.map((furniture) => (
+                      <option key={furniture.value} value={furniture.value}>
+                        {furniture.label}
                       </option>
                     ))}
                   </select>
