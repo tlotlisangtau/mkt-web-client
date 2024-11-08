@@ -54,6 +54,14 @@ const automotives_types = [
   { label: 'Other Vehicles', value: 'Other Vehicles'},
 ];
 
+const electronic_types = [
+  { label: 'Cell Phones', value: 'Cell Phones' },
+  { label: 'Computers', value: 'Computers' },
+  { label: 'TV and Audio', value: 'TV and Audio' },
+  { label: 'Camera', value: 'Camera'},
+  { label: 'Other Equipment', value: 'Other Equipment'},
+];
+
 const carMakes = [
   "Audi",
   "BMW",
@@ -99,6 +107,7 @@ const CategoryForm: React.FC = () => {
   const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [selectedAutomotivesTypes, setSelectedAutomotivesTypes] = useState<string | null>(null);
+  const [selectedElectronicsTypes, setSelectedElectronicsTypes] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
   const router = useRouter();
@@ -226,6 +235,16 @@ const CategoryForm: React.FC = () => {
     });
   };
 
+  const handleElectronicsTypesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    console.log("Selected Electronics Type:", value); // Debugging log
+    setSelectedElectronicsTypes(value);
+    setFormData({
+      ...formData,
+      electronic_types: value
+    });
+  };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
@@ -346,6 +365,10 @@ const CategoryForm: React.FC = () => {
 
       if (selectedCategory === 8) {
         dataToSubmit.automotives_types = formData.automotives_types;
+      }
+
+      if (selectedCategory === 10) {
+        dataToSubmit.electronic_types = formData.electronic_types;
       }
 
       if (selectedCategory === 2) {
@@ -476,7 +499,7 @@ const CategoryForm: React.FC = () => {
             </div>
           )}
 
-          {/* The automotives_types select is now inside the form */}
+
           {formFields.length > 0 && (
             <form onSubmit={handleSubmit}>
               {selectedCategory === 8 && (
@@ -501,6 +524,25 @@ const CategoryForm: React.FC = () => {
               )}
 
               {selectedCategory === 10 && ( 
+                <>
+                <div>
+                  <label htmlFor="electronic_types" className="label1">
+                    Electronics Type
+                  </label>
+                  <select
+                    id="electronic_types"
+                    value={selectedElectronicsTypes || ""}
+                    onChange={handleElectronicsTypesChange}
+                    className="select1"
+                  >
+                    <option value="">Select electronics type</option>
+                    {electronic_types.map((electronic) => (
+                      <option key={electronic.value} value={electronic.value}>
+                        {electronic.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 <div>
                   <label htmlFor="brand" className="label1">
                     Brand
@@ -518,6 +560,7 @@ const CategoryForm: React.FC = () => {
                     ))}
                   </select>
                 </div>
+                </>
               )}
 
               {formFields.map((field, index) => (
