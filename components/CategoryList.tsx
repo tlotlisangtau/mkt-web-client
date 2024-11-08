@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 import supabase from '../utils/supabaseClient';
 import '../styles/style.css'; 
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 
 interface Category {
   id: number;
@@ -45,40 +45,49 @@ const Type = [
   { label: 'General', value: 'General'},
 ];
 
-  const carMakes = [
-    "Audi",
-    "BMW",
-    "Chevrolet",
-    "Dodge",
-    "Ford",
-    "Honda",
-    "Hyundai",
-    "Kia",
-    "Mazda",
-    "Mercedes-Benz",
-    "Nissan",
-    "Toyota",
-    "Volkswagen",
-    "Volvo",
-    "Others",
-  ]; 
-  
-  const brand = [
-    "Apple",
-    "Samsung",
-    "Sony",
-    "LG",
-    "Panasonic",
-    "Dell",
-    "HP",
-    "Lenovo",
-    "Microsoft",
-    "Asus",
-    "Acer",
-    "Toshiba",
-    "Huawei",
-    "Others",
-  ];
+const automotives_types = [
+  { label: 'Cars', value: 'Cars' },
+  { label: 'Motorcycles', value: 'Motorcycles' },
+  { label: 'Trucks', value: 'Trucks' },
+  { label: 'Bicycles', value: 'Bicycles'},
+  { label: 'Parts', value: 'Parts'},
+  { label: 'Other Vehicles', value: 'Other Vehicles'},
+];
+
+const carMakes = [
+  "Audi",
+  "BMW",
+  "Chevrolet",
+  "Dodge",
+  "Ford",
+  "Honda",
+  "Hyundai",
+  "Kia",
+  "Mazda",
+  "Mercedes-Benz",
+  "Nissan",
+  "Toyota",
+  "Volkswagen",
+  "Volvo",
+  "Others",
+]; 
+
+const brand = [
+  "Apple",
+  "Samsung",
+  "Sony",
+  "LG",
+  "Panasonic",
+  "Dell",
+  "HP",
+  "Lenovo",
+  "Microsoft",
+  "Asus",
+  "Acer",
+  "Toshiba",
+  "Huawei",
+  "Others",
+];
 
 const CategoryForm: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -89,12 +98,10 @@ const CategoryForm: React.FC = () => {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]); // For displaying image previews
   const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [selectedAutomotivesTypes, setSelectedAutomotivesTypes] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
   const router = useRouter();
-
-
-
 
   useEffect(() => {
     fetch("https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/categories/")
@@ -106,7 +113,7 @@ const CategoryForm: React.FC = () => {
   useEffect(() => {
     setFormData({});
     switch (selectedCategory) {
-      case 1: // Assume 5 is the ID for Jobs
+      case 1: // Jobs
         setFormFields([
           { name: "Name", type: "text" },
           { name: "Description", type: "text" },
@@ -117,7 +124,7 @@ const CategoryForm: React.FC = () => {
           { name: "Valid Until", type: "date" },
         ]);
         break;
-      case 2: // Assume 7 is the ID for Sports
+      case 2: // Sports
         setFormFields([
           { name: "Name", type: "text" },
           { name: "Description", type: "text" },
@@ -126,10 +133,10 @@ const CategoryForm: React.FC = () => {
           { name: "Size", type: "text" },
           { name: "Location", type: "text" },
           { name: "Mobile Number", type: "text" },
-          { name: "Condition", type: "select" }, // Added Condition field
+          { name: "Condition", type: "select" },
         ]);
         break;
-      case 3: // Assume 8 is the ID for Furniture
+      case 3: // Furniture
         setFormFields([
           { name: "Name", type: "text" },
           { name: "Description", type: "text" },
@@ -140,7 +147,7 @@ const CategoryForm: React.FC = () => {
           { name: "Condition", type: "select" },
         ]);
         break;
-      case 8: // Assume 9 is the ID for automotive
+      case 8: // Automotives
         setFormFields([
           { name: "Name", type: "text" },
           { name: "Description", type: "text" },
@@ -154,7 +161,7 @@ const CategoryForm: React.FC = () => {
           { name: "Condition", type: "select" },
         ]);
         break;
-      case 10: // Assume 10 is the ID for Health & Beauty
+      case 10: // Health & Beauty
         setFormFields([
           { name: "Name", type: "text" },
           { name: "Description", type: "text" },
@@ -166,7 +173,7 @@ const CategoryForm: React.FC = () => {
           { name: "Condition", type: "select" },
         ]);
         break;
-      case 12:
+      case 12: // Others
         setFormFields([
           { name: "Name", type: "text" },
           { name: "Description", type: "text" },
@@ -192,18 +199,30 @@ const CategoryForm: React.FC = () => {
   };
 
   const handleDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedDepartment(e.target.value);
+    const value = e.target.value;
+    setSelectedDepartment(value);
     setFormData({
       ...formData,
-      department: e.target.value
+      department: value
     });
   };
 
   const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedType(e.target.value);
+    const value = e.target.value;
+    setSelectedType(value);
     setFormData({
       ...formData,
-      type: e.target.value
+      type: value
+    });
+  };
+
+  const handleAutomotivesTypesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    console.log("Selected Automotive Type:", value); // Debugging log
+    setSelectedAutomotivesTypes(value);
+    setFormData({
+      ...formData,
+      automotives_types: value
     });
   };
 
@@ -232,69 +251,67 @@ const CategoryForm: React.FC = () => {
     e.stopPropagation();
   };
 
-    // Function to fetch user data using user_id from the token
-    const fetchUsername = async (userId: number) => {
-      try {
-        const response = await fetch(
-          `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/accounts/${userId}/`
-        );
-        if (!response.ok) {
-          throw new Error('Failed to fetch user data');
-        }
-        const data: User = await response.json();
-        return data.username;
-      } catch (error) {
-        console.error("Error fetching username:", error);
-        return null;
-      }
-    };
-
-// Function to extract user's ID from the JWT token and fetch the username
-const getUserNameFromToken = async () => {
-  const token = localStorage.getItem('accessToken'); // Assuming the token is stored in localStorage
-
-  // Debugging log to check if token exists
-  console.log("Token in localStorage:", token);
-
-  if (token) {
+  // Function to fetch user data using user_id from the token
+  const fetchUsername = async (userId: number) => {
     try {
-      const decodedToken = jwtDecode<DecodedToken>(token); // Decode token to extract user_id
-      console.log("Decoded Token:", decodedToken); // Log the decoded token
-
-      if (decodedToken.user_id) {
-        setUserId(decodedToken.user_id);
-        const fetchedUsername = await fetchUsername(decodedToken.user_id);
-        return fetchedUsername || null; // Assuming the API returns 'username'
-      } else {
-        console.error("Decoded token does not have user_id");
+      const response = await fetch(
+        `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/accounts/${userId}/`
+      );
+      if (!response.ok) {
+        throw new Error('Failed to fetch user data');
       }
+      const data: User = await response.json();
+      return data.username;
     } catch (error) {
-      console.error("Error decoding token:", error); // Log any decoding errors
+      console.error("Error fetching username:", error);
+      return null;
     }
-  } else {
-    console.error("No token found in localStorage");
-  }
-  return null;
-};
+  };
 
-// Use effect to get the username when the component mounts
-useEffect(() => {
-  if (userId !== null) {
-    console.log("User ID updated:", userId);
-  }
-}, [userId]);
+  // Function to extract user's ID from the JWT token and fetch the username
+  const getUserNameFromToken = async () => {
+    const token = localStorage.getItem('accessToken'); // Assuming the token is stored in localStorage
 
+    console.log("Token in localStorage:", token); // Debugging log
 
-    // Use effect to get the username when the component mounts
-    useEffect(() => {
-      getUserNameFromToken().then((name) => {
-        if (name) {
-          setUsername(name);
+    if (token) {
+      try {
+        const decodedToken = jwtDecode<DecodedToken>(token); // Decode token to extract user_id
+        console.log("Decoded Token:", decodedToken); // Log the decoded token
+
+        if (decodedToken.user_id) {
+          setUserId(decodedToken.user_id);
+          const fetchedUsername = await fetchUsername(decodedToken.user_id);
+          return fetchedUsername || null; // Assuming the API returns 'username'
         } else {
-          console.log(userId);
+          console.error("Decoded token does not have user_id");
         }
-      });
-    }, []);
+      } catch (error) {
+        console.error("Error decoding token:", error); // Log any decoding errors
+      }
+    } else {
+      console.error("No token found in localStorage");
+    }
+    return null;
+  };
+
+  // Use effect to get the username when the component mounts
+  useEffect(() => {
+    getUserNameFromToken().then((name) => {
+      if (name) {
+        setUsername(name);
+      } else {
+        console.log(userId);
+      }
+    });
+  }, []);
+
+  // Log userId updates
+  useEffect(() => {
+    if (userId !== null) {
+      console.log("User ID updated:", userId);
+    }
+  }, [userId]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -316,16 +333,27 @@ useEffect(() => {
         imageUrls.push(imageUrl);
       }
 
-      const dataToSubmit = {
+      // Log formData before submission
+      console.log("Form Data before submission:", formData);
+
+      // Build dataToSubmit conditionally based on category
+      const dataToSubmit: Record<string, any> = {
         ...formData,
         category: selectedCategory, // Send the selectedCategory ID instead of name
         image_urls: imageUrls,
         user_id: userId,
-        type: formData.type // Include the array of image URLs
       };
 
+      if (selectedCategory === 8) {
+        dataToSubmit.automotives_types = formData.automotives_types;
+      }
+
+      if (selectedCategory === 2) {
+        dataToSubmit.type = formData.type;
+      }
+
       console.log('Submitting data:', dataToSubmit);
-      console.log(userId); // Log the data being submitted
+      console.log('User ID:', userId); // Log the data being submitted
 
       const endpoint = `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/${getCategoryEndpoint()}/`;
       const response = await fetch(endpoint, {
@@ -439,37 +467,59 @@ useEffect(() => {
                 className="select1"
               >
                 <option value="">Select a sport type</option>
-                {Type.map((Type) => (
-                  <option key={Type.value} value={Type.value}>
-                    {Type.label}
+                {Type.map((sportType) => (
+                  <option key={sportType.value} value={sportType.value}>
+                    {sportType.label}
                   </option>
                 ))}
               </select>
             </div>
           )}
 
-          {selectedCategory === 10 && ( 
-            <div>
-              <label htmlFor="brand" className="label1">
-                Brand
-              </label>
-              <select
-                id="brand"
-                className="select1"
-                onChange={handleChange}
-              >
-                <option value="">Select a brand</option>
-                {brand.map((make, index) => (
-                  <option key={index} value={make}>
-                    {make}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-
+          {/* The automotives_types select is now inside the form */}
           {formFields.length > 0 && (
             <form onSubmit={handleSubmit}>
+              {selectedCategory === 8 && (
+                <div>
+                  <label htmlFor="automotives_types" className="label1">
+                    Automotive Type
+                  </label>
+                  <select
+                    id="automotives_types"
+                    value={selectedAutomotivesTypes || ""}
+                    onChange={handleAutomotivesTypesChange}
+                    className="select1"
+                  >
+                    <option value="">Select automotive type</option>
+                    {automotives_types.map((automotive) => (
+                      <option key={automotive.value} value={automotive.value}>
+                        {automotive.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {selectedCategory === 10 && ( 
+                <div>
+                  <label htmlFor="brand" className="label1">
+                    Brand
+                  </label>
+                  <select
+                    id="brand"
+                    className="select1"
+                    onChange={handleChange}
+                  >
+                    <option value="">Select a brand</option>
+                    {brand.map((make, index) => (
+                      <option key={index} value={make}>
+                        {make}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               {formFields.map((field, index) => (
                 <div key={index}>
                   <label
@@ -478,7 +528,7 @@ useEffect(() => {
                   >
                     {field.name}
                   </label>
-                  {field.type === "select" && field.name !== "Make" ? ( // Adjust condition here
+                  {field.type === "select" && field.name !== "Make" ? (
                     <select
                       id={field.name.toLowerCase().replace(/ /g, "_")}
                       className="select1"
