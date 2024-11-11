@@ -45,6 +45,13 @@ const Type = [
   { label: 'General', value: 'General'},
 ];
 
+const others_types = [
+  { label: 'Men', value: 'Men' },
+  { label: 'Women', value: 'Women' },
+  { label: 'Kids', value: 'Kids' },
+  { label: 'Others', value: 'Others'},
+];
+
 const automotives_types = [
   { label: 'Cars', value: 'Cars' },
   { label: 'Motorcycles', value: 'Motorcycles' },
@@ -117,6 +124,7 @@ const CategoryForm: React.FC = () => {
   const [selectedAutomotivesTypes, setSelectedAutomotivesTypes] = useState<string | null>(null);
   const [selectedElectronicsTypes, setSelectedElectronicsTypes] = useState<string | null>(null);
   const [selectedFurnitureTypes, setSelectedFurnitureTypes] = useState<string | null>(null);
+  const [selectedOthersTypes, setSelectedOthersTypes] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
   const router = useRouter();
@@ -197,7 +205,6 @@ const CategoryForm: React.FC = () => {
           { name: "Description", type: "text" },
           { name: "Price", type: "number" },
           { name: "Location", type: "text" },
-          { name: "Type", type: "text" },
           { name: "Mobile Number", type: "text" },
           { name: "Condition", type: "select" },
         ]);
@@ -233,6 +240,16 @@ const CategoryForm: React.FC = () => {
       type: value
     });
   };
+
+  const handleOthersTypesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setSelectedOthersTypes(value);
+    setFormData({
+      ...formData,
+      others_types: value
+    });
+  };
+
 
   const handleAutomotivesTypesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
@@ -390,6 +407,10 @@ const CategoryForm: React.FC = () => {
         dataToSubmit.automotives_types = formData.automotives_types;
       }
 
+      if (selectedCategory === 12) {
+        dataToSubmit.others_types = formData.others_types;
+      }
+
       if (selectedCategory === 10) {
         dataToSubmit.electronic_types = formData.electronic_types;
       }
@@ -540,6 +561,27 @@ const CategoryForm: React.FC = () => {
                     {automotives_types.map((automotive) => (
                       <option key={automotive.value} value={automotive.value}>
                         {automotive.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {selectedCategory === 12 && (
+                <div>
+                  <label htmlFor="others_types" className="label1">
+                  Others Type
+                  </label>
+                  <select
+                    id="others_types"
+                    value={selectedOthersTypes || ""}
+                    onChange={handleOthersTypesChange}
+                    className="select1"
+                  >
+                    <option value="">Select others type</option>
+                    {others_types.map((others) => (
+                      <option key={others.value} value={others.value}>
+                        {others.label}
                       </option>
                     ))}
                   </select>

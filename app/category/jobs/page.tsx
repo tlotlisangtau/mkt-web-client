@@ -233,9 +233,11 @@ const ProductList: React.FC = () => {
   };
 
   const handleLocationSelect = (job_location: string) => {
-    setSelectedLocation(job_location);
-    setIsLocationDropdownOpen(false);
-    setCurrentPage(1);
+    if (job_location !== "Location") { 
+      setSelectedLocation(job_location);
+      setIsLocationDropdownOpen(false);
+      setCurrentPage(1);
+    }
   };
 
   const handleDepartmentDropdownToggle = () => {
@@ -387,7 +389,7 @@ const ProductList: React.FC = () => {
                         {locations.map((job_location, index) => (
                           <li
                             key={index}
-                            className="filter-dropdown-item"
+                            className={`filter-dropdown-item ${job_location === "Location" ? "unselectable" : ""}`}
                             onClick={() => handleLocationSelect(job_location)}
                           >
                             {job_location}

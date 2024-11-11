@@ -302,6 +302,13 @@
   cursor: pointer;
 }
 
+.unselectable {
+  background-color: #c1c3c4;
+
+  pointer-events: none; 
+  cursor: not-allowed;
+}
+
 .filter-dropdown-item:hover {
   background-color: #f0f0f0;
 }
@@ -408,3 +415,4 @@
 .sefetyList li {
  padding: 5px;
 }
+

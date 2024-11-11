@@ -1,6 +1,7 @@
   "use client";
 
   import React, { useEffect, useRef, useState } from "react";
+  import { useSearchParams } from 'next/navigation';
   import "../../../styles/globals.css";
   import "../../../styles/style.css";
   import Nav from "@/components/Nav";
@@ -8,6 +9,7 @@
   import { Carousel } from "react-responsive-carousel";
   import "react-responsive-carousel/lib/styles/carousel.min.css";
   import { categoryMappings } from "@/utils/categoryMappings";
+  import { jwtDecode } from "jwt-decode";
 
   interface Product {
     id: number;
@@ -20,6 +22,10 @@
     location: string;
     condition: string;
     type: string;
+  }
+
+  interface DecodedToken {
+    user_id: number;
   }
 
   // Function to calculate relative time
@@ -79,6 +85,12 @@
     const [isConditionDropdownOpen, setIsConditionDropdownOpen] = useState<boolean>(false);
     const [sortOption, setSortOption] = useState<string>("date");
     const [searchQuery, setSearchQuery] = useState<string>('');
+    const [favorites, setFavorites] = useState<number[]>([]);
+    const [userId, setUserId] = useState<number | null>(null);
+    const searchParams = useSearchParams();
+    const productId = Number(searchParams.get('productId'));
+    const category = searchParams.get('category');
+
         const latestAdsRef = useRef<HTMLDivElement>(null);
         const whyChooseUsRef = useRef<HTMLDivElement>(null);
         const categoriesRef = useRef<HTMLDivElement>(null);
@@ -207,9 +219,11 @@
     };
 
     const handleLocationSelect = (location: string) => {
-      setSelectedLocation(location);
-      setIsLocationDropdownOpen(false);
-      setCurrentPage(1);
+      if (location !== "Location") { 
+        setSelectedLocation(location);
+        setIsLocationDropdownOpen(false);
+        setCurrentPage(1);
+      }
     };
 
     const handleConditionSelect = (condition: string) => {
@@ -262,6 +276,51 @@
         return description;
       };
 
+
+
+      const handleFavoriteClick = async (productId: number, category: string) => {
+        try {
+          const token = localStorage.getItem('accessToken'); // Assuming you store the token in localStorage
+      
+          if (token) {
+            try {
+              const decodedToken = jwtDecode<DecodedToken>(token); // Decode token to extract user_id
+              console.log("Decoded Token:", decodedToken); // Log the decoded token
+      
+              const user_id = decodedToken.user_id; // Use the user_id from the decoded token
+              
+              const response = await fetch(`http://127.0.0.1:8000/favorites/`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  user_id: user_id, 
+                  object_id: productId,
+                  content_type: category, 
+                }),
+              });
+      
+              if (response.ok) {
+                const data = await response.json();
+                setFavorites((prevFavorites) => [...prevFavorites, data.id]); // Assuming backend returns the ID of the added favorite
+              } else {
+                alert('Failed to add to favorites');
+              }
+            } catch (error) {
+              console.error("Error decoding token:", error); // Log any decoding errors
+            }
+          } else {
+            console.error("No token found in localStorage");
+          }
+        } catch (error) {
+          console.error('Error adding to favorites:', error);
+          alert('Something went wrong. Please try again later.');
+        }
+      };
+      
+
     return (
       <>
         <Nav
@@ -279,7 +338,7 @@
                 <li>
                   <span className="fa fa-angle-right" aria-hidden="true"></span>
                 </li>
-                <li className="active">All Ads</li>
+                <li className="active">Sport Ads</li>
               </ul>
             </div>
           </div>
@@ -369,16 +428,17 @@
                       />
                       {isLocationDropdownOpen && (
                         <ul className="filter-dropdown-menu">
-                          {locations.map((location, index) => (
-                            <li
-                              key={index}
-                              className="filter-dropdown-item"
-                              onClick={() => handleLocationSelect(location)}
-                            >
-                              {location}
-                            </li>
-                          ))}
-                        </ul>
+                        {locations.map((location, index) => (
+                          <li
+                            key={index}
+                            className={`filter-dropdown-item ${location === "Location" ? "unselectable" : ""}`}
+                            onClick={() => handleLocationSelect(location)}
+                          >
+                            {location}
+                          </li>
+                        ))}
+                      </ul>
+                      
                       )}
                     </div>
 
@@ -493,13 +553,20 @@
                               <p>Price: R{product.price}</p>
                               <ul className="d-flex">
                                 <li>{timeAgo(product.created_at)}</li>
-                                <li className="margin-effe">
-                                  {/*
-                                  <a href="#fav" title="Add this to Favorite">
-                                    <span className="fa fa-heart"></span>
-                                  </a>
-                                   */}
-                                </li>
+                                {products.map((product) => (
+                                  <li key={product.id} className="margin-effe">
+                                    <a
+      title="Add this to Favorite"
+      onClick={(e) => {
+        e.preventDefault();
+        handleFavoriteClick(product.id, categoryMappings[product.category_id]); // Pass both productId and category
+      }}
+    >
+                                      <span className="fa fa-heart"></span>
+                                    </a>
+                                  </li>
+                                ))}
+
                               </ul>
                             </div>
                             </a>

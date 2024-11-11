@@ -8,16 +8,21 @@
   import { Carousel } from "react-responsive-carousel";
   import "react-responsive-carousel/lib/styles/carousel.min.css";
   import { categoryMappings } from "@/utils/categoryMappings";
+  import { jwtDecode } from "jwt-decode";
+
+  interface DecodedToken {
+    user_id: number;
+  }
 
   interface Product {
-    id: number;
+    object_id: number;
     name: string;
     description: string;
     price: number;
     image_urls: string[];
     category_id: number;
     created_at: string;
-    location: string;
+    content_type: string;
     condition: string;
     type: string;
   }
@@ -48,7 +53,7 @@
   };
 
   const types = ["Type", "Football", "Rugby", "Basketball", "Tennis", "Cricket"];
-  const locations = ["Location", "Maseru", "Leribe", "Qacha",'Berea','Mafeteng','Mokhotlong','Thaba-Tseka','Botha-Buthe','Quthing','Mafeteng'];
+  const content_type = ["Categories", "jobs", "sport", "electronics",'automotives','furniture','others'];
   const conditions = ["Condition", "New", "Used"]; // "Condition" is the default value
 
 
@@ -59,11 +64,9 @@ const ProductList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 4;
   const [selectedType, setSelectedType] = useState<string>("Type"); // Default to "Type"
-  const [selectedLocation, setSelectedLocation] = useState<string>("Location"); // Default to "Location"
+  const [selectedLocation, setSelectedLocation] = useState<string>("Categories"); // Default to "Location"
   const [selectedCondition, setSelectedCondition] =
     useState<string>("Condition"); // Default to "Condition"
-  const [minPrice, setMinPrice] = useState<number | "">("");
-  const [maxPrice, setMaxPrice] = useState<number | "">("");
   const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState<boolean>(false);
   const [isLocationDropdownOpen, setIsLocationDropdownOpen] =
     useState<boolean>(false);
@@ -71,6 +74,7 @@ const ProductList: React.FC = () => {
     useState<boolean>(false);
   const [sortOption, setSortOption] = useState<string>("date");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [userId, setUserId] = useState<number | null>(null);
 
   const latestAdsRef = useRef<HTMLDivElement>(null);
   const whyChooseUsRef = useRef<HTMLDivElement>(null);
@@ -112,43 +116,84 @@ const ProductList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
       try {
-        const response = await fetch(
-          "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/automotives/"
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        console.log("Fetched data:", data);
-
-        if (Array.isArray(data)) {
-          setProducts(data);
+        const decodedToken = jwtDecode<DecodedToken>(token); // Decode token to extract user_id
+        console.log("Decoded Token:", decodedToken); // Log the decoded token
+  
+        if (decodedToken.user_id) {
+          setUserId(decodedToken.user_id);
         } else {
-          setError("Data format is incorrect");
+          console.error("Decoded token does not have user_id");
         }
-      } catch (error: any) {
-        console.error("Fetch error:", error);
-        setError(error.message);
-      } finally {
-        setLoading(false);
+      } catch (error) {
+        console.error("Error decoding token:", error); // Log any decoding errors
       }
-    };
-
-    fetchProducts();
+    } else {
+      console.error("No token found in localStorage");
+    }
   }, []);
+  
+ 
+
+  useEffect(() => {
+    if (userId) {
+      const fetchProducts = async () => {
+        try {
+          const token = localStorage.getItem("accessToken"); // Retrieve token from local storage
+  
+          if (!token) {
+            throw new Error("No access token found");
+          }
+  
+          const response = await fetch(`http://127.0.0.1:8000/favorites/`, {
+            method: "GET",
+            headers: {
+              "Authorization": `Bearer ${token}`, // Add Authorization header
+              "Content-Type": "application/json"
+            }
+          });
+  
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+  
+          const data = await response.json();
+          console.log("Fetched data:", data);
+  
+          if (Array.isArray(data)) {
+            setProducts(data);
+          } else {
+            setError("Data format is incorrect");
+          }
+        } catch (error: unknown) {
+          // Type-check and set error message safely
+          if (error instanceof Error) {
+            console.error("Fetch error:", error);
+            setError(error.message);
+          } else {
+            console.error("An unexpected error occurred:", error);
+            setError("An unexpected error occurred");
+          }
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchProducts();
+    }
+  }, [userId]);
+  
 
   useEffect(() => {
     // Update URL parameters based on state
     const params = new URLSearchParams();
     if (selectedType !== "Type") params.set("type", selectedType);
-    if (selectedLocation !== "Location")
-      params.set("location", selectedLocation);
+    if (selectedLocation !== "Categories")
+      params.set("category", selectedLocation);
     if (selectedCondition !== "Condition")
       params.set("condition", selectedCondition);
-    if (minPrice !== "") params.set("min_price", minPrice.toString());
-    if (maxPrice !== "") params.set("max_price", maxPrice.toString());
     if (searchQuery !== "") params.set("search", searchQuery);
     params.set("sort", sortOption);
     params.set("page", currentPage.toString());
@@ -162,8 +207,6 @@ const ProductList: React.FC = () => {
     selectedType,
     selectedLocation,
     selectedCondition,
-    minPrice,
-    maxPrice,
     searchQuery,
     sortOption,
     currentPage,
@@ -174,12 +217,10 @@ const ProductList: React.FC = () => {
   const filteredProducts = products.filter((product) => {
     return (
       (selectedType === "Type" || product.type === selectedType) &&
-      (selectedLocation === "Location" ||
-        product.location === selectedLocation) &&
+      (selectedLocation === "Categories" ||
+        product.content_type === selectedLocation) &&
       (selectedCondition === "Condition" ||
         product.condition === selectedCondition) &&
-      (minPrice === "" || product.price >= minPrice) &&
-      (maxPrice === "" || product.price <= maxPrice) &&
       (searchQuery === "" ||
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.description.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -219,8 +260,8 @@ const ProductList: React.FC = () => {
     setCurrentPage(1);
   };
 
-  const handleLocationSelect = (location: string) => {
-    setSelectedLocation(location);
+  const handleLocationSelect = (content_type: string) => {
+    setSelectedLocation(content_type);
     setIsLocationDropdownOpen(false);
     setCurrentPage(1);
   };
@@ -243,13 +284,6 @@ const ProductList: React.FC = () => {
     setIsConditionDropdownOpen((prev) => !prev);
   };
 
-  const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMinPrice(event.target.value === "" ? "" : Number(event.target.value));
-  };
-
-  const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMaxPrice(event.target.value === "" ? "" : Number(event.target.value));
-  };
 
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSortOption(event.target.value);
@@ -269,12 +303,16 @@ const ProductList: React.FC = () => {
   };
 
   // Utility function to truncate strings
-  const truncateDescription = (description: string, maxLength: number) => {
+  const truncateDescription = (description: string | undefined, maxLength: number) => {
+    if (!description) return ""; // Return an empty string if description is undefined
+  
     if (description.length > maxLength) {
       return description.substring(0, maxLength) + "...";
     }
     return description;
   };
+  
+  
 
   return (
     <>
@@ -293,7 +331,7 @@ const ProductList: React.FC = () => {
               <li>
                 <span className="fa fa-angle-right" aria-hidden="true"></span>
               </li>
-              <li className="active">All Ads</li>
+              <li className="active">Favorites</li>
             </ul>
           </div>
         </div>
@@ -302,7 +340,7 @@ const ProductList: React.FC = () => {
       <section className="w3l-products-page w3l-blog-single w3l-products-4">
         <div className="single blog">
           <div className="wrapper">
-            <h3 className="title-main" ref={tabContentRef}>Automotives</h3>
+            <h3 className="title-main" ref={tabContentRef}>My Favorites</h3>
             <div className="d-grid grid-colunm-2 grid-colunm">
               <div className="right-side-bar">
                 <aside>
@@ -351,13 +389,13 @@ const ProductList: React.FC = () => {
                     />
                     {isLocationDropdownOpen && (
                       <ul className="filter-dropdown-menu">
-                        {locations.map((location, index) => (
+                        {content_type.map((content_type, index) => (
                           <li
                             key={index}
                             className="filter-dropdown-item"
-                            onClick={() => handleLocationSelect(location)}
+                            onClick={() => handleLocationSelect(content_type)}
                           >
-                            {location}
+                            {content_type}
                           </li>
                         ))}
                       </ul>
@@ -391,23 +429,6 @@ const ProductList: React.FC = () => {
                         ))}
                       </ul>
                     )}
-                  </div>
-
-                  {/* Price Range Filter */}
-                  <div className="price-range-filter">
-                    <label>Price Range</label>
-                    <input
-                      type="number"
-                      placeholder="Min Price"
-                      value={minPrice === "" ? "" : minPrice}
-                      onChange={handleMinPriceChange}
-                    />
-                    <input
-                      type="number"
-                      placeholder="Max Price"
-                      value={maxPrice === "" ? "" : maxPrice}
-                      onChange={handleMaxPriceChange}
-                    />
                   </div>
                 </aside>
               </div>
@@ -444,7 +465,7 @@ const ProductList: React.FC = () => {
                   {!loading && !error && (
                     <div className="d-grid grid-col-2">
                       {currentProducts.map((product) => (
-                        <div className="product" key={product.id}>
+                        <div className="product" key={product.object_id}>
                           <Carousel showThumbs={false} infiniteLoop>
                             {getImageUrlsArray(product.image_urls).map(
                               (url, index) => (
@@ -455,10 +476,11 @@ const ProductList: React.FC = () => {
                             )}
                           </Carousel>
                           <a
-                                href={`/category/automotives/Productdetail?productId=${
-                                  product.id
+                                href={`/category/${
+                                  product.content_type}/Productdetail?productId=${
+                                  product.object_id
                                 }&category=${
-                                  categoryMappings[product.category_id]
+                                  product.content_type
                                 }`}
                               >
                           <div className="info-bg">
@@ -469,7 +491,7 @@ const ProductList: React.FC = () => {
                             <p>
                               {truncateDescription(product.description, 35)}
                             </p>
-                            <p>{product.location}</p>
+                            <p>Category: {product.content_type}</p>
                             <p>Condition: {product.condition}</p>
                             <p>Price: R{product.price}</p>
                             <ul className="d-flex">

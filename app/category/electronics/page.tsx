@@ -207,9 +207,11 @@ const ProductList: React.FC = () => {
   };
 
   const handleLocationSelect = (location: string) => {
-    setSelectedLocation(location);
-    setIsLocationDropdownOpen(false);
-    setCurrentPage(1);
+    if (location !== "Location") { 
+      setSelectedLocation(location);
+      setIsLocationDropdownOpen(false);
+      setCurrentPage(1);
+    }
   };
 
   const handleConditionSelect = (condition: string) => {
@@ -279,7 +281,7 @@ const ProductList: React.FC = () => {
               <li>
                 <span className="fa fa-angle-right" aria-hidden="true"></span>
               </li>
-              <li className="active">Electronic Ads</li>
+              <li className="active">Electronics Ads</li>
             </ul>
           </div>
         </div>
@@ -369,16 +371,16 @@ const ProductList: React.FC = () => {
                     />
                     {isLocationDropdownOpen && (
                       <ul className="filter-dropdown-menu">
-                        {locations.map((location, index) => (
-                          <li
-                            key={index}
-                            className="filter-dropdown-item"
-                            onClick={() => handleLocationSelect(location)}
-                          >
-                            {location}
-                          </li>
-                        ))}
-                      </ul>
+                      {locations.map((location, index) => (
+                        <li
+                          key={index}
+                          className={`filter-dropdown-item ${location === "Location" ? "unselectable" : ""}`}
+                          onClick={() => handleLocationSelect(location)}
+                        >
+                          {location}
+                        </li>
+                      ))}
+                    </ul>
                     )}
                   </div>
 
