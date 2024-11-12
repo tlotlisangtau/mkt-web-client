@@ -53,7 +53,7 @@
   };
 
   const types = ["Type", "Football", "Rugby", "Basketball", "Tennis", "Cricket"];
-  const content_type = ["Categories", "jobs", "sport", "electronics",'automotives','furniture','others'];
+  const content_type = ["Categories", "jobs", "sports", "electronics",'automotives','furniture','others'];
   const conditions = ["Condition", "New", "Used"]; // "Condition" is the default value
 
 

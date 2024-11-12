@@ -9,17 +9,23 @@ import Footer from '@/components/footer';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { categoryMappings } from '@/utils/categoryMappings';
+import { jwtDecode } from "jwt-decode";
 
 interface Product {
   id: number;
   name: string;
   description: string;
   price: number;
+  salary: string;
   image_urls: string[];
   category_id: number;
   created_at: string;
   job_location: string;
   department: string; // Add department field
+}
+
+interface DecodedToken {
+  user_id: number;
 }
 
 const departments = [
@@ -90,6 +96,7 @@ const ProductList: React.FC = () => {
     useState<boolean>(false);
   const [isLocationDropdownOpen, setIsLocationDropdownOpen] =
     useState<boolean>(false);
+    const [favorites, setFavorites] = useState<number[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<string>("None"); // Default filter is 'None'
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const departmentDropdownRef = useRef<HTMLDivElement>(null);
@@ -279,6 +286,62 @@ const ProductList: React.FC = () => {
     }
     return description;
   };
+
+  const handleFavoriteClick = async (
+    productId: number,
+    category: string,
+    name: string,
+    description: string,
+    price: string,
+    imageUrls: string[],
+    salary?: string,
+  ) => {
+    try {
+      const token = localStorage.getItem('accessToken');
+  
+      if (token) {
+        try {
+          const decodedToken = jwtDecode<DecodedToken>(token);
+          console.log("Decoded Token:", decodedToken);
+  
+          const user_id = decodedToken.user_id;
+          console.log("Final price being sent:", price);
+          
+          const response = await fetch(`http://127.0.0.1:8000/favorites/`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              user_id: user_id,
+              object_id: productId,
+              content_type: category,
+              name: name,
+              description: description,
+              price: price,
+              image_urls: imageUrls,
+            }),
+          });
+  
+          if (response.ok) {
+            const data = await response.json();
+            setFavorites((prevFavorites) => [...prevFavorites, data.id]);
+          } else {
+            alert('Failed to add to favorites');
+          }
+        } catch (error) {
+          console.error("Error decoding token:", error);
+        }
+      } else {
+        console.error("No token found in localStorage");
+      }
+    } catch (error) {
+      console.error('Error adding to favorites:', error);
+      alert('Something went wrong. Please try again later.');
+    }
+  };
+  
 
   return (
     <>
@@ -477,20 +540,31 @@ const ProductList: React.FC = () => {
                               {truncateDescription(product.description, 35)}
                             </p>
                             <p>{product.job_location}</p>
+                            <p>Price: R{product.salary}</p>
                             <ul className="d-flex">
-                              <li>
-                                {new Date(
-                                  product.created_at
-                                ).toLocaleDateString()}
-                              </li>
-                              <li className="margin-effe">
-                                <a href="#fav" title="Add this to Favorite">
-                                  {/* 
+                                <li>{timeAgo(product.created_at)}</li>
+
+                                  <li key={product.id} className="margin-effe">
+                                <a
+                                  title="Add this to Favorite"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    handleFavoriteClick(
+                                      product.id,
+                                      categoryMappings[product.category_id], // Category
+                                      product.name,                         // Product name
+                                      product.description,                  // Product description
+                                      product.salary,                        // Product price
+                                      product.image_urls                    // Product image URLs (assuming this is an array)
+                                    );
+                                  }}
+                                >
                                   <span className="fa fa-heart"></span>
-                                  */}
                                 </a>
                               </li>
-                            </ul>
+
+
+                              </ul>
                           </div>
                           </a>
                         </div>

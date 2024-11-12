@@ -277,17 +277,23 @@
       };
 
 
-
-      const handleFavoriteClick = async (productId: number, category: string) => {
+      const handleFavoriteClick = async (
+        productId: number,
+        category: string,
+        name: string,
+        description: string,
+        price: number,
+        imageUrls: string[]
+      ) => {
         try {
-          const token = localStorage.getItem('accessToken'); // Assuming you store the token in localStorage
+          const token = localStorage.getItem('accessToken');
       
           if (token) {
             try {
-              const decodedToken = jwtDecode<DecodedToken>(token); // Decode token to extract user_id
-              console.log("Decoded Token:", decodedToken); // Log the decoded token
+              const decodedToken = jwtDecode<DecodedToken>(token);
+              console.log("Decoded Token:", decodedToken);
       
-              const user_id = decodedToken.user_id; // Use the user_id from the decoded token
+              const user_id = decodedToken.user_id;
               
               const response = await fetch(`http://127.0.0.1:8000/favorites/`, {
                 method: 'POST',
@@ -296,20 +302,24 @@
                   Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                  user_id: user_id, 
+                  user_id: user_id,
                   object_id: productId,
-                  content_type: category, 
+                  content_type: category,
+                  name: name,
+                  description: description,
+                  price: price,
+                  image_urls: imageUrls,
                 }),
               });
       
               if (response.ok) {
                 const data = await response.json();
-                setFavorites((prevFavorites) => [...prevFavorites, data.id]); // Assuming backend returns the ID of the added favorite
+                setFavorites((prevFavorites) => [...prevFavorites, data.id]);
               } else {
                 alert('Failed to add to favorites');
               }
             } catch (error) {
-              console.error("Error decoding token:", error); // Log any decoding errors
+              console.error("Error decoding token:", error);
             }
           } else {
             console.error("No token found in localStorage");
@@ -320,7 +330,6 @@
         }
       };
       
-
     return (
       <>
         <Nav
@@ -553,19 +562,26 @@
                               <p>Price: R{product.price}</p>
                               <ul className="d-flex">
                                 <li>{timeAgo(product.created_at)}</li>
-                                {products.map((product) => (
+
                                   <li key={product.id} className="margin-effe">
-                                    <a
-      title="Add this to Favorite"
-      onClick={(e) => {
-        e.preventDefault();
-        handleFavoriteClick(product.id, categoryMappings[product.category_id]); // Pass both productId and category
-      }}
-    >
-                                      <span className="fa fa-heart"></span>
-                                    </a>
-                                  </li>
-                                ))}
+                                <a
+                                  title="Add this to Favorite"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    handleFavoriteClick(
+                                      product.id,
+                                      categoryMappings[product.category_id],
+                                      product.name,                        
+                                      product.description,                  
+                                      product.price,                        
+                                      product.image_urls                   
+                                    );
+                                  }}
+                                >
+                                  <span className="fa fa-heart"></span>
+                                </a>
+                              </li>
+
 
                               </ul>
                             </div>
