@@ -9,6 +9,7 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { categoryMappings } from "@/utils/categoryMappings";
 import { jwtDecode } from "jwt-decode";
+import { toast, Toaster } from "react-hot-toast";
 
 interface Product {
   id: number;
@@ -282,50 +283,50 @@ const ProductList: React.FC = () => {
         const token = localStorage.getItem('accessToken');
     
         if (token) {
-          try {
-            const decodedToken = jwtDecode<DecodedToken>(token);
-            console.log("Decoded Token:", decodedToken);
+          const decodedToken = jwtDecode<DecodedToken>(token);
+          const user_id = decodedToken.user_id;
     
-            const user_id = decodedToken.user_id;
-            
-            const response = await fetch(`http://127.0.0.1:8000/favorites/`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
-                user_id: user_id,
-                object_id: productId,
-                content_type: category,
-                name: name,
-                description: description,
-                price: price,
-                image_urls: imageUrls,
-              }),
+          const response = await fetch(`http://127.0.0.1:8000/favorites/`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              user_id: user_id,
+              object_id: productId,
+              content_type: category,
+              name: name,
+              description: description,
+              price: price,
+              image_urls: imageUrls,
+            }),
+          });
+    
+          const data = await response.json();
+    
+          if (response.ok) {
+            setFavorites((prevFavorites) => [...prevFavorites, data.id]);
+            toast.success(data.message || 'Product added to favorites!', {
+              style: { background: 'blue', color: 'white' },
+              duration: 1000,
             });
-    
-            if (response.ok) {
-              const data = await response.json();
-              setFavorites((prevFavorites) => [...prevFavorites, data.id]);
-            } else {
-              alert('Failed to add to favorites');
-            }
-          } catch (error) {
-            console.error("Error decoding token:", error);
+          } else {
+            toast.error(data.error || 'Failed to add to favorites');
           }
         } else {
-          console.error("No token found in localStorage");
+          toast.error("You must be logged in to add favorites.");
         }
       } catch (error) {
         console.error('Error adding to favorites:', error);
-        alert('Something went wrong. Please try again later.');
+        toast.error("Something went wrong. Please try again later.");
       }
     };
     
-
+    
   return (
     <>
+    <Toaster position="top-center" reverseOrder={false} />
       <Nav
         latestAdsRef={latestAdsRef}
         whyChooseUsRef={whyChooseUsRef}
