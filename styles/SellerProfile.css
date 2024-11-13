@@ -1,0 +1,96 @@
+.sellerProfile {
+
+ display: flex;
+ flex-direction: row;
+}
+
+.avatar-text {
+    border: 2px solid #eee;
+    position: relative;
+    top: -55px;
+    flex: 2;
+    text-align: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 19px;
+    justify-content: center;
+
+}
+
+.heading {
+    margin-top: 80px;
+    text-align: center;
+}
+
+.heading-one {
+    margin-top: -50px;
+    text-align: center;
+    position: relative;
+    font-weight: bold;
+    font-size: large;
+}
+
+.heading-two {
+
+    text-align: center;
+}
+
+.avatar-box {
+    width: 330px;
+    position: relative;
+    height: 180px;
+    border: 2px solid #eee;
+    text-align: center;
+    justify-content: center;
+    border-radius: 8px 8px 0 0;
+}
+
+.Profile {
+    flex: 1;
+    height: 180px;
+    position: relative;
+    top: -55px;
+    left: 15px;
+    border-radius: 8px 8px 0 0;
+}
+.avatar {
+    width: 120px;               /* Set the size of the avatar */
+    height: 120px;
+    border-radius: 50%;        /* Makes it circular */
+    background-color: #6c757d; /* Background color for avatar */
+    color: #fff;               /* Text color */
+    display: flex;             /* Center the text inside the avatar */
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;           /* Font size for the initial letter */
+    font-weight: bold;         /* Bold font for emphasis */
+    text-transform: uppercase; /* Ensures the initial is uppercase */
+    border: 2px solid #fff;
+    position: relative; 
+    left: 110px;   /* Optional border for contrast */
+    top: -53px;
+  }
+
+  
+
+  .verified-checkmark {
+    padding: 0 4px 0 4px;
+    color: #000;
+    background-color: #1da1f2; 
+    width: 150px;
+    border-radius: 50%;
+    height: 150px;
+    color: white;
+  }
+
+  @media (max-width: 768px) {
+    .Profile {
+      width: 60%; /* Make cards take full width on smaller screens */
+      top: 5px;
+    }
+  
+    .productList {
+      justify-content: center; /* Center the items on smaller screens */
+    }
+  }
+  

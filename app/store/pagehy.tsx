@@ -12,8 +12,6 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { categoryMappings } from "@/utils/categoryMappings";
 import { jwtDecode } from "jwt-decode";
 import { toast, Toaster } from "react-hot-toast";
-import Products4Block from "@/components/Products4_block";
-import User from "@/components/user";
 
 interface Product {
   id: number;
@@ -153,6 +151,31 @@ const ProductList: React.FC = () => {
       }, []);
 
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          "https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/sports"
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else {
+          setError("Data format is incorrect");
+        }
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     // Update URL parameters based on state
@@ -339,7 +362,7 @@ const ProductList: React.FC = () => {
               <li>
                 <span className="fa fa-angle-right" aria-hidden="true"></span>
               </li>
-              <li className="active">Seller Profile</li>
+              <li className="active">Sport Ads</li>
             </ul>
           </div>
         </div>
@@ -355,16 +378,98 @@ const ProductList: React.FC = () => {
                   <div className="avatar">
                     A
                   </div>
-                  <h2 className="heading-one">Arone Tau</h2>
-                  <h2 className="heading-two">Account Verified <span className="verified-checkmark">✔</span></h2>
-                  <h2>Total Ads 2 | Active Ads 1</h2>
                 </div>
-                
               </div> 
-
+              <div className="avatar-text">
+                <h1 className="heading">jvbkbhcxkbhcx</h1>
+              </div>
             </div>
 
-            <User />
+            <section id="content1" className="tab-content text-left">
+            {Object.entries(productsByCategory).map(
+              ([categoryName, products]) => {
+                const count = categoryCounts[categoryName.toLowerCase()] || 0;
+
+                if (count === 0) return null;
+
+                // Get the last 3 products for this category and reverse the order for right-to-left display
+                const lastProducts = products.slice(-3).reverse();
+
+                // Find category ID for the current categoryName
+                const categoryID = Object.keys(categoryMappings).find(
+                  (key) => categoryMappings[+key] === categoryName.toLowerCase()
+                );
+
+                return (
+                  <div key={categoryName}>
+                    <h3 style={{ marginTop: "8px", marginBottom: "8px" }}>
+                      <span style={{ fontWeight: "bold" }}>
+                        {categoryName.toUpperCase()} ({count})
+                      </span>{" "}
+                      <a
+                        href={`/category/${categoryName
+                          .toLowerCase()
+                          .replace(/ & /g, "_")
+                          .replace(/ /g, "_")}`}
+                      >
+                        <i>view all</i>
+                      </a>
+                    </h3>
+                    <div className="d-grid grid-col-3">
+                      {lastProducts.map((product) => (
+                        <div className="  " key={product.id}>
+                          <Carousel showThumbs={false} infiniteLoop>
+                            {getImageUrlsArray(product.image_urls).map(
+                              (imageUrl, index) => (
+                                <div key={index}>
+                                  <img
+                                    src={imageUrl}
+                                    className="img-responsive"
+                                    alt={`Image ${index + 1}`}
+                                  />
+                                </div>
+                              )
+                            )}
+                          </Carousel>
+                          <div className="info-bg">
+                            <h5>
+                              <a
+                                href={`/Productdetail?productId=${
+                                  product.id
+                                }&category=${
+                                  categoryMappings[product.category_id] ||
+                                  "unknown"
+                                }`}
+                              >
+                                {product.name}
+                              </a>
+                            </h5>
+                            <p>
+                              {truncateDescription(product.description, 35)}
+                            </p>
+                            <ul className="d-flex">
+                              <li>
+                                <span className="fa fa"></span>R{" "}
+                                {product.price || product?.salary}
+                              </li>
+                              <li className="margin-effe">
+                                <a href="#fav" title="Add this to Favorite">
+                                  {/* 
+                                  <span className="fa fa-heart"></span>
+                                  */}
+                                </a>
+                              </li>
+                              
+                            </ul>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+            )}
+          </section>
           </div>
         </div>
       </section>

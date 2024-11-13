@@ -492,7 +492,7 @@ const CategoryForm: React.FC = () => {
               onChange={(e) => setSelectedCategory(parseInt(e.target.value))}
               className="select1"
             >
-              <option value="">Select a category</option>
+              <option value="" disabled >Select a category</option>
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
@@ -512,7 +512,7 @@ const CategoryForm: React.FC = () => {
                 onChange={handleDepartmentChange}
                 className="select1"
               >
-                <option value="">Select a department</option>
+                <option value="" disabled >Select a department</option>
                 {departments.map((department) => (
                   <option key={department.value} value={department.value}>
                     {department.label}
@@ -533,7 +533,7 @@ const CategoryForm: React.FC = () => {
                 onChange={handleTypeChange}
                 className="select1"
               >
-                <option value="">Select a sport type</option>
+                <option value="" disabled >Select a sport type</option>
                 {Type.map((sportType) => (
                   <option key={sportType.value} value={sportType.value}>
                     {sportType.label}
@@ -557,7 +557,7 @@ const CategoryForm: React.FC = () => {
                     onChange={handleAutomotivesTypesChange}
                     className="select1"
                   >
-                    <option value="">Select automotive type</option>
+                    <option value="" disabled >Select automotive type</option>
                     {automotives_types.map((automotive) => (
                       <option key={automotive.value} value={automotive.value}>
                         {automotive.label}
@@ -578,7 +578,7 @@ const CategoryForm: React.FC = () => {
                     onChange={handleOthersTypesChange}
                     className="select1"
                   >
-                    <option value="">Select others type</option>
+                    <option value="" disabled>Select type</option>
                     {others_types.map((others) => (
                       <option key={others.value} value={others.value}>
                         {others.label}
@@ -599,7 +599,7 @@ const CategoryForm: React.FC = () => {
                     onChange={handleFurnitureTypesChange}
                     className="select1"
                   >
-                    <option value="">Select furniture type</option>
+                    <option value="" disabled >Select furniture type</option>
                     {furniture_types.map((furniture) => (
                       <option key={furniture.value} value={furniture.value}>
                         {furniture.label}
@@ -621,7 +621,7 @@ const CategoryForm: React.FC = () => {
                     onChange={handleElectronicsTypesChange}
                     className="select1"
                   >
-                    <option value="">Select electronics type</option>
+                    <option value="" disabled >Select electronics type</option>
                     {electronic_types.map((electronic) => (
                       <option key={electronic.value} value={electronic.value}>
                         {electronic.label}
@@ -638,7 +638,7 @@ const CategoryForm: React.FC = () => {
                     className="select1"
                     onChange={handleChange}
                   >
-                    <option value="">Select a brand</option>
+                    <option value="" disabled >Select a brand</option>
                     {brand.map((make, index) => (
                       <option key={index} value={make}>
                         {make}
@@ -663,7 +663,7 @@ const CategoryForm: React.FC = () => {
                       className="select1"
                       onChange={handleChange}
                     >
-                      <option value="">Select Condition</option>
+                      <option value="" disabled >Select Condition</option>
                       <option value="New">New</option>
                       <option value="Used">Used</option>
                     </select>
@@ -673,7 +673,7 @@ const CategoryForm: React.FC = () => {
                       className="select1"
                       onChange={handleChange}
                     >
-                      <option value="">Select Make</option>
+                      <option value="" disabled >Select Make</option>
                       {carMakes.map((make, idx) => (
                         <option key={idx} value={make}>
                           {make}

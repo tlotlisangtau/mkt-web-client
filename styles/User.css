@@ -1,0 +1,87 @@
+/* User.module.css */
+
+/* Container styles */
+.container {
+    padding: 20px;
+  }
+  
+  /* Category section */
+  .category {
+    margin-bottom: 20px;
+  }
+  
+  .categoryName {
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  /* Product list styles */
+  .productList {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  /* Product card styles */
+  .productCard {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    width: 200px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Product image styles */
+  .productImage {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+  }
+  
+  /* Product name styles */
+  .productName {
+    font-size: 16px;
+    margin: 10px 0;
+  }
+  
+  /* Product description styles */
+  .productDescription {
+    font-size: 14px;
+    color: #555;
+  }
+  
+  /* Product price styles */
+  .productPrice {
+    font-weight: bold;
+    color: #333;
+  }
+
+  /* Mobile responsiveness */
+@media (max-width: 768px) {
+    .productCard {
+      width: 100%; /* Make cards take full width on smaller screens */
+    }
+  
+    .productList {
+      justify-content: center; /* Center the items on smaller screens */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .categoryName {
+      font-size: 18px; /* Adjust font size for smaller screens */
+    }
+  
+    .productName {
+      font-size: 14px; /* Adjust product name font size for smaller screens */
+    }
+  
+    .productDescription {
+      font-size: 12px; /* Adjust description font size for smaller screens */
+    }
+  
+    .productPrice {
+      font-size: 16px; /* Adjust price font size for smaller screens */
+    }
+  }

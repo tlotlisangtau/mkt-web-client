@@ -9,6 +9,7 @@
   import "react-responsive-carousel/lib/styles/carousel.min.css";
   import { categoryMappings } from "@/utils/categoryMappings";
   import { jwtDecode } from "jwt-decode";
+  import { toast, Toaster } from "react-hot-toast";
 
   interface DecodedToken {
     user_id: number;
@@ -79,6 +80,7 @@ const ProductList: React.FC = () => {
   const latestAdsRef = useRef<HTMLDivElement>(null);
   const whyChooseUsRef = useRef<HTMLDivElement>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
+  const [favorites, setFavorites] = useState<number[]>([]);
 
   const locationDropdownRef = useRef<HTMLDivElement>(null);
   const conditionDropdownRef = useRef<HTMLDivElement>(null);
@@ -312,10 +314,63 @@ const ProductList: React.FC = () => {
     return description;
   };
   
+  const handleFavoriteClick = async (
+    productId: number,
+    category: string,
+    name: string,
+    description: string,
+    price: number,
+    imageUrls: string[]
+  ) => {
+    try {
+      const token = localStorage.getItem('accessToken');
   
-
-  return (
-    <>
+      if (token) {
+        const decodedToken = jwtDecode<DecodedToken>(token);
+        const user_id = decodedToken.user_id;
+  
+        const response = await fetch(`http://127.0.0.1:8000/favorites/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            user_id: user_id,
+            object_id: productId,
+            content_type: category,
+            name: name,
+            description: description,
+            price: price,
+            image_urls: imageUrls,
+          }),
+        });
+  
+        const data = await response.json();
+        //console.log(body);
+  
+        if (response.ok) {
+          setFavorites((prevFavorites) => [...prevFavorites, data.id]);
+          toast.success(data.message || 'Product added to favorites!', {
+            style: { background: 'blue', color: 'white' },
+            duration: 1000,
+          });
+        } else {
+          toast.error(data.error || 'Failed to add to favorites');
+        }
+      } else {
+        toast.error("You must be logged in to add favorites.");
+      }
+    } catch (error) {
+      console.error('Error adding to favorites:', error);
+      toast.error("Something went wrong. Please try again later.");
+    }
+  };
+  
+  
+return (
+  <>
+  <Toaster position="top-center" reverseOrder={false} />
       <Nav
         latestAdsRef={latestAdsRef}
         whyChooseUsRef={whyChooseUsRef}
@@ -495,15 +550,29 @@ const ProductList: React.FC = () => {
                             <p>Condition: {product.condition}</p>
                             <p>Price: R{product.price}</p>
                             <ul className="d-flex">
-                              <li>{timeAgo(product.created_at)}</li>
-                              <li className="margin-effe">
-                                <a href="#fav" title="Add this to Favorite">
-                                  {/* 
+                                <li>{timeAgo(product.created_at)}</li>
+
+                                  <li key={product.object_id} className="margin-effe">
+                                <a
+                                  title="Add this to Favorite"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    handleFavoriteClick(
+                                      product.object_id,
+                                      categoryMappings[product.category_id],
+                                      product.name,                        
+                                      product.description,                  
+                                      product.price,                        
+                                      product.image_urls                   
+                                    );
+                                  }}
+                                >
                                   <span className="fa fa-heart"></span>
-                                  */}
                                 </a>
                               </li>
-                            </ul>
+
+
+                              </ul>
                           </div>
                           </a>
                         </div>

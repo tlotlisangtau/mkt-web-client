@@ -9364,8 +9364,10 @@ h3.title-main:after {
 }
 
 .w3l-products-page .grid-colunm {
+  position: relative;
   grid-template-columns: .9fr 2fr;
   grid-gap: 40px;
+  top: -35px;
 }
 
 .w3l-products-page .left-product-sing {

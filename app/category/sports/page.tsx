@@ -580,7 +580,10 @@
                                     );
                                   }}
                                 >
-                                  <span className="fa fa-heart"></span>
+                                  <span className="fa fa-heart" style={{
+            color: favorites.includes(product.id) ? "red" : "grey",
+          }}
+        ></span>
                                 </a>
                               </li>
 

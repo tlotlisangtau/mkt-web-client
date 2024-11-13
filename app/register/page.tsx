@@ -118,16 +118,22 @@ const onSubmit = async (data: FormData) => {
               <p className={styles.error}>{errors.email.message}</p>
             )}
           </div>
-          <div className={styles.formElement}>
-            <label htmlFor="phoneNumber" className={styles.label}>
-              Phone Number (include +266)
+                    {/* Phone number input with +266 prefix */}
+                    <div className={styles.formElement}>
+            <label htmlFor="phone_number" className={styles.label}>
+              Phone Number
             </label>
-            <input
-              type="tel"
-              id="phone_number"
-              {...register("phone_number")}
-              className={getInputClass("phone_number")}
-            />
+            <div className={styles.phoneInputWrapper}>
+              <span className={styles.phonePrefix}>+266</span>
+              <input
+                type="tel"
+                id="phone_number"
+                {...register("phone_number")}
+                className={`${getInputClass("phone_number")} ${styles.phoneInput}`}
+                placeholder="Enter your phone number"
+                
+              />
+            </div>
             {errors.phone_number && (
               <p className={styles.error}>{errors.phone_number.message}</p>
             )}
