@@ -133,7 +133,7 @@ const ProductDetail: React.FC = () => {
                       <p>{product.description}</p>
                   )}
 
-                  <h3 className="aside-title top-sec-space">Features</h3>
+                  <h3 className="aside-title top-sec-space">Job Specifications</h3>
                   <div className="map-single product-details-top">
                     <div className="d-grid some-text-spe">
                       <div className="left-cont">

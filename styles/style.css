@@ -15,19 +15,19 @@
 
 }
 
-/* General button styles */
+
 .btn {
   padding: 10px 20px;
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  margin: 10px; /* Add spacing between buttons */
+  margin: 10px; 
 }
 
-/* Edit Button */
+
 .btn-edit {
-  background-color: #007bff; /* Blue */
+  background-color: #007bff; 
   color: white;
   border: none;
 }
