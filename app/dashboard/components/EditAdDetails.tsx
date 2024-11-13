@@ -204,7 +204,7 @@ function EditAdDetails({ post, onCancel, onSaveSuccess }: EditAdDetailsProps) {
               />
             </div>
             <div className="form-group">
-              <label>Valid Until:</label>
+              <label>Deadline:</label>
               <input
                 type="text"
                 name="valid_until"

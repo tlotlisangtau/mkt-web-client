@@ -147,7 +147,7 @@ const CategoryForm: React.FC = () => {
           { name: "Job Location", type: "text" },
           { name: "Mobile Number", type: "text" },
           { name: "Company", type: "text" },
-          { name: "Valid Until", type: "date" },
+          { name: "Deadline", type: "date" },
         ]);
         break;
       case 2: // Sports

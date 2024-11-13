@@ -179,7 +179,7 @@ const ProductDetail: React.FC = () => {
                             </h4>
                             <h4>
                               <span className="w3layouts-agileinfo">
-                                Valid until
+                                Deadline
                               </span>{" "}
                               :{" "}
                               <p>
