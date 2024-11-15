@@ -152,7 +152,7 @@ const CategoryForm: React.FC = () => {
           { name: "Job Location", type: "text" },
           { name: "Mobile Number", type: "tel" },
           { name: "Company", type: "text" },
-          { name: "Deadline", type: "text" },
+          { name: "Valid Until", type: "text" },
         ]);
         break;
       case 2: // Sports
@@ -237,7 +237,7 @@ const CategoryForm: React.FC = () => {
     const { name, value, type } = e.target;
 
     // Allow only numbers for specific fields
-    if (name === "Deadline") {
+    if (name === "Valid Until") {
       handleDateChange(e as React.ChangeEvent<HTMLInputElement>);
     } else if (name === "Salary" || name === "Mobile Number") {
       // Allow only numbers for these fields
@@ -396,60 +396,45 @@ const CategoryForm: React.FC = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    
     try {
       const token = localStorage.getItem('accessToken'); // Retrieve the token from localStorage
       console.log("Token in localStorage:", token);
-      const imageUrls: string[] = [];
-
-      for (const image of images) {
-        const timestamp = Date.now();
-        const newImageName = `${timestamp}_${image.name}`;
-        // Upload the image to Supabase
-        const { data, error: uploadError } = await supabase.storage
-          .from('images')
-          .upload(`public/${newImageName}`, image);
-
-        if (uploadError) throw uploadError;
-
-        // Generate the public URL for the uploaded image
-        const imageUrl = `https://mrcrgxijqzzfzrmhfkjb.supabase.co/storage/v1/object/public/images/${data.path}`;
-        imageUrls.push(imageUrl);
-      }
-
-      // Log formData before submission
+  
+      // Log formData before submission (without images)
       console.log("Form Data before submission:", formData);
-
+  
       // Build dataToSubmit conditionally based on category
       const dataToSubmit: Record<string, any> = {
         ...formData,
         category: selectedCategory, // Send the selectedCategory ID instead of name
-        image_urls: imageUrls,
         user_id: userId,
       };
-
+  
       if (selectedCategory === 3) {
         dataToSubmit.furniture_types = formData.furniture_types;
       }
-
+  
       if (selectedCategory === 8) {
         dataToSubmit.automotives_types = formData.automotives_types;
       }
-
+  
       if (selectedCategory === 12) {
         dataToSubmit.others_types = formData.others_types;
       }
-
+  
       if (selectedCategory === 10) {
         dataToSubmit.electronic_types = formData.electronic_types;
       }
-
+  
       if (selectedCategory === 2) {
         dataToSubmit.type = formData.type;
       }
-
+  
       console.log('Submitting data:', dataToSubmit);
       console.log('User ID:', userId); // Log the data being submitted
-
+  
+      // Submit the form data first (without images)
       const endpoint = `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/${getCategoryEndpoint()}/`;
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -459,14 +444,48 @@ const CategoryForm: React.FC = () => {
         },
         body: JSON.stringify(dataToSubmit)
       });
-
+  
       if (response.ok) {
         const responseData = await response.json();
-        console.log('Success:', responseData);
-        toast.success('Product added successfully!');
-        setTimeout(() => {
-          router.push('/dashboard'); // Redirect to a protected page
-        }, 1000);
+        console.log('Form submission success:', responseData);
+  
+        // If the form is successfully submitted, then proceed with uploading images
+        const imageUrls: string[] = [];
+        for (const image of images) {
+          const timestamp = Date.now();
+          const newImageName = `${timestamp}_${image.name}`;
+          // Upload the image to Supabase
+          const { data, error: uploadError } = await supabase.storage
+            .from('images')
+            .upload(`public/${newImageName}`, image);
+  
+          if (uploadError) throw uploadError;
+  
+          // Generate the public URL for the uploaded image
+          const imageUrl = `https://mrcrgxijqzzfzrmhfkjb.supabase.co/storage/v1/object/public/images/${data.path}`;
+          imageUrls.push(imageUrl);
+        }
+  
+        // Update the form submission with image URLs
+        const updateEndpoint = `https://ikahemarketapp-b1c3e9e6f70a.herokuapp.com/api/${getCategoryEndpoint()}/${responseData.id}/`; // Use the ID of the successfully submitted form
+        const updateResponse = await fetch(updateEndpoint, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ image_urls: imageUrls })
+        });
+  
+        if (updateResponse.ok) {
+          toast.success('Product added successfully!');
+          setTimeout(() => {
+            router.push('/dashboard'); // Redirect to a protected page
+          }, 1000);
+        } else {
+          toast.error('Failed to update product with images.');
+        }
+        
       } else {
         const responseText = await response.text();
         console.error('Error response:', responseText);
@@ -477,7 +496,7 @@ const CategoryForm: React.FC = () => {
       toast.error('Failed to add product.');
     }
   };
-
+  
   const getCategoryEndpoint = () => {
     switch (selectedCategory) {
       case 1:
@@ -677,56 +696,61 @@ const CategoryForm: React.FC = () => {
                 </>
               )}
 
-{formFields.map((field, index) => (
-        <div key={index}>
-          <label
-            htmlFor={field.name.toLowerCase().replace(/ /g, "_")}
-            className="label1"
-          >
-            {field.name}
-          </label>
-          {field.type === "select" ? (
-            <select
-              id={field.name.toLowerCase().replace(/ /g, "_")}
-              name={field.name}
-              className="select1"
-              onChange={handleChange}
-              value={formData[field.name] || ""}
-            >
-              <option value="" disabled>
-                Select {field.name}
-              </option>
-              {field.options?.map((option, idx) => (
-                <option key={idx} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          ) : field.name === "Deadline" ? (
-            // Special case for the "Deadline" field to handle date formatting
-            <input
-              type="text"
-              id="deadline"
-              name="Deadline"
-              className="input1"
-              placeholder="dd/mm/yyyy"
-              onFocus={(e) => (e.target.type = "date")} // Temporarily set to "date" on focus
-              onBlur={(e) => (e.target.type = "text")}  // Return to "text" on blur
-              onChange={handleChange}
-              value={formData.Deadline || ""}
-            />
-          ) : (
-            <input
-              type={field.type}
-              id={field.name.toLowerCase().replace(/ /g, "_")}
-              name={field.name}
-              className="input1"
-              onChange={handleChange}
-              value={formData[field.name] || ""}
-            />
-          )}
-        </div>
-      ))}
+{formFields.map((field, index) => {
+  // Generate formatted field name
+  const formattedFieldName = field.name.toLowerCase().replace(/ /g, "_");
+
+  return (
+    <div key={index}>
+      <label
+        htmlFor={formattedFieldName}
+        className="label1"
+      >
+        {field.name}
+      </label>
+      {field.type === "select" ? (
+        <select
+          id={formattedFieldName}
+          name={formattedFieldName}
+          className="select1"
+          onChange={handleChange}
+          value={formData[formattedFieldName] || ""}
+        >
+          <option value="" disabled>
+            Select {field.name}
+          </option>
+          {field.options?.map((option, idx) => (
+            <option key={idx} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      ) : field.name === "Valid Until" ? (
+        <input
+          type="text"
+          id={formattedFieldName}
+          name={formattedFieldName}
+          className="input1"
+          placeholder="dd/mm/yyyy"
+          onFocus={(e) => (e.target.type = "date")}
+          onBlur={(e) => (e.target.type = "text")}
+          onChange={handleChange}
+          value={formData[formattedFieldName] || ""}
+        />
+      ) : (
+        <input
+          type={field.type}
+          id={formattedFieldName}
+          name={formattedFieldName}
+          className="input1"
+          onChange={handleChange}
+          value={formData[formattedFieldName] || ""}
+        />
+      )}
+    </div>
+  );
+})}
+
 
               {/* Complete Checkbox */}
               <div>

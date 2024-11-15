@@ -111,14 +111,17 @@ const Nav: React.FC<NavProps> = ({
               ></span>
               {isLoggedIn ? "Dashboard" : "Login"}
             </button>
+
+            {isLoggedIn &&
             <Link
               href="/favorite"
               className="text-gray-800 hover:text-gray-600 flex items-center justify-center"
             >
               <div className="w-20 h-9 flex items-center -mt-3 justify-center bg-blue-600 border-1 text-white border-blue-600 rounded-md">
-                <span className="fa fa-heart text-lg" aria-hidden="true"></span>
+               <span className="fa fa-heart text-lg" aria-hidden="true"></span>
               </div>
             </Link>
+            }
           </nav>
 
           {/* Hamburger button for mobile */}
