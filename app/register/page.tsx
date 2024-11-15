@@ -119,13 +119,16 @@ const onSubmit = async (data: FormData) => {
             )}
           </div>
                     {/* Phone number input with +266 prefix */}
-                    <div className={styles.formElement}>
+            <div className={styles.formElement}>
             <label htmlFor="phone_number" className={styles.label}>
               Phone Number
             </label>
             <div className={styles.phoneInputWrapper}>
-              <span className={styles.phonePrefix}>+266</span>
+              <span 
+              style={{borderTopRightRadius: '0', borderBottomRightRadius: '0'  }}
+              className={styles.phonePrefix}>+266</span>
               <input
+                style={{ borderLeft: 'none',borderTopLeftRadius: '0', borderBottomLeftRadius: '0'  }}
                 type="tel"
                 id="phone_number"
                 {...register("phone_number")}

@@ -14,7 +14,8 @@ interface Category {
 
 interface FormField {
   name: string;
-  type: string;
+  type: "text" | "number" | "tel" | "date" | "select";
+  options?: string[];
 }
 
 interface DecodedToken {
@@ -24,6 +25,8 @@ interface DecodedToken {
 interface User {
   username: string;
 }
+
+
 
 const departments = [
   { label: 'Sale & Marketing', value: 'Sale & Marketing' },
@@ -127,6 +130,8 @@ const CategoryForm: React.FC = () => {
   const [selectedOthersTypes, setSelectedOthersTypes] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
+  const [formattedDate, setFormattedDate] = useState<string>("");
+
   const router = useRouter();
 
   useEffect(() => {
@@ -145,9 +150,9 @@ const CategoryForm: React.FC = () => {
           { name: "Description", type: "text" },
           { name: "Salary", type: "number" },
           { name: "Job Location", type: "text" },
-          { name: "Mobile Number", type: "text" },
+          { name: "Mobile Number", type: "tel" },
           { name: "Company", type: "text" },
-          { name: "Deadline", type: "date" },
+          { name: "Deadline", type: "text" },
         ]);
         break;
       case 2: // Sports
@@ -159,7 +164,7 @@ const CategoryForm: React.FC = () => {
           { name: "Size", type: "text" },
           { name: "Location", type: "text" },
           { name: "Mobile Number", type: "text" },
-          { name: "Condition", type: "select" },
+          { name: "Condition", type: "select", options: ["New", "Used"] },
         ]);
         break;
       case 3: // Furniture
@@ -170,7 +175,7 @@ const CategoryForm: React.FC = () => {
           { name: "Color", type: "text" },
           { name: "Mobile Number", type: "text" },
           { name: "Location", type: "text" },
-          { name: "Condition", type: "select" },
+          { name: "Condition", type: "select", options: ["New", "Used"] },
         ]);
         break;
       case 8: // Automotives
@@ -178,13 +183,13 @@ const CategoryForm: React.FC = () => {
           { name: "Name", type: "text" },
           { name: "Description", type: "text" },
           { name: "Price", type: "number" },
-          { name: "Make", type: "select" },
+          { name: "Make", type: "select", options: carMakes }, 
           { name: "Model", type: "text" },
           { name: "Mileage", type: "text" },
           { name: "Location", type: "text" },
           { name: "Year", type: "text" },
           { name: "Mobile Number", type: "text" },
-          { name: "Condition", type: "select" },
+          { name: "Condition", type: "select", options: ["New", "Used"] },
         ]);
         break;
       case 10: // Health & Beauty
@@ -196,7 +201,7 @@ const CategoryForm: React.FC = () => {
           { name: "Model", type: "text" },
           { name: "Warranty", type: "text" },
           { name: "Mobile Number", type: "text" },
-          { name: "Condition", type: "select" },
+          { name: "Condition", type: "select", options: ["New", "Used"] },
         ]);
         break;
       case 12: // Others
@@ -206,7 +211,7 @@ const CategoryForm: React.FC = () => {
           { name: "Price", type: "number" },
           { name: "Location", type: "text" },
           { name: "Mobile Number", type: "text" },
-          { name: "Condition", type: "select" },
+          { name: "Condition", type: "select", options: ["New", "Used"] },
         ]);
         break;
       default:
@@ -215,13 +220,34 @@ const CategoryForm: React.FC = () => {
     }
   }, [selectedCategory]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { id, value } = e.target;
-    setFormData({
-      ...formData,
-      [id]: value
-    });
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const isoDate = e.target.value; // Date in yyyy-mm-dd format from the date picker
+    const dateParts = isoDate.split("-");
+
+    if (dateParts.length === 3) {
+      const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`; // Convert to dd/mm/yyyy
+      setFormData((prev) => ({ ...prev, Deadline: formattedDate }));
+    }
   };
+
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const { name, value, type } = e.target;
+
+    // Allow only numbers for specific fields
+    if (name === "Deadline") {
+      handleDateChange(e as React.ChangeEvent<HTMLInputElement>);
+    } else if (name === "Salary" || name === "Mobile Number") {
+      // Allow only numbers for these fields
+      const numericValue = value.replace(/\D/g, "");
+      setFormData((prev) => ({ ...prev, [name]: numericValue }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
 
   const handleDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
@@ -376,10 +402,12 @@ const CategoryForm: React.FC = () => {
       const imageUrls: string[] = [];
 
       for (const image of images) {
+        const timestamp = Date.now();
+        const newImageName = `${timestamp}_${image.name}`;
         // Upload the image to Supabase
         const { data, error: uploadError } = await supabase.storage
           .from('images')
-          .upload(`public/${image.name}`, image);
+          .upload(`public/${newImageName}`, image);
 
         if (uploadError) throw uploadError;
 
@@ -649,47 +677,56 @@ const CategoryForm: React.FC = () => {
                 </>
               )}
 
-              {formFields.map((field, index) => (
-                <div key={index}>
-                  <label
-                    htmlFor={field.name.toLowerCase().replace(/ /g, "_")}
-                    className="label1"
-                  >
-                    {field.name}
-                  </label>
-                  {field.type === "select" && field.name !== "Make" ? (
-                    <select
-                      id={field.name.toLowerCase().replace(/ /g, "_")}
-                      className="select1"
-                      onChange={handleChange}
-                    >
-                      <option value="" disabled >Select Condition</option>
-                      <option value="New">New</option>
-                      <option value="Used">Used</option>
-                    </select>
-                  ) : field.type === "select" && field.name === "Make" ? (
-                    <select
-                      id={field.name.toLowerCase().replace(/ /g, "_")}
-                      className="select1"
-                      onChange={handleChange}
-                    >
-                      <option value="" disabled >Select Make</option>
-                      {carMakes.map((make, idx) => (
-                        <option key={idx} value={make}>
-                          {make}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input
-                      type={field.type}
-                      id={field.name.toLowerCase().replace(/ /g, "_")}
-                      className="input1"
-                      onChange={handleChange}
-                    />
-                  )}
-                </div>
+{formFields.map((field, index) => (
+        <div key={index}>
+          <label
+            htmlFor={field.name.toLowerCase().replace(/ /g, "_")}
+            className="label1"
+          >
+            {field.name}
+          </label>
+          {field.type === "select" ? (
+            <select
+              id={field.name.toLowerCase().replace(/ /g, "_")}
+              name={field.name}
+              className="select1"
+              onChange={handleChange}
+              value={formData[field.name] || ""}
+            >
+              <option value="" disabled>
+                Select {field.name}
+              </option>
+              {field.options?.map((option, idx) => (
+                <option key={idx} value={option}>
+                  {option}
+                </option>
               ))}
+            </select>
+          ) : field.name === "Deadline" ? (
+            // Special case for the "Deadline" field to handle date formatting
+            <input
+              type="text"
+              id="deadline"
+              name="Deadline"
+              className="input1"
+              placeholder="dd/mm/yyyy"
+              onFocus={(e) => (e.target.type = "date")} // Temporarily set to "date" on focus
+              onBlur={(e) => (e.target.type = "text")}  // Return to "text" on blur
+              onChange={handleChange}
+              value={formData.Deadline || ""}
+            />
+          ) : (
+            <input
+              type={field.type}
+              id={field.name.toLowerCase().replace(/ /g, "_")}
+              name={field.name}
+              className="input1"
+              onChange={handleChange}
+              value={formData[field.name] || ""}
+            />
+          )}
+        </div>
+      ))}
 
               {/* Complete Checkbox */}
               <div>

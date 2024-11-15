@@ -19,7 +19,7 @@ interface Product {
   condition: string;
   description: string;
   mobile_number: string;
-  type: string;
+  others_types: string;
   image_urls: string[];
   location: string;
   company: string;
@@ -152,7 +152,7 @@ const ProductDetail: React.FC = () => {
                             </h4>
                             <h4>
                               <span className="w3layouts-agileinfo">Type </span>{" "}
-                              : <p>{product.type} </p>
+                              : <p>{product.others_types} </p>
                             </h4>
 
                             <h4>

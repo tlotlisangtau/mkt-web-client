@@ -159,6 +159,11 @@
   background-color: #f7f7f7;
 }
 
+.holder {
+  
+  margin-top: 10px;
+}
+
 .form-container1 {
   width: 100%;
   max-width: 600px;
@@ -178,18 +183,28 @@
 
 .label1 {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   font-size: 14px;
   font-weight: 600;
+  margin-top: 8px;
 }
 
-.select1,
+.select1 {
+  width: 97%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-top: 3px;
+}
+
 .input1 {
   width: 97%;
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
+  margin-top: 5px;
 }
 
 .button1 {
@@ -336,6 +351,11 @@
   box-sizing: border-box;
   font-size: 14px;
 }
+
+.dropzone{
+  margin-top: 5px;
+}
+
 
 .price-range-filter input:focus {
   border-color: #007bff;
