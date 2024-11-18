@@ -1,0 +1,32 @@
+.dashboardHeader {
+  position: relative;
+  /* Add other styles as needed */
+}
+
+.buttonContainer {
+  position: absolute;
+  top: 10px; /* Adjust as needed */
+  left: 10px; /* Adjust as needed */
+  z-index: 10;
+}
+
+.scrollButton {
+  background: #333; /* Adjust color as needed */
+  color: white;
+  border: none;
+  padding: 10px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.scrollButton:hover {
+  background: #555; /* Adjust hover color as needed */
+}
+
+.sidebarWrapper {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  /* Adjust other styles as needed */
+}
