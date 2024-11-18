@@ -30,19 +30,26 @@ export const passwordResetSchema = z.object({
 });
 
 
+
+// Define the Zod schema for your form
 export const jobSchema = z.object({
-  name: z.string().min(2, 'Job Name must be at least 2 characters'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
+  name: z.string().min(1, "Job name is required."),
+  description: z.string().min(1, "Job description is required."),
   salary: z
     .string()
-    .regex(/^\d+(\.\d{1,2})?$/, 'Salary must be a number with up to two decimal places'),
+    .regex(/^\d+$/, "Salary must be a valid number.")
+    .min(1, "Salary is required."),
   mobile_number: z
     .string()
-    .regex(/^\d{7,10}$/, 'Mobile number must be between 7 and 10 digits'),
-  job_location: z.string().min(2, 'Location must be at least 2 characters'),
-  company: z.string().min(2, 'Company name must be at least 2 characters'),
-  valid_until: z.string().nonempty('Valid until date is required'),
-  department: z.string().nonempty('Department is required'),
+    .regex(/^\d{8,8}$/, "Invalid Mobile number"),
+  job_location: z.string().min(1, "Job location is required."),
+  company: z.string().min(1, "Company is required."),
+  //valid_until: z
+  //  .string()
+  //  .regex(
+  //    /^\d{2}\/\d{2}\/\d{4}$/,
+  //    "Valid Until must be in the format dd/mm/yyyy."
+  //  ),
   complete: z.boolean(),
-
+  department: z.string().min(1, "Department is required."),
 });

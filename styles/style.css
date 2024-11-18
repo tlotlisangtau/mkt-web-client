@@ -437,3 +437,61 @@
  padding: 5px;
 }
 
+.input1 {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #d1d5db; /* Light gray border */
+  border-radius: 0.375rem;
+  transition: border-color 0.3s ease-in-out;
+
+}
+
+.input-error {
+  border-color: red;
+  outline: none;
+}
+
+.input-success {
+  border-color: green;
+  outline: none;
+}
+
+.Form-error {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+  font-size: 15px;
+}
+
+
+/* General styles for select */
+.select {
+  width: 100%;
+  border: 1px solid #ccc; /* Default border */
+  padding: 8px;
+  border-radius: 4px;
+  transition: border-color 0.3s ease-in-out;
+}
+
+/* Error styling */
+.select-error {
+  border-color: red;
+  outline: none;
+}
+
+.select-error-message {
+  color: red;
+  font-size: 15px;
+  margin-top: 4px;
+}
+
+/* Success styling */
+.select-success {
+  border-color: green;
+  outline: none;
+}
+
+.move {
+   margin-bottom: 20px;
+}
